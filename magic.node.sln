@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{0080EF1F-A652-4498-BE59-F3FFFB3F33B2}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "magic.node", "magic.node\magic.node.csproj", "{AF45795C-FD6F-4240-9418-B99507B5AA93}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "magic.node.expressions", "magic.node.expressions\magic.node.expressions.csproj", "{CF576464-BE12-41D2-908C-FB17444C3B70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "magic.node.extensions", "magic.node.extensions\magic.node.extensions.csproj", "{66FCBAFC-0284-48BE-89D3-19342D33B488}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "magic.node.tests", "magic.node.tests\magic.node.tests.csproj", "{120575DF-CC45-443A-BE46-3A90F528656A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF45795C-FD6F-4240-9418-B99507B5AA93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF45795C-FD6F-4240-9418-B99507B5AA93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF45795C-FD6F-4240-9418-B99507B5AA93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF45795C-FD6F-4240-9418-B99507B5AA93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF576464-BE12-41D2-908C-FB17444C3B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF576464-BE12-41D2-908C-FB17444C3B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF576464-BE12-41D2-908C-FB17444C3B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF576464-BE12-41D2-908C-FB17444C3B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66FCBAFC-0284-48BE-89D3-19342D33B488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66FCBAFC-0284-48BE-89D3-19342D33B488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66FCBAFC-0284-48BE-89D3-19342D33B488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66FCBAFC-0284-48BE-89D3-19342D33B488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{120575DF-CC45-443A-BE46-3A90F528656A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{120575DF-CC45-443A-BE46-3A90F528656A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{120575DF-CC45-443A-BE46-3A90F528656A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{120575DF-CC45-443A-BE46-3A90F528656A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {11211B5D-B019-428D-A788-B2BB0906C527}
+	EndGlobalSection
+EndGlobal
