@@ -94,3 +94,10 @@ foo:@"Notice how the new line doesn't end the string
 
 Escape characters are supported for both single quote strings, and double quote strings, the same way they
 are supported in C#, allowing you to use e.g. `\r\n` etc.
+
+## License
+
+Magic Node is licensed as Affero GPL. This means that you can only use it to create Open Source solutions.
+If this is a problem, you can contact at thomas@gaiasoul.com me to negotiate a proprietary license if
+you want to use it to build closed source code. This will allow you to use it in closed
+source projects.
