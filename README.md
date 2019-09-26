@@ -35,6 +35,7 @@ foo
 To traverse the nodes later in for instance C#, you could do something such as the following.
 
 ```csharp
+// Parse some piece of Hyperlambda from a string.
 var root = var result = new Parser(hyperlambda).Lambda();
 
 // Retrieving name and value from root node.
