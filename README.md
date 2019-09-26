@@ -31,3 +31,18 @@ foo
    child1:its-value
    child2:its-value
 ```
+
+To traverse the nodes later in for instance C#, you could do something such as the following.
+
+```csharp
+var root = var result = new Parser(hyperlambda).Lambda();
+var name = root.Name;
+var value = root.Value;
+foreach (var idx in root.Children)
+{
+   /* ... do stuff with idx here ... */
+}
+```
+
+This allows you to read Hyperlambda from files, over the network, etc, to dynamically send
+relational tree structures around, and serialize these in a human readable format.
