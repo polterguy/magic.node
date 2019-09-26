@@ -7,6 +7,9 @@
     <PackageLicenseUrl />
     <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Thomas Hansen</Authors>
+    <PackageTags />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

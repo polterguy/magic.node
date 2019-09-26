@@ -5,6 +5,9 @@
     <Description>Extension methods and parsers for parsing Hyperlambda syntax, to create a magic.node graph object</Description>
     <Copyright>Thomas Hansen, thomas@gaiasoul.com</Copyright>
     <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Thomas Hansen</Authors>
+    <Company></Company>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -5,6 +5,8 @@
     <Description>An expression engine allowing you to retrieve nodes from magic.node using an XPath similar type of syntax</Description>
     <Copyright>Thomas Hansen, thomas@gaiasoul.com</Copyright>
     <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Thomas Hansen</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
