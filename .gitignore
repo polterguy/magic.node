@@ -328,3 +328,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+magic.node/magic.node.xml
+magic.node.extensions/magic.node.extensions.xml
+magic.node.expressions/magic.node.expressions.xml
