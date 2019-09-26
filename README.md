@@ -51,3 +51,46 @@ foreach (var idx in root.Children)
 
 This allows you to read Hyperlambda from files, over the network, etc, to dynamically send
 relational tree structures around, and serialize these in a human readable format.
+
+## Supported types
+
+Although the node structure itself can hold any value type you need inside of its `Value` property,
+Hyperlambda only supports the following types.
+
+* `string` = System.String
+* `int` = System.Int32
+* `uint` = System.UInt32
+* `long` = System.Int64
+* `ulong` = System.UInt64
+* `decimal` = System.Decimal
+* `double` = System.Double
+* `single` = System.Single
+* `bool` = System.Boolean
+* `date` = System.DateTime
+* `guid` = System.Guid
+* `char` = System.Char
+* `byte` = System.Byte
+* `x` = magic.node.expressions.Expression
+* `node` = magic.node.Node
+
+The type declaration should be declared in your Hyperlambda in between the name and its value, separated by colon (:).
+The default type if ommitted is `string`.
+
+## String literals
+
+Hyperlambda also support strings the same way C# supports string, using any of the following string representations.
+
+```
+// Single quotes
+foo:'howdy world this is a string'
+
+// Double quotes
+foo:"Howdy world, another string"
+
+// Multiline strings
+foo:@"Notice how the new line doesn't end the string
+    here!"
+```
+
+Escape characters are supported for both single quote strings, and double quote strings, the same way they
+are supported in C#, allowing you to use e.g. `\r\n` etc.
