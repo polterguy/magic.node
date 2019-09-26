@@ -36,8 +36,12 @@ To traverse the nodes later in for instance C#, you could do something such as t
 
 ```csharp
 var root = var result = new Parser(hyperlambda).Lambda();
+
+// Retrieving name and value from root node.
 var name = root.Name;
 var value = root.Value;
+
+// Iterating children nodes of root node.
 foreach (var idx in root.Children)
 {
    /* ... do stuff with idx here ... */
