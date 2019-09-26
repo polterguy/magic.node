@@ -1,5 +1,5 @@
 
-# Magic Node for ASP.NET Core
+# Magic Node for .Net
 
 [![Build status](https://travis-ci.org/polterguy/magic.node.svg?master)](https://travis-ci.org/polterguy/magic.node)
 
