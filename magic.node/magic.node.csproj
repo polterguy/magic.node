@@ -12,7 +12,8 @@
     <PackageTags />
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\projects\personal\magic.node\magic.node\magic.node.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin/Release/netstandard2.0/magic.node.xml</DocumentationFile>
   </PropertyGroup>
+
 </Project>

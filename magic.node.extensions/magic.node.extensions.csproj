@@ -10,8 +10,8 @@
     <Company></Company>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\projects\personal\magic.node\magic.node.extensions\magic.node.extensions.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin/Release/netstandard2.0/magic.node.extensions.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
