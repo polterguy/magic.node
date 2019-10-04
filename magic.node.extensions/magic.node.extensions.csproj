@@ -2,12 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Extension methods and parsers for parsing Hyperlambda syntax, to create a magic.node graph object</Description>
-    <Copyright>Thomas Hansen, thomas@gaiasoul.com</Copyright>
-    <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>magic.node.extensions</PackageId>
     <Authors>Thomas Hansen</Authors>
-    <Company></Company>
+    <Company>Thomas Hansen</Company>
+    <Copyright>Thomas Hansen, thomas@gaiasoul.com</Copyright>
+    <Description>Extension helper methods and classes for magic.node.</Description>
+    <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/polterguy/magic.node/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://polterguy.github.io/favicon.ico</PackageIconUrl>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageVersion>1.1.0</PackageVersion>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/polterguy/magic.node.git</RepositoryUrl>
+    <PackageTags>expressions, lambda expressions, hyperlambda, xpath</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

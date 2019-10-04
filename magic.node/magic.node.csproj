@@ -2,15 +2,23 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>A generic graph object, allowing you to declare graph objects in object format</Description>
-    <Copyright>Thomas Hansen, thomas@gaiasoul.com</Copyright>
-    <PackageLicenseUrl />
-    <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
-    <RepositoryUrl></RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>magic.node</PackageId>
     <Authors>Thomas Hansen</Authors>
-    <PackageTags />
+    <Company>Thomas Hansen</Company>
+    <Copyright>Thomas Hansen, thomas@gaiasoul.com</Copyright>
+    <Description>A generic graph object for your own needs to implement syntax trees and similar constructs.</Description>
+    <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/polterguy/magic.node/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://polterguy.github.io/favicon.ico</PackageIconUrl>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageVersion>1.1.0</PackageVersion>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/polterguy/magic.node.git</RepositoryUrl>
+    <PackageTags>graph, dynamic, syntax tree</PackageTags>
   </PropertyGroup>
+
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin/Release/netstandard2.0/magic.node.xml</DocumentationFile>
