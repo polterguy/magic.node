@@ -4,7 +4,7 @@
 [![Build status](https://travis-ci.org/polterguy/magic.node.svg?master)](https://travis-ci.org/polterguy/magic.node)
 
 Magic Node is a simple name/value/children graph object, in addition to a _"Hyperlambda"_ parser, allowing you to
-create a textual string representations of graph objects easily transformed to the relational graph node syntax,
+create a textual string representations of graph objects easily transformed to its relational graph object syntax,
 and vice versa. This allows you to easily declaratively create syntax trees using a format similar to YAML, for 
 then to access every individual node, its value, name and children, from your C# or CLR code.
 
@@ -94,6 +94,51 @@ foo:@"Notice how the new line doesn't end the string
 
 Escape characters are supported for both single quote strings, and double quote strings, the same way they
 are supported in C#, allowing you to use e.g. `\r\n` etc.
+
+## Lambda expressions
+
+Lambda expressions are kind of liek XPath expressions, except (of course), the will references nodes
+in your Node graph object, instead of XML nodes. Below is an example to give you an idea.
+
+```
+/*
+ * Some node with some value.
+ */
+.foo:hello world
+
+/*
+ * Referencing the above node's value.
+ */
+get-value:x:@.foo
+
+// After invocation of the above slot, its value will be "hello world".
+```
+
+Most slots in Magic can accept expressions to reference nodes, values of nodes, and children of
+nodes somehow. This allows you to modify the lambda graph object, as it is currently being executed,
+and hence allows you to modify _"anything"_ from _"anywhere"_.
+
+An expression is constructed from one or more _"iterators"_. Each iterator ends with a _"/"_, and before
+its end, its value defines what it does. For instance the above iterator in the __[get-value]__ invocation,
+starts out with a _"@"_. This implies that the iterator will find the first node starting out with whatever
+follows its _"@"_, for the above this means looking for the first node who's name is _".foo"_. Below is a list
+of all iterators that exists in magic. Substitute _"xxx"_ with any string, and _"n"_ with any number.
+
+* \* - Retrieves all children of its previous result.
+* \# - Retrieves the value of its previous result as a node.
+* - - Retrieves its previous result set's _"younger sibling"_ (previous node).
+* + - Retrieves its previous result set's _"elder sibling"_ (next node).
+* . - Retrieves its previous reult set's parent node(s).
+* .. - Retrieves the root node.
+* \*\* - Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm.
+* {n} - Substitutes itself with the results of its n'th child, possibly evaluating expressions found in its child node, before evaluating the result of the expression.
+* =xxx - Retrieves the node with the _"xxx"_ value, converting to string if necessary.
+* [n,n] - Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>.
+* @xxx - Returns the first node _"before"_ in its hierarchy that matches the given _"xxx"_ in its name.
+* n (any number) - Returns the n'th child of its previous result set.
+
+Notice, you can escape iterators by using backslash _"\\"_. This allows you to look for nodes who's names
+are for instance _"3"_, without using the n'th child iterator, which would defeat the purpose.
 
 ## License
 

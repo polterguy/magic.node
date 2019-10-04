@@ -12,7 +12,7 @@ namespace magic.node.extensions.hyperlambda
     /// <summary>
     /// Class to help convert a bunch of nodes into its Hyperlambda (text) representation.
     /// </summary>
-    public sealed class Generator
+    public static class Generator
     {
         /// <summary>
         /// Returns the Hyperlambda/string representation of the given list of nodes.

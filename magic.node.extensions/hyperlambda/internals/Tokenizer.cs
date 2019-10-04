@@ -23,6 +23,7 @@ namespace magic.node.extensions.hyperlambda.internals
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         }
 
+        // TODO: Refactor, too complex!
         public IEnumerable<string> GetTokens()
         {
             var builder = new StringBuilder();

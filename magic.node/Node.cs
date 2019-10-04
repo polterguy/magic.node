@@ -256,7 +256,7 @@ namespace magic.node
             Parent = null;
         }
 
-        #region [ -- Interface implementations -- ]
+        #region [ -- Interface implementation -- ]
 
         object ICloneable.Clone()
         {
