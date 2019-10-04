@@ -138,7 +138,25 @@ of all iterators that exists in magic. Substitute _"xxx"_ with any string, and _
 * __n__ (any number) Returns the n'th child of its previous result set.
 
 Notice, you can escape iterators by using backslash _"\\"_. This allows you to look for nodes who's names
-are for instance _"3"_, without using the n'th child iterator, which would defeat the purpose.
+are for instance _"3"_, without using the n'th child iterator, which would defeat the purpose. Below
+is an example of a slightly more advanced expression.
+
+```
+.foo
+   howdy:world
+   jo:nothing
+   howdy:earth
+
+/*
+ * Loops through all children of [.foo] who's names
+ * are "world".
+ */
+for-each:x:../*/.foo/*/world
+   set-value:x:@.dp/#
+      :thomas was here
+```
+
+After evaluating the above Hyperlambda, all of your __[howdy]__ nodes' values will be _"thomas was here"_.
 
 ## License
 
