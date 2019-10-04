@@ -124,18 +124,18 @@ starts out with a _"@"_. This implies that the iterator will find the first node
 follows its _"@"_, for the above this means looking for the first node who's name is _".foo"_. Below is a list
 of all iterators that exists in magic. Substitute _"xxx"_ with any string, and _"n"_ with any number.
 
-* \* - Retrieves all children of its previous result.
-* \# - Retrieves the value of its previous result as a node.
-* - - Retrieves its previous result set's _"younger sibling"_ (previous node).
-* + - Retrieves its previous result set's _"elder sibling"_ (next node).
-* . - Retrieves its previous reult set's parent node(s).
-* .. - Retrieves the root node.
-* \*\* - Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm.
-* {n} - Substitutes itself with the results of its n'th child, possibly evaluating expressions found in its child node, before evaluating the result of the expression.
-* =xxx - Retrieves the node with the _"xxx"_ value, converting to string if necessary.
-* [n,n] - Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>.
-* @xxx - Returns the first node _"before"_ in its hierarchy that matches the given _"xxx"_ in its name.
-* n (any number) - Returns the n'th child of its previous result set.
+* __\*__ Retrieves all children of its previous result.
+* __\#__ Retrieves the value of its previous result as a node.
+* __\-__ Retrieves its previous result set's _"younger sibling"_ (previous node).
+* __\+__ Retrieves its previous result set's _"elder sibling"_ (next node).
+* __.__ Retrieves its previous reult set's parent node(s).
+* __..__ Retrieves the root node.
+* __\*\*__ Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm.
+* __{n}__ Substitutes itself with the results of its n'th child, possibly evaluating expressions found in its child node, before evaluating the result of the expression.
+* __=xxx__ Retrieves the node with the _"xxx"_ value, converting to string if necessary.
+* __[n,n]__ Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>.
+* __@xxx__ Returns the first node _"before"_ in its hierarchy that matches the given _"xxx"_ in its name.
+* __n__ (any number) Returns the n'th child of its previous result set.
 
 Notice, you can escape iterators by using backslash _"\\"_. This allows you to look for nodes who's names
 are for instance _"3"_, without using the n'th child iterator, which would defeat the purpose.
