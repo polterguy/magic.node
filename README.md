@@ -157,6 +157,9 @@ for-each:x:../*/.foo/*/world
 ```
 
 After evaluating the above Hyperlambda, all of your __[howdy]__ nodes' values will be _"thomas was here"_.
+
+## Documenting nodes, arguments to slots, etc
+
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
 _"this"_ would be the name of some node - Implying in __bold__ characters, wrapped by square [brackets].
 
