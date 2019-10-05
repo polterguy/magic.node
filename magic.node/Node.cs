@@ -149,6 +149,7 @@ namespace magic.node
         /// Inserts the node at the specified index in its children collection.
         /// </summary>
         /// <param name="value">Node to insert. Notice, will be untied from any previous parents.</param>
+        /// <param name="index">Where to insert the node.</param>
         public void Insert(int index, Node value)
         {
             // Removing from its original parent.
