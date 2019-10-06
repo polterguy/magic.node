@@ -73,12 +73,12 @@ namespace magic.node.extensions.hyperlambda.internals
         }
 
         /*
-         * Converts the given Node's value to its string representation, in addition to returning its
-         * type information.
+         * Converts the given Node's value to its string representation, in
+         * addition to returning its type information.
          */
         public static string ConvertToString(Node node, out string type)
         {
-            string value = null;
+            string value;
             switch (node.Value.GetType().FullName)
             {
                 case "System.String":

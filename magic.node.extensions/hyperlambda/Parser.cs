@@ -12,8 +12,8 @@ using magic.node.extensions.hyperlambda.internals;
 namespace magic.node.extensions.hyperlambda
 {
     /// <summary>
-    /// Class allowing you to parse Hyperlambda from its textual representation, and create
-    /// a lambda structure out of it.
+    /// Class allowing you to parse Hyperlambda from its textual representation,
+    /// and create a lambda structure out of it.
     /// </summary>
     public sealed class Parser
     {
@@ -52,6 +52,18 @@ namespace magic.node.extensions.hyperlambda
         public Node Lambda()
         {
             return _root;
+        }
+
+        /// <summary>
+        /// Converts the specified string token to its equivalent object value,
+        /// according to the type parameter.
+        /// </summary>
+        /// <param name="value">String representation of your value.</param>
+        /// <param name="type">Hyperlambda type to convert it to.</param>
+        /// <returns>An object of type 'type' represented by the string 'value'.</returns>
+        public static object ConvertStringToken(string value, string type)
+        {
+            return TypeConverter.ConvertFromString(value, type);
         }
 
         #region [ -- Private helper methods -- ]
