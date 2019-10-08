@@ -155,14 +155,13 @@ namespace magic.node.expressions
                 var lookup = value.Substring(1);
                 return (identiy, input) => input.Where(x =>
                 {
-                    var val = x.Value;
-                    if (val == null)
+                    if (x.Value == null)
                         return lookup.Length == 0; // In case we're looking for null values
 
-                    if (val is string)
-                        return lookup.Equals(val);
+                    if (x.Value is string)
+                        return lookup.Equals(x.Value);
 
-                    return lookup.Equals(Convert.ToString(val, CultureInfo.InvariantCulture));
+                    return lookup.Equals(Convert.ToString(x.Value, CultureInfo.InvariantCulture));
                 });
             }
 

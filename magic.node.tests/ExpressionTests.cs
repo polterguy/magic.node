@@ -195,7 +195,7 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void EqualIterator_02()
+        public void EqualIteratorConversion_02()
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1:int:5\n   bar1:yyy";
@@ -203,6 +203,22 @@ namespace magic.node.tests
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar1/=5");
+            var result = x.Evaluate(lambda.First()).ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("bar1", result.First().Name);
+        }
+
+        [Fact]
+        public void EqualIteratorSpacing_03()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = "foo\n   bar1:hello world\n   bar1:yyy";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("foo/*/bar1/=hello world");
             var result = x.Evaluate(lambda.First()).ToList();
 
             // Asserts.
