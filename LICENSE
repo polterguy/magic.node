@@ -1,22 +1,29 @@
 
-           Magic is Dual Licensed
 
-You can use Magic either under the terms the Affero GPL license version 3.0
-as published by the Free Software Foundation, with the Hippocratic addendum.
-Or you can purchase a proprietary license allowing you to create closed
-software. The Hippocratic addendum can be found below.
+                  Magic Hippocratic Software license version 1.1
 
-* The Software may not be used by individuals, corporations, governments, or
-  other groups for systems or activities that actively and knowingly endanger,
-  harm, or otherwise threaten the physical, mental, economic, or general
-  well-being of individuals or groups in violation of the United Nations
-  Universal Declaration of Human Rights.
-  Read more here - https://www.un.org/en/universal-declaration-human-rights/
+                Copyright 2019 Thomas Hansen, thomas@gaiasoul.com
 
-* A proprietary license allowing you to create closed source software can be
-  obtained below.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+its associated documentation files (the “Software”), to use the software for any purpose, subject
+to the following conditions:
 
-* You can find a version of the Affero GPL license on disc, distributed with
-  the software.
+1. The above copyright notice and this permission notice shall be included in all copies or
+   substantial portions of the Software.
+2. Any source code you produce using the Software you shall make freely available under these
+   same terms to everyone requesting a version.
+3. All copies of the Software should clearly display a hyperlink/URL whenever it is interacted
+   with by a human being, that allows the human to easily obtain the entire source code for your
+   entire application, and use it under the same terms as you were given the right to use the
+   Software.
+4. You and your employer are not in any ways participating in activities that violates the
+   United Nations Universal Declaration of Human Rights (https://www.un.org/en/universal-declaration-human-rights/).
+5. For a monetary fee, you can opt out of the first 3 terms of this agreement,
+   read more here - https://gaiasoul.com/license-magic/
 
-Read more here https://gaiasoul.com/license-magic
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
