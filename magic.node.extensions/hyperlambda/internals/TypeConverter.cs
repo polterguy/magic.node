@@ -152,7 +152,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     value = node.Get<byte>().ToString(CultureInfo.InvariantCulture);
                     break;
 
-                case "magic.node.Expression":
+                case "magic.node.expressions.Expression":
                     type = "x";
                     value = node.Get<Expression>().Value;
                     break;
