@@ -7,12 +7,12 @@
     <Authors>Thomas Hansen</Authors>
     <Company>Thomas Hansen</Company>
     <Copyright>Thomas Hansen, thomas@gaiasoul.com</Copyright>
-    <Description>Expression support for magic.node.</Description>
+    <Description>Expression support for magic.node, giving you expressions resembling XPath to query your magic.node graph objects.</Description>
     <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/polterguy/magic.node/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://polterguy.github.io/favicon.ico</PackageIconUrl>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>1.1.3</PackageVersion>
+    <PackageVersion>2.0.0</PackageVersion>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/polterguy/magic.node.git</RepositoryUrl>
