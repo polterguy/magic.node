@@ -147,7 +147,16 @@ namespace magic.node.expressions
                 value.EndsWith("}", StringComparison.InvariantCulture))
             {
                 var index = int.Parse(value.Substring(1, value.Length - 2));
-                return (identity, input) => input.Where(x => x.Name == identity.Children.Skip(index).First().Value.ToString());
+                return (identity, input) =>
+                {
+                    // TODO: Sanity check logic with unit test, and cleanup ...
+                    var nodeLookup = identity.Children.Skip(index).First();
+                    object lookFor = nodeLookup.Value;
+                    if (lookFor is Expression exprLookfor)
+                        lookFor = exprLookfor.Evaluate(nodeLookup).FirstOrDefault()?.Value;
+                    lookFor = lookFor?.ToString();
+                    return input.Where(x => x.Name.Equals(lookFor));
+                };
             }
 
             if (value.StartsWith("=", StringComparison.InvariantCulture))
