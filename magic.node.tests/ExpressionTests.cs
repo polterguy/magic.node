@@ -238,5 +238,22 @@ namespace magic.node.tests
             // Asserts.
             Assert.Empty(result);
         }
+
+        [Fact]
+        public void NodeReferencingIterator()
+        {
+            // Evaluating our expression such that the node is referencing another node.
+            var hl = @"
+.ref:.res
+foo:x:../*/{0}
+   :x:./-
+.res:OK";
+            var lambda = new Parser(hl).Lambda();
+            var result = (lambda.Children.Skip(1).First().Value as Expression).Evaluate(lambda);
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("OK", result.First().Value);
+        }
     }
 }

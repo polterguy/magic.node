@@ -52,6 +52,12 @@ namespace magic.node.expressions
                 if (!result.Any())
                     return new Node[] { }; // Short circuiting to slightly optimize invocation.
             }
+
+            // Untying all reference nodes.
+            foreach (var idx in identity.Children.Where(x => x.Name == "").ToList())
+            {
+                idx.UnTie();
+            }
             return result;
         }
 

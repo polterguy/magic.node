@@ -149,13 +149,8 @@ namespace magic.node.expressions
                 var index = int.Parse(value.Substring(1, value.Length - 2));
                 return (identity, input) =>
                 {
-                    // TODO: Sanity check logic with unit test, and cleanup ...
-                    var nodeLookup = identity.Children.Skip(index).First();
-                    object lookFor = nodeLookup.Value;
-                    if (lookFor is Expression exprLookfor)
-                        lookFor = exprLookfor.Evaluate(nodeLookup).FirstOrDefault()?.Value;
-                    lookFor = lookFor?.ToString();
-                    return input.Where(x => x.Name.Equals(lookFor));
+                    var node = identity.Children.Skip(index).First();
+                    return input.Where(x => x.Name.Equals(EvaluateNode(node)));
                 };
             }
 
@@ -209,6 +204,23 @@ namespace magic.node.expressions
                 return (identiy, input) => input.SelectMany(x => x.Children.Skip(number).Take(1));
 
             return (identiy, input) => input.Where(x => x.Name == value);
+        }
+
+        /*
+         * Helper method to recursively evaluate a node.
+         */
+        string EvaluateNode(Node node)
+        {
+            if (node == null)
+                return "";
+            if (node.Value is Expression exp)
+            {
+                var expResult = exp.Evaluate(node);
+                if (expResult.Count() > 1)
+                    throw new ApplicationException("Expression yielded multiple results when maximum one was expected");
+                return EvaluateNode(expResult.FirstOrDefault());
+            }
+            return node.Value?.ToString() ?? "";
         }
 
         /*
