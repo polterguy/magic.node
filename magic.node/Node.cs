@@ -241,7 +241,7 @@ namespace magic.node
                 value = cloner.Clone();
 
             var result = new Node(Name, value);
-            foreach(var idx in Children)
+            foreach (var idx in Children)
             {
                 result.Add(idx.Clone());
             }
