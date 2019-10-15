@@ -42,9 +42,10 @@ namespace magic.node.expressions
         /// Evaluates your expression from the given identity node.
         /// </summary>
         /// <param name="identity">Identity node from which your expression is evaluated.</param>
-        /// <returns></returns>
+        /// <returns>The result of the evaluation.</returns>
         public IEnumerable<Node> Evaluate(Node identity)
         {
+            // Evaluating all iterators.
             IEnumerable<Node> result = new Node[] { identity };
             foreach (var idx in _iterators)
             {
@@ -53,7 +54,11 @@ namespace magic.node.expressions
                     return new Node[] { }; // Short circuiting to slightly optimize invocation.
             }
 
-            // Untying all reference nodes.
+            /*
+             * Untying all reference nodes.
+             * This is done in cases where we have reference iterators, pointing
+             * to the result of a child node.
+             */
             foreach (var idx in identity.Children.Where(x => x.Name == "").ToList())
             {
                 idx.UnTie();
