@@ -159,7 +159,7 @@ namespace magic.node.extensions.hyperlambda.internals
                         else
                         {
                             builder.Append(' ');
-                            while(!_reader.EndOfStream && (char)_reader.Peek() == ' ')
+                            while (!_reader.EndOfStream && (char)_reader.Peek() == ' ')
                             {
                                 _reader.Read();
                                 builder.Append(' ');
