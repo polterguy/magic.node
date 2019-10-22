@@ -53,16 +53,6 @@ namespace magic.node.expressions
                 if (!result.Any())
                     return new Node[] { }; // Short circuiting to slightly optimize invocation.
             }
-
-            /*
-             * Untying all reference nodes.
-             * This is done in cases where we have reference iterators, pointing
-             * to the result of a child node.
-             */
-            foreach (var idx in identity.Children.Where(x => x.Name == "").ToList())
-            {
-                idx.UnTie();
-            }
             return result;
         }
 

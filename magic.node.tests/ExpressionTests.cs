@@ -5,6 +5,7 @@
 
 using System.Linq;
 using Xunit;
+using magic.node.extensions;
 using magic.node.expressions;
 using magic.node.extensions.hyperlambda;
 
@@ -240,16 +241,73 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void NodeReferencingIterator()
+        public void NodeReferencingIteratorConstValue()
         {
             // Evaluating our expression such that the node is referencing another node.
             var hl = @"
-.ref:.res
 foo:x:../*/{0}
-   :x:./-
+   :.res
 .res:OK";
             var lambda = new Parser(hl).Lambda();
-            var result = (lambda.Children.Skip(1).First().Value as Expression).Evaluate(lambda);
+            var identity = lambda.Children.First();
+            var result = identity.Evaluate().ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("OK", result.First().Value);
+        }
+
+        [Fact]
+        public void NodeReferencingIteratorExpressionValue_01()
+        {
+            // Evaluating our expression such that the node is referencing another node.
+            var hl = @"
+.val:.res
+foo:x:../*/{0}
+   :x:@.val
+.res:OK";
+            var lambda = new Parser(hl).Lambda();
+            var identity = lambda.Children.Skip(1).First();
+            var result = identity.Evaluate().ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("OK", result.First().Value);
+        }
+
+        [Fact]
+        public void NodeReferencingIteratorExpressionValue_02()
+        {
+            // Evaluating our expression such that the node is referencing another node.
+            var hl = @"
+.val:.res
+foo:x:../*/{0}
+   :x:../*/.val
+.res:OK";
+            var lambda = new Parser(hl).Lambda();
+            var identity = lambda.Children.Skip(1).First();
+            var result = identity.Evaluate().ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("OK", result.First().Value);
+        }
+
+        [Fact]
+        public void NodeReferencingIteratorExpressionValue_03()
+        {
+            // Evaluating our expression such that the node is referencing another node.
+            var hl = @"
+.val:.res
+foo:x:../*/{0}
+   :x:../*/{0}/./*/{1}
+      :.val
+      :x:../*/.val2
+.val2:.val
+.res:OK";
+            var lambda = new Parser(hl).Lambda();
+            var identity = lambda.Children.Skip(1).First();
+            var result = identity.Evaluate().ToList();
 
             // Asserts.
             Assert.Single(result);
