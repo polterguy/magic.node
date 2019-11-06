@@ -49,7 +49,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     return value.Equals("true");
 
                 case "date":
-                    return DateTime.Parse(value, null, DateTimeStyles.RoundtripKind);
+                    return DateTime.Parse(value, CultureInfo.InvariantCulture);
 
                 case "guid":
                     return new Guid(value);
