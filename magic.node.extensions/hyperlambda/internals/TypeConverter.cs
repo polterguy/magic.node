@@ -134,7 +134,7 @@ namespace magic.node.extensions.hyperlambda.internals
 
                 case "System.DateTime":
                     type = "date";
-                    value = node.Get<DateTime>().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                    value = @"""" + node.Get<DateTime>().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture) + @"""";
                     break;
 
                 case "System.Guid":
