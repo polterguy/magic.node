@@ -1,5 +1,5 @@
 ﻿/*
- * Magic, Copyright(c) Thomas Hansen 2019, thomas@gaiasoul.com, all rights reserved.
+ * Magic, Copyright(c) Thomas Hansen 2019, thomas@servergardens.com, all rights reserved.
  * See the enclosed LICENSE file for details.
  */
 
@@ -17,23 +17,28 @@ namespace magic.node.extensions
     public static class NodeExtensions
     {
         /// <summary>
-        /// Evaluates the expression found in the node's value, and returns the results of the evaluation
+        /// Evaluates the expression found in the node's value, and returns
+        /// the results of the evaluation.
+        ///
+        /// Notice, if the value of the node is not an expression, the method
+        /// will throw an exception.
         /// </summary>
-        /// <returns>Result of evaluation</returns>
+        /// <returns>Result of evaluation.</returns>
         public static IEnumerable<Node> Evaluate(this Node node)
         {
             if (!(node.Value is Expression ex))
-                throw new ApplicationException($"'{node.Value}' is not a valid Expression");
+                throw new ApplicationException($"'{node.Value}' is not a valid Expression, and hence Node cannot be evaluate.");
 
             return ex.Evaluate(node);
         }
 
         /// <summary>
-        /// Returns the value of the node as typeof(T). This method will not evaluate any expressions,
-        /// but rather return expressions as is, without evaluating the in any ways.
+        /// Returns the value of the node as typeof(T). This method will not
+        /// evaluate any expressions, but rather return expressions as is,
+        /// without evaluating expressions in any ways.
         /// </summary>
-        /// <typeparam name="T">Type to return value as, which might imply conversion if value is not
-        /// already of the specified type.</typeparam>
+        /// <typeparam name="T">Type to return value as, which might imply
+        /// conversion if value is not already of the specified type.</typeparam>
         /// <returns>The node's value as an object of type T</returns>
         public static T Get<T>(this Node node)
         {
@@ -45,13 +50,18 @@ namespace magic.node.extensions
         }
 
         /// <summary>
-        /// Will return value of node as typeof(T), converting if necessary, and also evaluating any expressions
-        /// found recursively, until a non-expression value is found. Notice, if expressions are evaluated, and the
-        /// result of evaluating the expression finds multiple results, an exception will be thrown.
+        /// Will return value of node as typeof(T), converting if necessary,
+        /// and also evaluating any expressions found recursively, until a
+        /// non-expression value is found.
+        ///
+        /// Notice, if expressions are evaluated, and the result of evaluating
+        /// the expression finds multiple results, an exception will be thrown.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="node"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Type to return value or evaluated expression's
+        /// value as.</typeparam>
+        /// <param name="node">Node to retrieve value or evaluated expression
+        /// from.</param>
+        /// <returns>Value of node, or value of its evaluated expression.</returns>
         public static T GetEx<T>(this Node node)
         {
             // Checking if we're dealing with an expression, and if so, evaluating it.
@@ -73,7 +83,10 @@ namespace magic.node.extensions
                 return value.First().GetEx<T>();
             }
 
-            // Value is not an expression, hence we can return its value instead, without evaluating it.
+            /*
+             * Value is not an expression, hence we can return its value instead,
+             * without further evaluating it.
+             */
             return node.Get<T>();
         }
     }

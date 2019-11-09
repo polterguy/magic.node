@@ -1,11 +1,11 @@
 ﻿/*
- * Magic, Copyright(c) Thomas Hansen 2019, thomas@gaiasoul.com, all rights reserved.
+ * Magic, Copyright(c) Thomas Hansen 2019, thomas@servergardens.com, all rights reserved.
  * See the enclosed LICENSE file for details.
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace magic.node
 {
@@ -31,7 +31,7 @@ namespace magic.node
         /// <summary>
         /// Creates a new node with the specified name, null value, and zero children.
         /// </summary>
-        /// <param name="name">Name for node</param>
+        /// <param name="name">Name for node.</param>
         public Node(string name)
         {
             Name = name;
@@ -41,8 +41,8 @@ namespace magic.node
         /// <summary>
         /// Creates a new node with the given name, given value, and zero children.
         /// </summary>
-        /// <param name="name">Name for node</param>
-        /// <param name="value">Value for node</param>
+        /// <param name="name">Name for node.</param>
+        /// <param name="value">Value for node.</param>
         public Node(string name, object value)
         {
             Name = name;
@@ -52,10 +52,13 @@ namespace magic.node
 
         /// <summary>
         /// Creates a new node with the given name, value and children.
+        ///
+        /// Notice, the initial children will be untied from the current
+        /// parent, if any.
         /// </summary>
-        /// <param name="name">Name for node</param>
-        /// <param name="value">Value for node</param>
-        /// <param name="children">Initial children collection for node</param>
+        /// <param name="name">Name for node.</param>
+        /// <param name="value">Value for node.</param>
+        /// <param name="children">Initial children collection for node.</param>
         public Node(string name, object value, IEnumerable<Node> children)
         {
             Name = name;
@@ -82,7 +85,7 @@ namespace magic.node
         public object Value { get; set; }
 
         /// <summary>
-        /// Children of your node.
+        /// Your node's children.
         /// </summary>
         public IEnumerable<Node> Children
         {
@@ -91,6 +94,8 @@ namespace magic.node
 
         /// <summary>
         /// Your node's parent node, if any.
+        ///
+        /// Will be null if the node has no parents and is a root node.
         /// </summary>
         public Node Parent { get; private set; }
 
@@ -148,8 +153,8 @@ namespace magic.node
         /// <summary>
         /// Inserts the node at the specified index in its children collection.
         /// </summary>
-        /// <param name="value">Node to insert. Notice, will be untied from any previous parents.</param>
         /// <param name="index">Where to insert the node.</param>
+        /// <param name="value">Node to insert. Notice, will be untied from any previous parents.</param>
         public void Insert(int index, Node value)
         {
             // Removing from its original parent.
@@ -231,9 +236,11 @@ namespace magic.node
         }
 
         /// <summary>
-        /// Clones the given node, except its parent or ancestor node(s), and returns the result.
+        /// Clones the given node, except its parent or ancestor node(s),
+        /// and returns the result.
         /// </summary>
-        /// <returns>A clone of the current node. Notice, values are also cloned, but only if they implement ICloneable</returns>
+        /// <returns>A clone of the current node. Notice, values are also cloned,
+        /// but only if they implement ICloneable</returns>
         public Node Clone()
         {
             var value = Value;

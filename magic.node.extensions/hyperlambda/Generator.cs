@@ -1,5 +1,5 @@
 ﻿/*
- * Magic, Copyright(c) Thomas Hansen 2019, thomas@gaiasoul.com, all rights reserved.
+ * Magic, Copyright(c) Thomas Hansen 2019, thomas@servergardens.com, all rights reserved.
  * See the enclosed LICENSE file for details.
  */
 
@@ -10,7 +10,7 @@ using magic.node.extensions.hyperlambda.internals;
 namespace magic.node.extensions.hyperlambda
 {
     /// <summary>
-    /// Class to help convert a bunch of nodes into its Hyperlambda (text) representation.
+    /// Class to help convert a bunch of nodes into its Hyperlambda text representation.
     /// </summary>
     public static class Generator
     {
@@ -33,10 +33,12 @@ namespace magic.node.extensions.hyperlambda
         {
             foreach (var idx in nodes)
             {
+                // Indenting correctly.
                 int idxLevel = level;
                 while (idxLevel-- > 0)
                     builder.Append("   ");
 
+                // Serializing name into builder.
                 var name = idx.Name;
                 if (name.Contains("\n"))
                     name = "@\"" + name.Replace("\"", "\"\"") + "\"";
@@ -46,14 +48,22 @@ namespace magic.node.extensions.hyperlambda
                     name = @"""""";
                 builder.Append(name);
 
+                // Serializing value into builder, if any.
                 if (idx.Value != null)
                 {
+                    // Converting type to string.
                     var value = TypeConverter.ConvertToString(idx, out string type);
                     builder.Append(":");
+
+                    // Checking if we need to provide an explicit type declaration.
                     if (!string.IsNullOrEmpty(type) && type != "string")
                         builder.Append(type + ":");
+
+                    // Appending actual value.
                     builder.Append(value);
                 }
+
+                // Adding Carriage Return, and serializing children, if any.
                 builder.Append("\r\n");
                 GetHyper(builder, idx.Children, level + 1);
             }

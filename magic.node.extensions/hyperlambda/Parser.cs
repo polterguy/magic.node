@@ -1,5 +1,5 @@
 ﻿/*
- * Magic, Copyright(c) Thomas Hansen 2019, thomas@gaiasoul.com, all rights reserved.
+ * Magic, Copyright(c) Thomas Hansen 2019, thomas@servergardens.com, all rights reserved.
  * See the enclosed LICENSE file for details.
  */
 
@@ -32,9 +32,10 @@ namespace magic.node.extensions.hyperlambda
         }
 
         /// <summary>
-        /// Creates a new parse for Hyperlambda, parsing directly from the specified stream.
+        /// Creates a new parser for Hyperlambda, parsing directly from the specified stream.
         /// </summary>
-        /// <param name="stream">Stream to parse Hyperlambda from. Can be a forward only stream if required.</param>
+        /// <param name="stream">Stream to parse Hyperlambda from. Can be a forward
+        /// only stream if necessary.</param>
         public Parser(Stream stream)
         {
             using (var reader = new StreamReader(stream, Encoding.UTF8))
@@ -45,8 +46,8 @@ namespace magic.node.extensions.hyperlambda
 
         /// <summary>
         /// Returns the root lambda node parsed from your Hyperlambda.
-        /// Notice, each node in your Hyperlambda at root level, will be a child node of the root node
-        /// returned from this method.
+        /// Notice, each node in your Hyperlambda at root level, will be a child
+        /// node of the root node returned from this method.
         /// </summary>
         /// <returns>Root node containing all first level nodes from your Hyperlambda.</returns>
         public Node Lambda()
@@ -56,7 +57,10 @@ namespace magic.node.extensions.hyperlambda
 
         /// <summary>
         /// Converts the specified string token to its equivalent object value,
-        /// according to the type parameter.
+        /// according to the type parameter given.
+        ///
+        /// The type parameter must be a Hyperlambda type, such as 'int', 'date',
+        /// etc.
         /// </summary>
         /// <param name="value">String representation of your value.</param>
         /// <param name="type">Hyperlambda type to convert it to.</param>
@@ -68,6 +72,7 @@ namespace magic.node.extensions.hyperlambda
 
         #region [ -- Private helper methods -- ]
 
+        // TODO: Refactor and simplify. Too long and complex.
         void Parse(StreamReader reader)
         {
             var currentParent = _root;

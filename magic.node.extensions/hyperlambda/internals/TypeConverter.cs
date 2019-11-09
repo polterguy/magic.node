@@ -1,5 +1,5 @@
 ﻿/*
- * Magic, Copyright(c) Thomas Hansen 2019, thomas@gaiasoul.com, all rights reserved.
+ * Magic, Copyright(c) Thomas Hansen 2019, thomas@servergardens.com, all rights reserved.
  * See the enclosed LICENSE file for details.
  */
 
@@ -67,6 +67,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     return new Parser(value).Lambda();
 
                 default:
+
                     // TODO: Implement support for dynamically figuring out how to create types from strings.
                     throw new ApplicationException($"Unknown type declaration '{type}'");
             }
@@ -134,7 +135,11 @@ namespace magic.node.extensions.hyperlambda.internals
 
                 case "System.DateTime":
                     type = "date";
-                    value = @"""" + node.Get<DateTime>().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture) + @"""";
+                    value = @"""" +
+                        node.Get<DateTime>()
+                            .ToUniversalTime()
+                            .ToString("O", CultureInfo.InvariantCulture) +
+                        @"""";
                     break;
 
                 case "System.Guid":

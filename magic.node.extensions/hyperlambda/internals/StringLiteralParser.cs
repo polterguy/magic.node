@@ -1,5 +1,5 @@
 ﻿/*
- * Magic, Copyright(c) Thomas Hansen 2019, thomas@gaiasoul.com, all rights reserved.
+ * Magic, Copyright(c) Thomas Hansen 2019, thomas@servergardens.com, all rights reserved.
  * See the enclosed LICENSE file for details.
  */
 
@@ -82,6 +82,10 @@ namespace magic.node.extensions.hyperlambda.internals
 
         #region [ -- Private helper methods -- ]
 
+        /*
+         * Reads a single character from a single line string literal, escaped
+         * with the '\' character.
+         */
         static string GetEscapeCharacter(StreamReader reader, char endCharacter)
         {
             var ch = reader.Read();
@@ -133,6 +137,10 @@ namespace magic.node.extensions.hyperlambda.internals
             }
         }
 
+        /*
+         * Reads a UNICODE character in a single string literal, starting out with
+         * the '\x' characters.
+         */
         static string HexaCharacter(StreamReader reader)
         {
             var hexNumberString = "";
