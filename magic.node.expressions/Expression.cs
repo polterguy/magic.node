@@ -51,7 +51,7 @@ namespace magic.node.expressions
             {
                 result = idx.Evaluate(identity, result);
                 if (!result.Any())
-                    return new Node[] { }; // Short circuiting to slightly optimize invocation.
+                    return Array.Empty<Node>(); // Short circuiting to slightly optimize invocation.
             }
             return result;
         }
