@@ -70,6 +70,21 @@ namespace magic.node.extensions.hyperlambda
             return TypeConverter.ConvertFromString(value, type);
         }
 
+        /// <summary>
+        /// Converts the specified object token to its equivalent object value,
+        /// according to the type parameter given.
+        ///
+        /// The type parameter must be a Hyperlambda type, such as 'int', 'date',
+        /// etc.
+        /// </summary>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="type">Hyperlambda type to convert it to.</param>
+        /// <returns>An object of type 'type' represented by the string 'value'.</returns>
+        public static object ConvertValue(object value, string type)
+        {
+            return TypeConverter.ConvertFromValue(value, type);
+        }
+
         #region [ -- Private helper methods -- ]
 
         // TODO: Refactor and simplify. Too long and complex.

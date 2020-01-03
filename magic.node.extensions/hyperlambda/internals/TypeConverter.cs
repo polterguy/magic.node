@@ -74,6 +74,65 @@ namespace magic.node.extensions.hyperlambda.internals
         }
 
         /*
+         * Converts the given string value to the type declaration specified as the type parameter.
+         */
+        public static object ConvertFromValue(object value, string type)
+        {
+            switch (type)
+            {
+                case "string":
+                    return value.ToString();
+
+                case "int":
+                    return Convert.ToInt32(value, CultureInfo.InvariantCulture);
+
+                case "uint":
+                    return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
+
+                case "long":
+                    return Convert.ToInt64(value, CultureInfo.InvariantCulture);
+
+                case "ulong":
+                    return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
+
+                case "decimal":
+                    return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+
+                case "double":
+                    return Convert.ToDouble(value, CultureInfo.InvariantCulture);
+
+                case "single":
+                    return Convert.ToSingle(value, CultureInfo.InvariantCulture);
+
+                case "bool":
+                    return value.Equals(true) || value.Equals("true");
+
+                case "date":
+                    return DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture);
+
+                case "guid":
+                    return new Guid(value.ToString());
+
+                case "char":
+                    return Convert.ToChar(value, CultureInfo.InvariantCulture);
+
+                case "byte":
+                    return Convert.ToByte(value, CultureInfo.InvariantCulture);
+
+                case "x":
+                    return new Expression(value.ToString());
+
+                case "node":
+                    return new Parser(value.ToString()).Lambda();
+
+                default:
+
+                    // TODO: Implement support for dynamically figuring out how to create types from strings.
+                    throw new ApplicationException($"Unknown type declaration '{type}'");
+            }
+        }
+
+        /*
          * Converts the given Node's value to its string representation, in
          * addition to returning its type information.
          */
