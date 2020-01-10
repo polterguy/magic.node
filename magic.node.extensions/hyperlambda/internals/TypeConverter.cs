@@ -81,48 +81,78 @@ namespace magic.node.extensions.hyperlambda.internals
             switch (type)
             {
                 case "string":
+                    if (value is string)
+                        return value;
                     return value.ToString();
 
                 case "int":
+                    if (value is int)
+                        return value;
                     return Convert.ToInt32(value, CultureInfo.InvariantCulture);
 
                 case "uint":
+                    if (value is uint)
+                        return value;
                     return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
 
                 case "long":
+                    if (value is long)
+                        return value;
                     return Convert.ToInt64(value, CultureInfo.InvariantCulture);
 
                 case "ulong":
+                    if (value is ulong)
+                        return value;
                     return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
 
                 case "decimal":
+                    if (value is decimal)
+                        return value;
                     return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
 
                 case "double":
+                    if (value is double)
+                        return value;
                     return Convert.ToDouble(value, CultureInfo.InvariantCulture);
 
                 case "single":
+                    if (value is float)
+                        return value;
                     return Convert.ToSingle(value, CultureInfo.InvariantCulture);
 
                 case "bool":
+                    if (value is bool)
+                        return value;
                     return value.Equals(true) || value.Equals("true");
 
                 case "date":
+                    if (value is DateTime)
+                        return value;
                     return DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture);
 
                 case "guid":
+                    if (value is Guid)
+                        return value;
                     return new Guid(value.ToString());
 
                 case "char":
+                    if (value is char)
+                        return value;
                     return Convert.ToChar(value, CultureInfo.InvariantCulture);
 
                 case "byte":
+                    if (value is byte)
+                        return value;
                     return Convert.ToByte(value, CultureInfo.InvariantCulture);
 
                 case "x":
+                    if (value is Expression)
+                        return value;
                     return new Expression(value.ToString());
 
                 case "node":
+                    if (value is Node)
+                        return value;
                     return new Parser(value.ToString()).Lambda();
 
                 default:
