@@ -227,7 +227,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     value = @"""" +
                         node.Get<DateTime>()
                             .ToUniversalTime()
-                            .ToString("O", CultureInfo.InvariantCulture) +
+                            .ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'") +
                         @"""";
                     break;
 
