@@ -55,7 +55,7 @@ relational tree structures around, and serialize these in a human readable forma
 ## Supported types
 
 Although the node structure itself can hold any value type you need inside of its `Value` property,
-Hyperlambda only supports the following types.
+Hyperlambda only supports serialising the following types by default.
 
 * `string` = System.String
 * `int` = System.Int32
@@ -97,7 +97,7 @@ are supported in C#, allowing you to use e.g. `\r\n` etc.
 
 ## Lambda expressions
 
-Lambda expressions are kind of liek XPath expressions, except (of course), the will references nodes
+Lambda expressions are kind of like XPath expressions, except (of course), they will references nodes
 in your Node graph object, instead of XML nodes. Below is an example to give you an idea.
 
 ```
