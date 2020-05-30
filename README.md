@@ -160,7 +160,7 @@ is an example of a slightly more advanced expression.
    howdy:earth
 
 /*
- * Loops through all children of [.foo] who's names
+ * Loops through all children of [.foo] who's values
  * are "world".
  */
 .dyn:.foo
