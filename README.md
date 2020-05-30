@@ -162,6 +162,11 @@ is an example of a slightly more advanced expression.
 /*
  * Loops through all children of [.foo] who's values
  * are "world".
+ *
+ * Notice!
+ * This expression is probably more complex than anything
+ * you'd normally need in your own code, but included for
+ * reference purposes.
  */
 .dyn:.foo
 for-each:x:./*/{0}/*/=world
@@ -170,8 +175,8 @@ for-each:x:./*/{0}/*/=world
       :thomas was here
 ```
 
-After evaluating the above Hyperlambda, the value of all nodes containing _"world"_ inside of
-**[.foo]** will be _"thomas was here"_.
+After evaluating the above Hyperlambda, the value of all nodes having _"world"_ as their value
+inside of **[.foo]** will be _"thomas was here"_.
 
 ## Documenting nodes, arguments to slots, etc
 
