@@ -127,26 +127,29 @@ Most slots in Magic can accept expressions to reference nodes, values of nodes, 
 nodes somehow. This allows you to modify the lambda graph object, as it is currently being executed,
 and hence allows you to modify _"anything"_ from _"anywhere"_.
 
-An expression is constructed from one or more _"iterators"_. Each iterator ends with a _"/"_, and before
-its end, its value defines what it does. For instance the above iterator in the __[get-value]__ invocation,
-starts out with a _"@"_. This implies that the iterator will find the first node having a name of whatever
-follows its _"@"_. For the above this means looking for the first node who's name is _".foo"_. Below is a list
-of all iterators that exists in magic. Substitute _"xxx"_ with any string, and _"n"_ with any number.
+An expression is constructed from one or more _"iterators"_. Each iterator ends with a _"/"_, or endof line,
+and before its end, its value defines what it does. For instance the above iterator in the __[get-value]__
+invocation, starts out with a _"@"_. This implies that the iterator will find the first node having a name
+of whatever follows its _"@"_. For the above this means looking for the first node who's name is _".foo"_.
+Below is a list of all iterators that exists in magic. Substitute _"xxx"_ with any string, and _"n"_ with
+any number.
 
 * __\*__ Retrieves all children of its previous result.
-* __\#__ Retrieves the value of its previous result as a node.
+* __\#__ Retrieves the value of its previous result as a node by reference.
 * __\-__ Retrieves its previous result set's _"younger sibling"_ (previous node).
 * __\+__ Retrieves its previous result set's _"elder sibling"_ (next node).
 * __.__ Retrieves its previous reult set's parent node(s).
 * __..__ Retrieves the root node.
 * __\*\*__ Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm.
-* __{n}__ Substitutes itself with the results of its n'th child, possibly evaluating expressions found in its child node, before evaluating the result of the expression.
+* __{n}__ Substitutes itself with the results of its n'th child, possibly evaluating expressions found in its child node, before evaluating the result of the expression. This works similarly to `string.Format` from C#, except it
+allows you to dynamically build your expression,by parametrising it with the result of a constant,
+or the results of another expression.
 * __=xxx__ Retrieves the node with the _"xxx"_ value, converting to string if necessary.
 * __[n,n]__ Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>.
 * __@xxx__ Returns the first node _"before"_ in its hierarchy that matches the given _"xxx"_ in its name.
 * __n__ (any number) Returns the n'th child of its previous result set.
 
-Notice, you can escape iterators by using backslash _"\\"_. This allows you to look for nodes who's names
+Notice, you can escape iterators by using backslash "\\". This allows you to look for nodes who's names
 are for instance _"3"_, without using the n'th child iterator, which would defeat the purpose. Below
 is an example of a slightly more advanced expression.
 
@@ -160,12 +163,15 @@ is an example of a slightly more advanced expression.
  * Loops through all children of [.foo] who's names
  * are "world".
  */
-for-each:x:../*/.foo/*/world
+.dyn:.foo
+for-each:x:./*/{0}/*/=world
+   .:x:@.dyn
    set-value:x:@.dp/#
       :thomas was here
 ```
 
-After evaluating the above Hyperlambda, all of your __[howdy]__ nodes' values will be _"thomas was here"_.
+After evaluating the above Hyperlambda, the value of all nodes containing _"world"_ inside of
+**[.foo]** will be _"thomas was here"_.
 
 ## Documenting nodes, arguments to slots, etc
 
