@@ -129,8 +129,8 @@ and hence allows you to modify _"anything"_ from _"anywhere"_.
 
 An expression is constructed from one or more _"iterators"_. Each iterator ends with a _"/"_, and before
 its end, its value defines what it does. For instance the above iterator in the __[get-value]__ invocation,
-starts out with a _"@"_. This implies that the iterator will find the first node starting out with whatever
-follows its _"@"_, for the above this means looking for the first node who's name is _".foo"_. Below is a list
+starts out with a _"@"_. This implies that the iterator will find the first node having a name of whatever
+follows its _"@"_. For the above this means looking for the first node who's name is _".foo"_. Below is a list
 of all iterators that exists in magic. Substitute _"xxx"_ with any string, and _"n"_ with any number.
 
 * __\*__ Retrieves all children of its previous result.
