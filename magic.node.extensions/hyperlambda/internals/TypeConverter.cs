@@ -51,6 +51,9 @@ namespace magic.node.extensions.hyperlambda.internals
                 case "date":
                     return DateTime.Parse(value, CultureInfo.InvariantCulture);
 
+                case "time":
+                    return new TimeSpan(long.Parse(value));
+
                 case "guid":
                     return new Guid(value);
 
@@ -129,6 +132,11 @@ namespace magic.node.extensions.hyperlambda.internals
                     if (value is DateTime)
                         return value;
                     return DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture);
+
+                case "time":
+                    if (value is TimeSpan)
+                        return value;
+                    return new TimeSpan((long)value);
 
                 case "guid":
                     if (value is Guid)
@@ -229,6 +237,11 @@ namespace magic.node.extensions.hyperlambda.internals
                             .ToUniversalTime()
                             .ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'") +
                         @"""";
+                    break;
+
+                case "System.TimeSpan":
+                    type = "time";
+                    value = node.Get<TimeSpan>().Ticks.ToString(CultureInfo.InvariantCulture);
                     break;
 
                 case "System.Guid":
