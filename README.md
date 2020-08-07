@@ -128,7 +128,7 @@ Most slots in Magic can accept expressions to reference nodes, values of nodes, 
 nodes somehow. This allows you to modify the lambda graph object, as it is currently being executed,
 and hence allows you to modify _"anything"_ from _"anywhere"_.
 
-An expression is constructed from one or more _"iterators"_. Each iterator ends with a _"/"_, or endof line,
+An expression is constructed from one or more _"iterators"_. Each iterator ends with a _"/"_, or EOF,
 and before its end, its value defines what it does. For instance the above iterator in the __[get-value]__
 invocation, starts out with a _"@"_. This implies that the iterator will find the first node having a name
 of whatever follows its _"@"_. For the above this means looking for the first node who's name is _".foo"_.
