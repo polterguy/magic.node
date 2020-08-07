@@ -68,6 +68,7 @@ Hyperlambda only supports serialising the following types by default.
 * `single` = System.Single
 * `bool` = System.Boolean
 * `date` = System.DateTime
+* `time` = System.TimeSpan
 * `guid` = System.Guid
 * `char` = System.Char
 * `byte` = System.Byte
