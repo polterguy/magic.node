@@ -8,6 +8,7 @@ using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
 using magic.node.expressions;
+using magic.node.extensions.hyperlambda;
 
 namespace magic.node.extensions
 {
@@ -88,6 +89,11 @@ namespace magic.node.extensions
              * without further evaluating it.
              */
             return node.Get<T>();
+        }
+
+        public static string ToHyperlambda(this Node node)
+        {
+            return Generator.GetHyper(new Node[] { node });
         }
     }
 }
