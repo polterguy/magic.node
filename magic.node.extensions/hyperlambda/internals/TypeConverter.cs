@@ -49,7 +49,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     return value.Equals("true");
 
                 case "date":
-                    return DateTime.Parse(value, CultureInfo.InvariantCulture);
+                    return DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
 
                 case "time":
                     return new TimeSpan(long.Parse(value));
@@ -131,7 +131,7 @@ namespace magic.node.extensions.hyperlambda.internals
                 case "date":
                     if (value is DateTime)
                         return value;
-                    return DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture);
+                    return DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
 
                 case "time":
                     if (value is TimeSpan)
