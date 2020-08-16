@@ -91,6 +91,11 @@ namespace magic.node.extensions
             return node.Get<T>();
         }
 
+        /// <summary>
+        /// Transforms the specified node into its Hyperlambda syntax.
+        /// </summary>
+        /// <param name="node">Nod to transform into Hyperlambda</param>
+        /// <returns></returns>
         public static string ToHyperlambda(this Node node)
         {
             return Generator.GetHyper(new Node[] { node });
