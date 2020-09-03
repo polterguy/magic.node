@@ -87,11 +87,11 @@ namespace magic.node.extensions.hyperlambda.internals
                         _reader.Read(); // Discarding '\r'.
 
                         if (_reader.EndOfStream)
-                            throw new ApplicationException("CR/LF error close to EOF");
+                            throw new ArgumentException("CR/LF error close to EOF");
 
                         var lf = (char)_reader.Read();
                         if (lf != '\n')
-                            throw new ApplicationException("CR/LF error in Hyperlambda");
+                            throw new ArgumentException("CR/LF error in Hyperlambda");
 
                         yield return "\r\n";
                         break;
@@ -141,7 +141,7 @@ namespace magic.node.extensions.hyperlambda.internals
                                     }
                                 }
                                 if (!seenEndOfComment && _reader.EndOfStream)
-                                    throw new ApplicationException("Syntax error in comment close to end of Hyperlambda");
+                                    throw new ArgumentException("Syntax error in comment close to end of Hyperlambda");
                             }
                             else
                             {
@@ -165,7 +165,7 @@ namespace magic.node.extensions.hyperlambda.internals
                                 builder.Append(' ');
                             }
                             if (!_reader.EndOfStream && builder.Length % 3 != 0)
-                                throw new ApplicationException("Odd number of spaces found in Hyperlambda file");
+                                throw new ArgumentException("Odd number of spaces found in Hyperlambda file");
                             yield return builder.ToString();
                             builder.Clear();
                         }

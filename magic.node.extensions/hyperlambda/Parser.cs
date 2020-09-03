@@ -137,7 +137,7 @@ namespace magic.node.extensions.hyperlambda
                             if (newLevel > level + 1)
                             {
                                 // Syntax error in Hyperlambda, too many consecutive SP characters.
-                                throw new ApplicationException("Too many spaces found in Hyperlambda content");
+                                throw new ArgumentException("Too many spaces found in Hyperlambda content");
                             }
                             if (newLevel == level + 1)
                             {

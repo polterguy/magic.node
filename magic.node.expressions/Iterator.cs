@@ -217,7 +217,7 @@ namespace magic.node.expressions
             {
                 var expResult = exp.Evaluate(node);
                 if (expResult.Count() > 1)
-                    throw new ApplicationException("Expression yielded multiple results when maximum one was expected");
+                    throw new ArgumentException("Expression yielded multiple results when maximum one was expected");
                 return EvaluateNode(expResult.FirstOrDefault());
             }
             return node.Value?.ToString() ?? "";

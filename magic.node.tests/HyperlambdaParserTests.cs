@@ -197,7 +197,7 @@ namespace magic.node.tests
         public void SpacingError_Throws()
         {
             // Should throw, too few spaces in front of "bar1".
-            Assert.Throws<ApplicationException>(() => new Parser("foo1\r\n bar1"));
+            Assert.Throws<ArgumentException>(() => new Parser("foo1\r\n bar1"));
         }
     }
 }

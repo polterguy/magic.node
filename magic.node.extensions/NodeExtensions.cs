@@ -28,7 +28,7 @@ namespace magic.node.extensions
         public static IEnumerable<Node> Evaluate(this Node node)
         {
             if (!(node.Value is Expression ex))
-                throw new ApplicationException($"'{node.Value}' is not a valid Expression, and hence Node cannot be evaluate.");
+                throw new ArgumentException($"'{node.Value}' is not a valid Expression, and hence Node cannot be evaluate.");
 
             return ex.Evaluate(node);
         }
@@ -72,7 +72,7 @@ namespace magic.node.extensions
 
                 // Sanity checking result.
                 if (value.Count() > 1)
-                    throw new ApplicationException("Multiple resulting nodes from expression");
+                    throw new ArgumentException("Multiple resulting nodes from expression");
 
                 // Making sure we return default value for T if we have no result.
                 if (!value.Any())

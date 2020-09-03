@@ -72,7 +72,7 @@ namespace magic.node.extensions.hyperlambda.internals
                 default:
 
                     // TODO: Implement support for dynamically figuring out how to create types from strings.
-                    throw new ApplicationException($"Unknown type declaration '{type}'");
+                    throw new ArgumentException($"Unknown type declaration '{type}'");
             }
         }
 
@@ -166,7 +166,7 @@ namespace magic.node.extensions.hyperlambda.internals
                 default:
 
                     // TODO: Implement support for dynamically figuring out how to create types from strings.
-                    throw new ApplicationException($"Unknown type declaration '{type}'");
+                    throw new ArgumentException($"Unknown type declaration '{type}'");
             }
         }
 

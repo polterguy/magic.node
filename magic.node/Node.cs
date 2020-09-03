@@ -171,7 +171,7 @@ namespace magic.node
         public void InsertBefore(Node value)
         {
             if (Parent == null)
-                throw new ApplicationException("Cannot insert before since current node is a root node");
+                throw new ArgumentException("Cannot insert before since current node is a root node");
 
             // Removing from its original parent.
             value.Parent?.Remove(value);
@@ -187,7 +187,7 @@ namespace magic.node
         public void InsertAfter(Node value)
         {
             if (Parent == null)
-                throw new ApplicationException("Cannot insert after since current node is a root node");
+                throw new ArgumentException("Cannot insert after since current node is a root node");
 
             // Removing from its original parent.
             value.Parent?.Remove(value);
