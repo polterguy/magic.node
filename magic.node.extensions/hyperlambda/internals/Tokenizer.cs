@@ -20,7 +20,7 @@ namespace magic.node.extensions.hyperlambda.internals
 
         public Tokenizer(StreamReader reader)
         {
-            _reader = reader ?? throw new ArgumentNullException(nameof(reader));
+            _reader = reader;
         }
 
         // TODO: Refactor, too complex!
