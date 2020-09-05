@@ -24,6 +24,12 @@ namespace magic.node.extensions.hyperlambda.internals
                 case "string":
                     return value;
 
+                case "short":
+                    return Convert.ToInt16(value, CultureInfo.InvariantCulture);
+
+                case "ushort":
+                    return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
+
                 case "int":
                     return Convert.ToInt32(value, CultureInfo.InvariantCulture);
 
@@ -87,6 +93,16 @@ namespace magic.node.extensions.hyperlambda.internals
                     if (value is string)
                         return value;
                     return value.ToString();
+
+                case "short":
+                    if (value is short)
+                        return value;
+                    return Convert.ToInt16(value, CultureInfo.InvariantCulture);
+
+                case "ushort":
+                    if (value is ushort)
+                        return value;
+                    return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
 
                 case "int":
                     if (value is int)
@@ -190,6 +206,16 @@ namespace magic.node.extensions.hyperlambda.internals
                         value = "\"" + value.Replace("\"", "\\\"") + "\"";
                     break;
 
+                case "System.Int16":
+                    type = "short";
+                    value = node.Get<short>().ToString(CultureInfo.InvariantCulture);
+                    break;
+
+                case "System.UInt16":
+                    type = "ushort";
+                    value = node.Get<ushort>().ToString(CultureInfo.InvariantCulture);
+                    break;
+
                 case "System.Int32":
                     type = "int";
                     value = node.Get<int>().ToString(CultureInfo.InvariantCulture);
@@ -255,7 +281,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     break;
 
                 case "System.Byte":
-                    type = "bool";
+                    type = "byte";
                     value = node.Get<byte>().ToString(CultureInfo.InvariantCulture);
                     break;
 
