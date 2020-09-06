@@ -59,13 +59,16 @@ Although the node structure itself can hold any value type you need inside of it
 Hyperlambda only supports serialising the following types by default.
 
 * `string` = System.String
+* `short` = System.Int16
+* `ushort` = System.UInt16
 * `int` = System.Int32
 * `uint` = System.UInt32
 * `long` = System.Int64
 * `ulong` = System.UInt64
 * `decimal` = System.Decimal
 * `double` = System.Double
-* `single` = System.Single
+* `single` = System.Float
+* `float` = System.Float - Alias for above
 * `bool` = System.Boolean
 * `date` = System.DateTime
 * `time` = System.TimeSpan
