@@ -57,11 +57,32 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertNullToString()
+        {
+            var result = Converter.ToString(null);
+            Assert.Null(result.Item1);
+            Assert.Null(result.Item2);
+        }
+
+        [Fact]
+        public void ConvertNonConvertableObject_Throws()
+        {
+            Assert.Throws<ArgumentException>(() => Converter.ToString(new ConversionTests()));
+        }
+
+        [Fact]
         public void ConvertStringToString_01()
         {
             var result = Converter.ToString("Howdy World");
             Assert.Equal("string", result.Item1);
             Assert.Equal("Howdy World", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertStringToObject()
+        {
+            var result = Converter.ToObject("Howdy World", "string");
+            Assert.Equal("Howdy World", result);
         }
 
         [Fact]
@@ -249,6 +270,22 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToDateTimeFromDate()
+        {
+            var result = Converter.ToObject(new DateTime(2020, 12, 23, 23, 59, 11, DateTimeKind.Utc), "date");
+            Assert.Equal(typeof(DateTime), result.GetType());
+            var date = (DateTime)result;
+            Assert.Equal(DateTimeKind.Utc, date.Kind);
+            Assert.Equal(2020, date.Year);
+            Assert.Equal(12, date.Month);
+            Assert.Equal(23, date.Day);
+            Assert.Equal(23, date.Hour);
+            Assert.Equal(59, date.Minute);
+            Assert.Equal(11, date.Second);
+            Assert.Equal(0, date.Millisecond);
+        }
+
+        [Fact]
         public void ConvertToStringFromTimeSpan()
         {
             var result = Converter.ToString(new TimeSpan(2000));
@@ -265,6 +302,14 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToTimeSpanFromTime()
+        {
+            var result = Converter.ToObject(new TimeSpan(2000), "time");
+            Assert.Equal(new TimeSpan(2000), result);
+            Assert.Equal(typeof(TimeSpan), result.GetType());
+        }
+
+        [Fact]
         public void ConvertToStringFromGuid()
         {
             var result = Converter.ToString(Guid.Empty);
@@ -276,6 +321,14 @@ namespace magic.node.tests
         public void ConvertToGuidFromString()
         {
             var result = Converter.ToObject("00000000-0000-0000-0000-000000000000", "guid");
+            Assert.Equal(new Guid("00000000-0000-0000-0000-000000000000"), result);
+            Assert.Equal(typeof(Guid), result.GetType());
+        }
+
+        [Fact]
+        public void ConvertToGuidFromGuid()
+        {
+            var result = Converter.ToObject(new Guid("00000000-0000-0000-0000-000000000000"), "guid");
             Assert.Equal(new Guid("00000000-0000-0000-0000-000000000000"), result);
             Assert.Equal(typeof(Guid), result.GetType());
         }
@@ -329,6 +382,14 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToExpressionFromExpression()
+        {
+            var result = Converter.ToObject(new Expression("foo/bar"), "x");
+            Assert.Equal(typeof(Expression), result.GetType());
+            Assert.Equal("foo/bar", (result as Expression).Value);
+        }
+
+        [Fact]
         public void ConvertToStringFromNode()
         {
             var rootNode = new Node();
@@ -350,6 +411,24 @@ namespace magic.node.tests
             var result = Converter.ToObject(@"foo
    howdy1:int:5
    howdy2:decimal:7", "node");
+            Assert.Equal(typeof(Node), result.GetType());
+            var n = result as Node;
+            Assert.Equal("foo", n.Children.First().Name);
+            Assert.Equal("howdy1", n.Children.First().Children.First().Name);
+            Assert.Equal("howdy2", n.Children.First().Children.Skip(1).First().Name);
+            Assert.Equal(5, n.Children.First().Children.First().Value);
+            Assert.Equal(7M, n.Children.First().Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void ConvertToNodeFromNode()
+        {
+            var node = new Node();
+            var foo = new Node("foo");
+            foo.Add(new Node("howdy1", 5));
+            foo.Add(new Node("howdy2", 7M));
+            node.Add(foo);
+            var result = Converter.ToObject(node, "node");
             Assert.Equal(typeof(Node), result.GetType());
             var n = result as Node;
             Assert.Equal("foo", n.Children.First().Name);

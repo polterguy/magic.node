@@ -259,7 +259,7 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void ToHyperlambda()
+        public void ToHyperlambda_01()
         {
             var node = new Node();
             node.Add(new Node("foo1", 5));
@@ -267,6 +267,62 @@ namespace magic.node.tests
             var res = node.ToHyperlambda();
             Assert.Equal(@"""""
    foo1:int:5
+   foo2:bar
+", res);
+        }
+
+        [Fact]
+        public void ToHyperlambda_02()
+        {
+            var node = new Node();
+            node.Add(new Node("foo1", 5));
+            node.Add(new Node("foo2", @"bar
+howdy"));
+            var res = node.ToHyperlambda();
+            Assert.Equal(@"""""
+   foo1:int:5
+   foo2:@""bar
+howdy""
+", res);
+        }
+
+        [Fact]
+        public void ToHyperlambda_03()
+        {
+            var node = new Node();
+            node.Add(new Node(@"foo1
+howdy", 5));
+            node.Add(new Node("foo2", "bar"));
+            var res = node.ToHyperlambda();
+            Assert.Equal(@"""""
+   @""foo1
+howdy"":int:5
+   foo2:bar
+", res);
+        }
+
+        [Fact]
+        public void ToHyperlambda_04()
+        {
+            var node = new Node();
+            node.Add(new Node(@"foo1""howdy", 5));
+            node.Add(new Node("foo2", "bar"));
+            var res = node.ToHyperlambda();
+            Assert.Equal(@"""""
+   ""foo1\""howdy"":int:5
+   foo2:bar
+", res);
+        }
+
+        [Fact]
+        public void ToHyperlambda_05()
+        {
+            var node = new Node();
+            node.Add(new Node(@"foo1:howdy", 5));
+            node.Add(new Node("foo2", "bar"));
+            var res = node.ToHyperlambda();
+            Assert.Equal(@"""""
+   ""foo1:howdy"":int:5
    foo2:bar
 ", res);
         }
