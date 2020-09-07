@@ -125,7 +125,10 @@ namespace magic.node.tests
         public void TwoRootNodesWithChildren()
         {
             // Creating some lambda object.
-            var result = new Parser("foo1\r\n   bar\r\nfoo2").Lambda().Children.ToList();
+            var result = new Parser(@"foo1
+   bar
+foo2
+").Lambda().Children.ToList();
 
             // Asserts.
             Assert.Equal(2, result.Count);
@@ -143,7 +146,10 @@ namespace magic.node.tests
         public void ComplexHierarchy()
         {
             // Creating some lambda object.
-            var result = new Parser("foo1\r\n   bar1\r\n      bar2\r\n   bar3").Lambda().Children.ToList();
+            var result = new Parser(@"foo1
+   bar1
+      bar2
+   bar3").Lambda().Children.ToList();
 
             // Asserts.
             Assert.Single(result);
