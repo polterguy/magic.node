@@ -111,9 +111,7 @@ namespace magic.node.tests
             // Asserts.
             Assert.Single(result);
             var str = result.First().ToHyperlambda();
-            Assert.Equal(@"""""
-   foo:bar
-", str);
+            Assert.Equal("\"\"\r\n   foo:bar\r\n", str);
         }
 
         [Fact]

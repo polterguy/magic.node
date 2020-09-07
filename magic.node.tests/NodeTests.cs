@@ -309,10 +309,7 @@ namespace magic.node.tests
             node.Add(new Node("foo1", 5));
             node.Add(new Node("foo2", "bar"));
             var res = node.ToHyperlambda();
-            Assert.Equal(@"""""
-   foo1:int:5
-   foo2:bar
-", res);
+            Assert.Equal("\"\"\r\n   foo1:int:5\r\n   foo2:bar\r\n", res);
         }
 
         [Fact]
@@ -320,29 +317,19 @@ namespace magic.node.tests
         {
             var node = new Node();
             node.Add(new Node("foo1", 5));
-            node.Add(new Node("foo2", @"bar
-howdy"));
+            node.Add(new Node("foo2", "bar\r\nhowdy"));
             var res = node.ToHyperlambda();
-            Assert.Equal(@"""""
-   foo1:int:5
-   foo2:@""bar
-howdy""
-", res);
+            Assert.Equal("\"\"\r\n   foo1:int:5\r\n   foo2:@\"bar\r\nhowdy\"\r\n", res);
         }
 
         [Fact]
         public void ToHyperlambda_03()
         {
             var node = new Node();
-            node.Add(new Node(@"foo1
-howdy", 5));
+            node.Add(new Node("foo1\r\nhowdy", 5));
             node.Add(new Node("foo2", "bar"));
             var res = node.ToHyperlambda();
-            Assert.Equal(@"""""
-   @""foo1
-howdy"":int:5
-   foo2:bar
-", res);
+            Assert.Equal("\"\"\r\n   @\"foo1\r\nhowdy\":int:5\r\n   foo2:bar\r\n", res);
         }
 
         [Fact]
@@ -352,10 +339,7 @@ howdy"":int:5
             node.Add(new Node(@"foo1""howdy", 5));
             node.Add(new Node("foo2", "bar"));
             var res = node.ToHyperlambda();
-            Assert.Equal(@"""""
-   ""foo1\""howdy"":int:5
-   foo2:bar
-", res);
+            Assert.Equal("\"\"\r\n   \"foo1\\\"howdy\":int:5\r\n   foo2:bar\r\n", res);
         }
 
         [Fact]
@@ -365,10 +349,7 @@ howdy"":int:5
             node.Add(new Node(@"foo1:howdy", 5));
             node.Add(new Node("foo2", "bar"));
             var res = node.ToHyperlambda();
-            Assert.Equal(@"""""
-   ""foo1:howdy"":int:5
-   foo2:bar
-", res);
+            Assert.Equal("\"\"\r\n   \"foo1:howdy\":int:5\r\n   foo2:bar\r\n", res);
         }
 
         [Fact]
@@ -376,14 +357,9 @@ howdy"":int:5
         {
             var node = new Node();
             node.Add(new Node("foo1", 5));
-            node.Add(new Node("foo2", @"bar""
-howdy"));
+            node.Add(new Node("foo2", "bar\"howdy"));
             var res = node.ToHyperlambda();
-            Assert.Equal(@"""""
-   foo1:int:5
-   foo2:@""bar""""
-howdy""
-", res);
+            Assert.Equal("\"\"\r\n   foo1:int:5\r\n   foo2:\"bar\\\"howdy\"\r\n", res);
         }
     }
 }

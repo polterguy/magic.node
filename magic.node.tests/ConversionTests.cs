@@ -399,10 +399,7 @@ namespace magic.node.tests
             rootNode.Add(hlNode);
             var result = Converter.ToString(rootNode);
             Assert.Equal("node", result.Item1);
-            Assert.Equal(@"foo
-   howdy1:int:5
-   howdy2:decimal:7
-", result.Item2);
+            Assert.Equal("foo\r\n   howdy1:int:5\r\n   howdy2:decimal:7\r\n", result.Item2);
         }
 
         [Fact]
@@ -522,10 +519,7 @@ namespace magic.node.tests
             }));
             node.Add(new Node("some-other-value", 5M));
             var hyperlambda = Generator.GetHyper(node.Children);
-            Assert.Equal(@"some-value:int:5
-foo:foo:5,Howdy World
-some-other-value:decimal:5
-", hyperlambda);
+            Assert.Equal("some-value:int:5\r\nfoo:foo:5,Howdy World\r\nsome-other-value:decimal:5\r\n", hyperlambda);
         }
 
         [Fact]
@@ -554,10 +548,7 @@ some-other-value:decimal:5
             }));
             node.Add(new Node("some-other-value", 5M));
             var hyperlambda = Generator.GetHyper(node.Children);
-            Assert.Equal(@"some-value:int:5
-foo:foo:" + @"""5,Howdy \""World""" + @"
-some-other-value:decimal:5
-", hyperlambda);
+            Assert.Equal("some-value:int:5\r\nfoo:foo:" + "\"5,Howdy \\\"World\"" + "\r\nsome-other-value:decimal:5\r\n", hyperlambda);
         }
     }
 }

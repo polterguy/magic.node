@@ -207,18 +207,6 @@ foo2
         }
 
         [Fact]
-        public void MultilineString()
-        {
-            // Creating some lambda object.
-            var result = new Parser("foo1:@\" howdy\r\nworld \"").Lambda().Children.ToList();
-
-            // Asserts.
-            Assert.Single(result);
-            Assert.Equal("foo1", result.First().Name);
-            Assert.Equal(" howdy\r\nworld ", result.First().Value);
-        }
-
-        [Fact]
         public void SpacingError_Throws()
         {
             // Should throw, too few spaces in front of "bar1".
@@ -258,21 +246,29 @@ world:foo'bar.com").Lambda();
         }
 
         [Fact]
-        public void MultiLineString()
+        public void MultiLineString_01()
         {
             // Creating some lambda object.
-            var result = new Parser(@"
-howdy
-world:@""howdy
-world""").Lambda();
+            var result = new Parser("foo1:@\"howdy\r\nworld \"").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo1", result.First().Name);
+            Assert.Equal("howdy\r\nworld ", result.First().Value);
+        }
+
+        [Fact]
+        public void MultiLineString_02()
+        {
+            // Creating some lambda object.
+            var result = new Parser("\r\nhowdy\r\nworld:@\"howdy\r\nworld\"").Lambda();
 
             // Asserts.
             Assert.Equal(2, result.Children.Count());
             Assert.Equal("howdy", result.Children.First().Name);
             Assert.Null(result.Children.First().Value);
             Assert.Equal("world", result.Children.Skip(1).First().Name);
-            Assert.Equal(@"howdy
-world", result.Children.Skip(1).First().Value);
+            Assert.Equal("howdy\r\nworld", result.Children.Skip(1).First().Value);
         }
 
         [Fact]
@@ -504,9 +500,7 @@ world:""foobar \t howdy""").Lambda();
         public void ReadSingleLineWithEscapedHexCharacter()
         {
             // Creating some lambda object.
-            var result = new Parser(@"
-howdy
-world:""foobar \xfefe howdy""").Lambda();
+            var result = new Parser("\r\nhowdy\r\nworld:\"\"foobar \xfefe howdy").Lambda();
 
             // Asserts.
             Assert.Equal(2, result.Children.Count());
