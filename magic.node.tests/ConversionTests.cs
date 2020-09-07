@@ -11,7 +11,7 @@ using magic.node.extensions.hyperlambda;
 namespace magic.node.tests
 {
     /*
-     * Unit tests for lambda expressions.
+     * Unit tests for converting from Hyperlambda string declarations to objects, and vice versa.
      */
     public class ConversionTests
     {
@@ -197,11 +197,131 @@ namespace magic.node.tests
             var node = new Node("foo");
             node.Add(new Node("howdy1", 5));
             node.Add(new Node("howdy2", 7M));
-            var result = Converter.ToString(node);
+            var result = Converter.ToString(new Node("", null, new Node[] { node }));
             Assert.Equal("node", result.Item1);
-            Assert.Equal(@"howdy1:node:
-howdy2:node:
+            Assert.Equal(@"foo
+   howdy1:int:5
+   howdy2:decimal:7
 ", result.Item2);
+        }
+
+        class Foo
+        {
+            public int Value1 { get; set; }
+
+            public string Value2 { get; set; }
+        }
+
+        [Fact]
+        public void ConvertToStringFromCustomType()
+        {
+            Converter.AddConverter(
+                typeof(Foo),
+                "foo",
+                (obj) => {
+                    var fooInput = obj as Foo;
+                    return ("foo", $"{fooInput.Value1},{fooInput.Value2}");
+                }, (obj) => {
+                    var strEntities = (obj as string).Split(',');
+                    return new Foo
+                    {
+                        Value1 = int.Parse(strEntities[0]),
+                        Value2 = strEntities[1],
+                    };
+                });
+            var foo = new Foo
+            {
+                Value1 = 5,
+                Value2 = "Howdy World",
+            };
+            var result = Converter.ToString(foo);
+            Assert.Equal("foo", result.Item1);
+            Assert.Equal("5,Howdy World", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToCustomTypeFromString()
+        {
+            Converter.AddConverter(
+                typeof(Foo),
+                "foo",
+                (obj) => {
+                    var fooInput = obj as Foo;
+                    return ("foo", $"{fooInput.Value1},{fooInput.Value2}");
+                }, (obj) => {
+                    var strEntities = (obj as string).Split(',');
+                    return new Foo
+                    {
+                        Value1 = int.Parse(strEntities[0]),
+                        Value2 = strEntities[1],
+                    };
+                });
+            var result = Converter.ToObject("5,Howdy World", "foo") as Foo;
+            Assert.Equal(5, result.Value1);
+            Assert.Equal("Howdy World", result.Value2);
+        }
+
+        [Fact]
+        public void CreateHyperlambdaWithCustomType()
+        {
+            Converter.AddConverter(
+                typeof(Foo),
+                "foo",
+                (obj) => {
+                    var fooInput = obj as Foo;
+                    return ("foo", $"{fooInput.Value1},{fooInput.Value2}");
+                }, (obj) => {
+                    var strEntities = (obj as string).Split(',');
+                    return new Foo
+                    {
+                        Value1 = int.Parse(strEntities[0]),
+                        Value2 = strEntities[1],
+                    };
+                });
+            var node = new Node();
+            node.Add(new Node("some-value", 5));
+            node.Add(new Node("foo", new Foo {
+                Value1 = 5,
+                Value2 = "Howdy World",
+            }));
+            node.Add(new Node("some-other-value", 5M));
+            var hyperlambda = Generator.GetHyper(node.Children);
+            Assert.Equal(@"some-value:int:5
+foo:foo:5,Howdy World
+some-other-value:decimal:5
+", hyperlambda);
+        }
+
+        [Fact]
+        public void CreateHyperlambdaWithCustomType_WithDoubleQuotes()
+        {
+            Converter.AddConverter(
+                typeof(Foo),
+                "foo",
+                (obj) => {
+                    var fooInput = obj as Foo;
+                    return ("foo", $"{fooInput.Value1},{fooInput.Value2}");
+                }, (obj) => {
+                    var strEntities = (obj as string).Split(',');
+                    return new Foo
+                    {
+                        Value1 = int.Parse(strEntities[0]),
+                        Value2 = strEntities[1],
+                    };
+                });
+            var node = new Node();
+            node.Add(new Node("some-value", 5));
+            node.Add(new Node("foo", new Foo
+            {
+                Value1 = 5,
+                Value2 = "Howdy \"World",
+            }));
+            node.Add(new Node("some-other-value", 5M));
+            var hyperlambda = Generator.GetHyper(node.Children);
+            Assert.Equal(@"some-value:int:5
+foo:foo:" + @"""5,Howdy \""World""" + @"
+some-other-value:decimal:5
+", hyperlambda);
         }
     }
 }

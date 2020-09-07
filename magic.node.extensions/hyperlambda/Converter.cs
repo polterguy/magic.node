@@ -17,10 +17,8 @@ namespace magic.node.extensions.hyperlambda
     {
         #region [ -- Converters -- ]
 
-        /*
-         * String => Func Dictionary, containing actual converters of built-in types.
-         */
-        readonly static Dictionary<string, Func<object, object>> _convertFromValue = new Dictionary<string, Func<object, object>>()
+        // String => Func Dictionary, containing actual object to object converters for built-in types.
+        readonly static Dictionary<string, Func<object, object>> _toObjectFunctors = new Dictionary<string, Func<object, object>>()
         {
             {"string", (value) => (value as string) ?? value.ToString()},
             {"short", (value) => Convert.ToInt16(value, CultureInfo.InvariantCulture)},
@@ -72,7 +70,8 @@ namespace magic.node.extensions.hyperlambda
             }},
         };
 
-        readonly static Dictionary<string, Func<object, (string, string)>> _toStringDictionary = new Dictionary<string, Func<object, (string, string)>>()
+        // String => Func Dictionary, containing actual object to string converters for built-in types.
+        readonly static Dictionary<string, Func<object, (string, string)>> _toStringFunctors = new Dictionary<string, Func<object, (string, string)>>()
         {
             { "System.Boolean", (value) => {
                 return ("bool", ((bool)value).ToString().ToLower());
@@ -143,9 +142,9 @@ namespace magic.node.extensions.hyperlambda
         /// <returns>Converted object.</returns>
         public static object ToObject(object value, string type)
         {
-            if (!_convertFromValue.ContainsKey(type))
+            if (!_toObjectFunctors.ContainsKey(type))
                 throw new ArgumentException($"Unknown type declaration '{type}'");
-            return _convertFromValue[type](value);
+            return _toObjectFunctors[type](value);
         }
 
         /// <summary>
@@ -159,9 +158,27 @@ namespace magic.node.extensions.hyperlambda
             if (value == null)
                 return (null, null);
             var typeName = value.GetType().FullName;
-            if (!_toStringDictionary.ContainsKey(typeName))
+            if (!_toStringFunctors.ContainsKey(typeName))
                 throw new ArgumentException($"I don't know how to convert from '{typeName}' to a string representation.");
-            return _toStringDictionary[typeName](value);
+            return _toStringFunctors[typeName](value);
+        }
+
+        /// <summary>
+        /// Adds a custom type to the converter, allowing you to support your own custom types
+        /// in Hyperlambda.
+        /// </summary>
+        /// <param name="clrType">The CLR type you wish to support</param>
+        /// <param name="hyperlambdaTypename">Its Hyperlambda type name</param>
+        /// <param name="toStringFunctor">Functor expected to create a string representation of an instance of your type.</param>
+        /// <param name="toObjectFunctor">Functor expected to create an object of your type, given its Hyperlambda string representation.</param>
+        public static void AddConverter(
+            Type clrType,
+            string hyperlambdaTypename,
+            Func<object, (string, string)> toStringFunctor,
+            Func<object, object> toObjectFunctor)
+        {
+            _toStringFunctors[clrType.FullName] = toStringFunctor;
+            _toObjectFunctors[hyperlambdaTypename] = toObjectFunctor;
         }
     }
 }
