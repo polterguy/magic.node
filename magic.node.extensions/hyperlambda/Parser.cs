@@ -87,7 +87,6 @@ namespace magic.node.extensions.hyperlambda
 
         #region [ -- Private helper methods -- ]
 
-        // TODO: Refactor and simplify. Too long and complex.
         void Parse(StreamReader reader)
         {
             var currentParent = _root;

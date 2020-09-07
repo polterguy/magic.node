@@ -139,7 +139,6 @@ namespace magic.node.expressions
         {
             if (value.StartsWith("\\", StringComparison.InvariantCulture))
             {
-                var lookup = value.Substring(1);
                 return (identiy, input) => input.Where(x => x.Name == value);
             }
 

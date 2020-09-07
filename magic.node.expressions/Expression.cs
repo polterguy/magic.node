@@ -100,27 +100,24 @@ namespace magic.node.expressions
         {
             var builder = new StringBuilder();
 
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(expression)))
+            using (var reader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(expression))))
             {
-                using (var reader = new StreamReader(stream))
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
-                    {
-                        var idx = (char)reader.Peek();
-                        if (idx == -1)
-                            break;
+                    var idx = (char)reader.Peek();
+                    if (idx == -1)
+                        break;
 
-                        if (idx == '/')
-                        {
-                            yield return new Iterator(builder.ToString());
-                            builder.Clear();
-                        }
-                        else
-                        {
-                            builder.Append(idx);
-                        }
-                        reader.Read(); // Simply discarding currently handled character.
+                    if (idx == '/')
+                    {
+                        yield return new Iterator(builder.ToString());
+                        builder.Clear();
                     }
+                    else
+                    {
+                        builder.Append(idx);
+                    }
+                    reader.Read(); // Simply discarding currently handled character.
                 }
             }
 

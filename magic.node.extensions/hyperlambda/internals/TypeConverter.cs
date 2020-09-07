@@ -77,7 +77,6 @@ namespace magic.node.extensions.hyperlambda.internals
 
                 default:
 
-                    // TODO: Implement support for dynamically figuring out how to create types from strings.
                     throw new ArgumentException($"Unknown type declaration '{type}'");
             }
         }
@@ -181,7 +180,6 @@ namespace magic.node.extensions.hyperlambda.internals
 
                 default:
 
-                    // TODO: Implement support for dynamically figuring out how to create types from strings.
                     throw new ArgumentException($"Unknown type declaration '{type}'");
             }
         }
@@ -199,7 +197,6 @@ namespace magic.node.extensions.hyperlambda.internals
                     type = "string";
                     value = node.Get<string>();
 
-                    // TODO: Implement support for control characters (\t, etc)
                     if (value.Contains("\n"))
                         value = "@\"" + value.Replace("\"", "\"\"") + "\"";
                     else if (value.Contains("\"") || value.Contains(":"))

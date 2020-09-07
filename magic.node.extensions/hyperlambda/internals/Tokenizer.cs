@@ -23,7 +23,6 @@ namespace magic.node.extensions.hyperlambda.internals
             _reader = reader;
         }
 
-        // TODO: Refactor, too complex!
         public IEnumerable<string> GetTokens()
         {
             var builder = new StringBuilder();
@@ -130,14 +129,10 @@ namespace magic.node.extensions.hyperlambda.internals
                                 while (!_reader.EndOfStream && !seenEndOfComment)
                                 {
                                     var idxComment = _reader.Read();
-                                    if (idxComment == '*')
+                                    if (idxComment == '*' && _reader.Peek() == '/')
                                     {
-                                        // Checking if we're at end of comment.
-                                        if (_reader.Peek() == '/')
-                                        {
-                                            _reader.Read();
-                                            seenEndOfComment = true;
-                                        }
+                                        _reader.Read();
+                                        seenEndOfComment = true;
                                     }
                                 }
                                 if (!seenEndOfComment && _reader.EndOfStream)

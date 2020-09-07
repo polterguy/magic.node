@@ -38,7 +38,7 @@ namespace magic.node.extensions.hyperlambda.internals
 
                     case '\r':
                         if ((char)reader.Read() != '\n')
-                            throw new Exception(string.Format("Unexpected CR found without any matching LF near '{0}'", builder));
+                            throw new ArgumentException(string.Format("Unexpected CR found without any matching LF near '{0}'", builder));
                         builder.Append("\r\n");
                         break;
 
@@ -47,7 +47,7 @@ namespace magic.node.extensions.hyperlambda.internals
                         break;
                 }
             }
-            throw new Exception(string.Format("String literal not closed before end of input near '{0}'", builder));
+            throw new ArgumentException(string.Format("String literal not closed before end of input near '{0}'", builder));
         }
 
         /*
@@ -70,14 +70,14 @@ namespace magic.node.extensions.hyperlambda.internals
 
                     case '\n':
                     case '\r':
-                        throw new ArgumentException(string.Format("Syntax error, string literal unexpected CR/LF"));
+                        throw new ArgumentException("Syntax error, string literal unexpected CR/LF");
 
                     default:
                         builder.Append((char)c);
                         break;
                 }
             }
-            throw new ArgumentException(string.Format("Syntax error, string literal not closed before end of input"));
+            throw new ArgumentException("Syntax error, string literal not closed before end of input");
         }
 
         #region [ -- Private helper methods -- ]
@@ -95,7 +95,7 @@ namespace magic.node.extensions.hyperlambda.internals
             switch (ch)
             {
                 case -1:
-                    throw new Exception("End of input found when looking for escape character in single line string literal");
+                    throw new ArgumentException("End of input found when looking for escape character in single line string literal");
 
                 case '"':
                     return "\"";
@@ -126,14 +126,14 @@ namespace magic.node.extensions.hyperlambda.internals
 
                 case 'r':
                     if ((char)reader.Read() != '\\' || (char)reader.Read() != 'n')
-                        throw new Exception("CR found, but no matching LF found");
+                        throw new ArgumentException("CR found, but no matching LF found");
                     return "\n";
 
                 case 'x':
                     return HexaCharacter(reader);
 
                 default:
-                    throw new Exception("Invalid escape sequence found in string literal");
+                    throw new ArgumentException("Invalid escape sequence found in string literal");
             }
         }
 
@@ -143,15 +143,15 @@ namespace magic.node.extensions.hyperlambda.internals
          */
         static string HexaCharacter(StreamReader reader)
         {
-            var hexNumberString = "";
+            var builder = new StringBuilder();
             for (var idxNo = 0; idxNo < 4; idxNo++)
             {
                 if (reader.EndOfStream)
                     throw new ArgumentException("EOF seen before escaped hex character was done reading");
 
-                hexNumberString += (char)reader.Read();
+                builder.Append((char)reader.Read());
             }
-            var integerNo = Convert.ToInt32(hexNumberString, 16);
+            var integerNo = Convert.ToInt32(builder.ToString(), 16);
             return Encoding.UTF8.GetString(BitConverter.GetBytes(integerNo).Reverse().ToArray());
         }
 
