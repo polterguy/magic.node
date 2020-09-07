@@ -8,6 +8,7 @@ using Xunit;
 using magic.node.extensions;
 using magic.node.expressions;
 using magic.node.extensions.hyperlambda;
+using System;
 
 namespace magic.node.tests
 {
@@ -32,7 +33,10 @@ namespace magic.node.tests
         public void Evaluate_01()
         {
             // Creating some example lambda to run our expression on.
-            var hl = "foo\n   bar\n   xxx\n   bar";
+            var hl = @"foo
+   bar
+   xxx
+   bar";
             var lambda = new Parser(hl).Lambda().Children;
 
             // Creating an expression, and evaluating it on above lambda.
@@ -46,9 +50,17 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void Evaluate_Throws()
+        {
+            // Notice, unless identity node's value is an expression, Evaluate will throw.
+            Assert.Throws<ArgumentException>(() => new Node().Evaluate());
+        }
+
+        [Fact]
         public void Evaluate_02()
         {
             // Creating some example lambda to run our expression on.
+            // Notice, making sure we use Mac OS X logic for carriage returns.
             var hl = "foo\n   bar1\n   bar2\nfoo\n   bar3";
             var lambda = new Parser(hl).Lambda();
 
@@ -61,6 +73,47 @@ namespace magic.node.tests
             Assert.Equal("bar1", result.First().Name);
             Assert.Equal("bar2", result.Skip(1).First().Name);
             Assert.Equal("bar3", result.Skip(2).First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_03()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   bar
+   xxx
+   bar";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../0/**");
+            var result = x.Evaluate(lambda.First()).ToList();
+
+            // Asserts.
+            Assert.Equal(4, result.Count());
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("bar", result.Skip(1).First().Name);
+            Assert.Equal("xxx", result.Skip(2).First().Name);
+            Assert.Equal("bar", result.Skip(3).First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_04()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo:node:@""foo:bar""";
+            var lambda = new Parser(hl).Lambda();
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../0/#");
+            var result = x.Evaluate(lambda);
+
+            // Asserts.
+            Assert.Single(result);
+            var str = result.First().ToHyperlambda();
+            Assert.Equal(@"""""
+   foo:bar
+", str);
         }
 
         [Fact]

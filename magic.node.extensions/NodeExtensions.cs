@@ -76,7 +76,7 @@ namespace magic.node.extensions
 
                 // Making sure we return default value for T if we have no result.
                 if (!value.Any())
-                    return default(T);
+                    return default;
 
                 // Returning result of evaluation process.
                 // Notice, this process will recursively evaluate all expressions, 

@@ -91,22 +91,22 @@ namespace magic.node.expressions
             switch (value)
             {
                 case "*":
-                    return (identiy, input) => input.SelectMany(x => x.Children);
+                    return (identity, input) => input.SelectMany(x => x.Children);
 
                 case "#":
-                    return (identiy, input) => input.Select(x => x.Value as Node);
+                    return (identity, input) => input.Select(x => x.Value as Node);
 
                 case "-":
-                    return (identiy, input) => input.Select(x => x.Previous ?? x.Parent.Children.Last());
+                    return (identity, input) => input.Select(x => x.Previous ?? x.Parent.Children.Last());
 
                 case "+":
-                    return (identiy, input) => input.Select(x => x.Next ?? x.Parent.Children.First());
+                    return (identity, input) => input.Select(x => x.Next ?? x.Parent.Children.First());
 
                 case ".":
-                    return (identiy, input) => input.Select(x => x.Parent).Distinct();
+                    return (identity, input) => input.Select(x => x.Parent).Distinct();
 
                 case "..":
-                    return (identiy, input) =>
+                    return (identity, input) =>
                     {
                         // Notice, input might be a "no sequence enumerable", so we'll have to accommodate for "null returns".
                         var idx = input.FirstOrDefault();
@@ -121,7 +121,7 @@ namespace magic.node.expressions
                     };
 
                 case "**":
-                    return (identiy, input) =>
+                    return (identity, input) =>
                     {
                         return AllDescendants(input);
                     };
@@ -138,7 +138,7 @@ namespace magic.node.expressions
         Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateParametrizedIterator(string value)
         {
             if (value.StartsWith("\\", StringComparison.InvariantCulture))
-                return (identiy, input) => input.Where(x => x.Name == value);
+                return (identity, input) => input.Where(x => x.Name == value);
 
             switch(value[0])
             {
@@ -152,7 +152,7 @@ namespace magic.node.expressions
 
                 case '=':
                     var lookup = value.Substring(1);
-                    return (identiy, input) => input.Where(x =>
+                    return (identity, input) => input.Where(x =>
                     {
                         if (x.Value == null)
                             return lookup.Length == 0; // In case we're looking for null values
@@ -167,11 +167,11 @@ namespace magic.node.expressions
                     var ints = value.Substring(1, value.Length - 2).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     var start = int.Parse(ints[0]);
                     var count = int.Parse(ints[1]);
-                    return (identiy, input) => input.Skip(start).Take(count);
+                    return (identity, input) => input.Skip(start).Take(count);
 
                 case '@':
                     var lookup2 = value.Substring(1);
-                    return (identiy, input) =>
+                    return (identity, input) =>
                     {
                         var cur = input.FirstOrDefault()?.Previous ?? input.FirstOrDefault()?.Parent;
                         while (cur != null && cur.Name != lookup2)
@@ -191,9 +191,9 @@ namespace magic.node.expressions
             }
 
             if (int.TryParse(value, out int number))
-                return (identiy, input) => input.SelectMany(x => x.Children.Skip(number).Take(1));
+                return (identity, input) => input.SelectMany(x => x.Children.Skip(number).Take(1));
 
-            return (identiy, input) => input.Where(x => x.Name == value);
+            return (identity, input) => input.Where(x => x.Name == value);
         }
 
         /*
