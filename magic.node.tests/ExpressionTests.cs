@@ -8,6 +8,7 @@ using Xunit;
 using magic.node.extensions;
 using magic.node.expressions;
 using magic.node.extensions.hyperlambda;
+using System;
 
 namespace magic.node.tests
 {
@@ -46,6 +47,13 @@ namespace magic.node.tests
             Assert.Equal(2, result.Count());
             Assert.Equal("bar", result.First().Name);
             Assert.Equal("bar", result.Skip(1).First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_Throws()
+        {
+            // Notice, unless identity node's value is an expression, Evaluate will throw.
+            Assert.Throws<ArgumentException>(() => new Node().Evaluate());
         }
 
         [Fact]

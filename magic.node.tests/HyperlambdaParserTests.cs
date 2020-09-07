@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using Xunit;
 using magic.node.extensions.hyperlambda;
+using System.Linq.Expressions;
 
 namespace magic.node.tests
 {
@@ -204,6 +205,168 @@ foo2
         {
             // Should throw, too few spaces in front of "bar1".
             Assert.Throws<ArgumentException>(() => new Parser("foo1\r\n bar1"));
+        }
+
+        [Fact]
+        public void AlphaInValue()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+world:foo@bar.com").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo@bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void SingleQuoteInValue()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+world:foo'bar.com").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo'bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void DoubleQuoteInValue()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+world:foo""bar.com").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo\"bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void EOFBeforeDone()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"
+howdy
+world:""howdy world throws"));
+        }
+
+        [Fact]
+        public void CharactersAfterClosingDoubleQuote()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"
+howdy
+world:""howdy world""throws"));
+        }
+
+        [Fact]
+        public void ReadSingleLineComment()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+// This is a comment, and should be ignored!
+world:foo""bar.com").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo\"bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void ReadSingleLineCommentNOTComment()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+!// This is a comment, and should NOT be ignored!:foo
+world:foo").Lambda();
+
+            // Asserts.
+            Assert.Equal(3, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("!// This is a comment, and should NOT be ignored!", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo", result.Children.Skip(1).First().Value);
+            Assert.Equal("world", result.Children.Skip(2).First().Name);
+            Assert.Equal("foo", result.Children.Skip(2).First().Value);
+        }
+
+        [Fact]
+        public void ReadMultiLineComment_01()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+/* This is a comment, and should be ignored! */
+world:foo""bar.com").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo\"bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void ReadMultiLineComment_02()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+/*
+ * This is a comment, and should be ignored!
+ */
+world:foo""bar.com").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo\"bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void ReadMultiLineComment_03_Throws()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"
+howdy
+/*
+ * This is a comment, and should be ignored!
+ * Next line will make sure this throws!
+ * /
+world:foo""bar.com"));
+        }
+
+        [Fact]
+        public void ReadOddSpacesThrows()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"
+foo
+   // Next line throws!
+  bar
+"));
         }
     }
 }
