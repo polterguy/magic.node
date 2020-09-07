@@ -39,34 +39,43 @@ namespace magic.node.extensions.hyperlambda
                     builder.Append("   ");
 
                 // Serializing name into builder.
-                var name = idx.Name;
-                if (name.Contains("\n"))
-                    name = "@\"" + name.Replace("\"", "\"\"") + "\"";
-                else if (name.Contains("\"") || name.Contains(":"))
-                    name = "\"" + name.Replace("\"", "\\\"") + "\"";
-                else if (idx.Value == null && name == "")
-                    name = @"""""";
-                builder.Append(name);
+                AppendName(builder, idx, idx.Name);
 
                 // Serializing value into builder, if any.
-                if (idx.Value != null)
-                {
-                    // Converting type to string.
-                    var value = TypeConverter.ConvertToString(idx, out string type);
-                    builder.Append(":");
-
-                    // Checking if we need to provide an explicit type declaration.
-                    if (!string.IsNullOrEmpty(type) && type != "string")
-                        builder.Append(type + ":");
-
-                    // Appending actual value.
-                    builder.Append(value);
-                }
+                AppendValue(builder, idx);
 
                 // Adding Carriage Return, and serializing children, if any.
                 builder.Append("\r\n");
                 GetHyper(builder, idx.Children, level + 1);
             }
+        }
+
+        static void AppendValue(StringBuilder builder, Node idx)
+        {
+            if (idx.Value != null)
+            {
+                // Converting type to string.
+                var value = TypeConverter.ConvertToString(idx, out string type);
+                builder.Append(":");
+
+                // Checking if we need to provide an explicit type declaration.
+                if (!string.IsNullOrEmpty(type) && type != "string")
+                    builder.Append(type + ":");
+
+                // Appending actual value.
+                builder.Append(value);
+            }
+        }
+
+        static void AppendName(StringBuilder builder, Node idx, string name)
+        {
+            if (name.Contains("\n"))
+                name = "@\"" + name.Replace("\"", "\"\"") + "\"";
+            else if (name.Contains("\"") || name.Contains(":"))
+                name = "\"" + name.Replace("\"", "\\\"") + "\"";
+            else if (idx.Value == null && name == "")
+                name = @"""""";
+            builder.Append(name);
         }
 
         #endregion

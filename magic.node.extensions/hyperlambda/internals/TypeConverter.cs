@@ -5,6 +5,7 @@
 
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 using magic.node.expressions;
 
 namespace magic.node.extensions.hyperlambda.internals
@@ -81,107 +82,109 @@ namespace magic.node.extensions.hyperlambda.internals
             }
         }
 
+        static Dictionary<string, Func<object, object>> _convertFromValue = new Dictionary<string, Func<object, object>>()
+        {
+            {"string", (value) => (value as string) ?? value.ToString()},
+            {"short", (value) => {
+                if (value is short)
+                    return value;
+                return Convert.ToInt16(value, CultureInfo.InvariantCulture);
+            }},
+            {"ushort", (value) => {
+                if (value is ushort)
+                    return value;
+                return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
+            }},
+            {"int", (value) => {
+                if (value is int)
+                    return value;
+                return Convert.ToInt32(value, CultureInfo.InvariantCulture);
+            }},
+            {"uint", (value) => {
+                if (value is uint)
+                    return value;
+                return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
+            }},
+            {"long", (value) => {
+                if (value is long)
+                    return value;
+                return Convert.ToInt64(value, CultureInfo.InvariantCulture);
+            }},
+            {"ulong", (value) => {
+                if (value is ulong)
+                    return value;
+                return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
+            }},
+            {"decimal", (value) => {
+                if (value is decimal)
+                    return value;
+                return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+            }},
+            {"double", (value) => {
+                if (value is double)
+                    return value;
+                return Convert.ToDouble(value, CultureInfo.InvariantCulture);
+            }},
+            {"single", (value) => {
+                if (value is float)
+                    return value;
+                return Convert.ToSingle(value, CultureInfo.InvariantCulture);
+            }},
+            {"float", (value) => {
+                if (value is float)
+                    return value;
+                return Convert.ToSingle(value, CultureInfo.InvariantCulture);
+            }},
+            {"bool", (value) => {
+                if (value is bool)
+                    return value;
+                return value.Equals(true) || value.Equals("true");
+            }},
+            {"date", (value) => {
+                if (value is DateTime)
+                    return value;
+                return DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+            }},
+            {"time", (value) => {
+                if (value is TimeSpan)
+                    return value;
+                return new TimeSpan((long)value);
+            }},
+            {"guid", (value) => {
+                if (value is Guid)
+                    return value;
+                return new Guid(value.ToString());
+            }},
+            {"char", (value) => {
+                if (value is char)
+                    return value;
+                return Convert.ToChar(value, CultureInfo.InvariantCulture);
+            }},
+            {"byte", (value) => {
+                if (value is byte)
+                    return value;
+                return Convert.ToByte(value, CultureInfo.InvariantCulture);
+            }},
+            {"x", (value) => {
+                if (value is Expression)
+                    return value;
+                return new Expression(value.ToString());
+            }},
+            {"node", (value) => {
+                if (value is Node)
+                    return value;
+                return new Parser(value.ToString()).Lambda();
+            }},
+        };
+
         /*
          * Converts the given string value to the type declaration specified as the type parameter.
          */
         public static object ConvertFromValue(object value, string type)
         {
-            switch (type)
-            {
-                case "string":
-                    if (value is string)
-                        return value;
-                    return value.ToString();
-
-                case "short":
-                    if (value is short)
-                        return value;
-                    return Convert.ToInt16(value, CultureInfo.InvariantCulture);
-
-                case "ushort":
-                    if (value is ushort)
-                        return value;
-                    return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
-
-                case "int":
-                    if (value is int)
-                        return value;
-                    return Convert.ToInt32(value, CultureInfo.InvariantCulture);
-
-                case "uint":
-                    if (value is uint)
-                        return value;
-                    return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
-
-                case "long":
-                    if (value is long)
-                        return value;
-                    return Convert.ToInt64(value, CultureInfo.InvariantCulture);
-
-                case "ulong":
-                    if (value is ulong)
-                        return value;
-                    return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
-
-                case "decimal":
-                    if (value is decimal)
-                        return value;
-                    return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
-
-                case "double":
-                    if (value is double)
-                        return value;
-                    return Convert.ToDouble(value, CultureInfo.InvariantCulture);
-
-                case "single":
-                    if (value is float)
-                        return value;
-                    return Convert.ToSingle(value, CultureInfo.InvariantCulture);
-
-                case "bool":
-                    if (value is bool)
-                        return value;
-                    return value.Equals(true) || value.Equals("true");
-
-                case "date":
-                    if (value is DateTime)
-                        return value;
-                    return DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-
-                case "time":
-                    if (value is TimeSpan)
-                        return value;
-                    return new TimeSpan((long)value);
-
-                case "guid":
-                    if (value is Guid)
-                        return value;
-                    return new Guid(value.ToString());
-
-                case "char":
-                    if (value is char)
-                        return value;
-                    return Convert.ToChar(value, CultureInfo.InvariantCulture);
-
-                case "byte":
-                    if (value is byte)
-                        return value;
-                    return Convert.ToByte(value, CultureInfo.InvariantCulture);
-
-                case "x":
-                    if (value is Expression)
-                        return value;
-                    return new Expression(value.ToString());
-
-                case "node":
-                    if (value is Node)
-                        return value;
-                    return new Parser(value.ToString()).Lambda();
-
-                default:
-
-                    throw new ArgumentException($"Unknown type declaration '{type}'");
-            }
+            if (!_convertFromValue.ContainsKey(type))
+                throw new ArgumentException($"Unknown type declaration '{type}'");
+            return _convertFromValue[type](value);
         }
 
         /*

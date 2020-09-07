@@ -121,9 +121,6 @@ namespace magic.node.expressions
                 }
             }
 
-            if (builder.Length == 0)
-                throw new ArgumentException("Syntax error at end of expression, unexpected trailing '/' found at end of expression.");
-
             yield return new Iterator(builder.ToString());
         }
 

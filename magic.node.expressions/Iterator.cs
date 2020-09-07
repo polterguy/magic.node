@@ -138,65 +138,56 @@ namespace magic.node.expressions
         Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateParametrizedIterator(string value)
         {
             if (value.StartsWith("\\", StringComparison.InvariantCulture))
-            {
                 return (identiy, input) => input.Where(x => x.Name == value);
-            }
 
-            if (value.StartsWith("{", StringComparison.InvariantCulture) &&
-                value.EndsWith("}", StringComparison.InvariantCulture))
+            switch(value[0])
             {
-                var index = int.Parse(value.Substring(1, value.Length - 2));
-                return (identity, input) =>
-                {
-                    var node = identity.Children.Skip(index).First();
-                    return input.Where(x => x.Name.Equals(EvaluateNode(node)));
-                };
-            }
-
-            if (value.StartsWith("=", StringComparison.InvariantCulture))
-            {
-                var lookup = value.Substring(1);
-                return (identiy, input) => input.Where(x =>
-                {
-                    if (x.Value == null)
-                        return lookup.Length == 0; // In case we're looking for null values
-
-                    if (x.Value is string)
-                        return lookup.Equals(x.Value);
-
-                    return lookup.Equals(Convert.ToString(x.Value, CultureInfo.InvariantCulture));
-                });
-            }
-
-            if (value.StartsWith("[", StringComparison.InvariantCulture) &&
-                value.EndsWith("]", StringComparison.InvariantCulture))
-            {
-                var ints = value.Substring(1, value.Length - 2).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                var start = int.Parse(ints[0]);
-                var count = int.Parse(ints[1]);
-                return (identiy, input) => input.Skip(start).Take(count);
-            }
-
-            if (value.StartsWith("@", StringComparison.InvariantCulture))
-            {
-                var lookup = value.Substring(1);
-                return (identiy, input) =>
-                {
-                    var cur = input.FirstOrDefault()?.Previous ?? input.FirstOrDefault()?.Parent;
-                    while (cur != null && cur.Name != lookup)
+                case '{':
+                    var index = int.Parse(value.Substring(1, value.Length - 2));
+                    return (identity, input) =>
                     {
-                        var previous = cur.Previous;
-                        if (previous == null)
-                            cur = cur.Parent;
-                        else
-                            cur = previous;
-                    }
+                        var node = identity.Children.Skip(index).First();
+                        return input.Where(x => x.Name.Equals(EvaluateNode(node)));
+                    };
 
-                    if (cur == null)
-                        return new Node[] { };
+                case '=':
+                    var lookup = value.Substring(1);
+                    return (identiy, input) => input.Where(x =>
+                    {
+                        if (x.Value == null)
+                            return lookup.Length == 0; // In case we're looking for null values
 
-                    return new Node[] { cur };
-                };
+                        if (x.Value is string)
+                            return lookup.Equals(x.Value);
+
+                        return lookup.Equals(Convert.ToString(x.Value, CultureInfo.InvariantCulture));
+                    });
+
+                case '[':
+                    var ints = value.Substring(1, value.Length - 2).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    var start = int.Parse(ints[0]);
+                    var count = int.Parse(ints[1]);
+                    return (identiy, input) => input.Skip(start).Take(count);
+
+                case '@':
+                    var lookup2 = value.Substring(1);
+                    return (identiy, input) =>
+                    {
+                        var cur = input.FirstOrDefault()?.Previous ?? input.FirstOrDefault()?.Parent;
+                        while (cur != null && cur.Name != lookup2)
+                        {
+                            var previous = cur.Previous;
+                            if (previous == null)
+                                cur = cur.Parent;
+                            else
+                                cur = previous;
+                        }
+
+                        if (cur == null)
+                            return new Node[] { };
+
+                        return new Node[] { cur };
+                    };
             }
 
             if (int.TryParse(value, out int number))
