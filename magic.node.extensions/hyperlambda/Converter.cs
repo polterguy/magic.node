@@ -51,7 +51,7 @@ namespace magic.node.extensions.hyperlambda
             {"time", (value) => {
                 if (value is TimeSpan)
                     return value;
-                return new TimeSpan((long)value);
+                return new TimeSpan(Convert.ToInt64(value, CultureInfo.InvariantCulture));
             }},
             {"guid", (value) => {
                 if (value is Guid)

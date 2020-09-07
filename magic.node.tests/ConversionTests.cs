@@ -5,6 +5,7 @@
 
 using Xunit;
 using System;
+using System.Linq;
 using magic.node.expressions;
 using magic.node.extensions.hyperlambda;
 
@@ -40,7 +41,23 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void ConvertToString_01()
+        public void ConvertFromBoolToString_01()
+        {
+            var result = Converter.ToString(true);
+            Assert.Equal("bool", result.Item1);
+            Assert.Equal("true", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertFromBoolToString_02()
+        {
+            var result = Converter.ToString(false);
+            Assert.Equal("bool", result.Item1);
+            Assert.Equal("false", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertStringToString_01()
         {
             var result = Converter.ToString("Howdy World");
             Assert.Equal("string", result.Item1);
@@ -48,23 +65,7 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void ConvertToString_02()
-        {
-            var result = Converter.ToString("Howdy\r\nWorld");
-            Assert.Equal("string", result.Item1);
-            Assert.Equal("Howdy\r\nWorld", result.Item2);
-        }
-
-        [Fact]
-        public void ConvertToString_03()
-        {
-            var result = Converter.ToString("Howdy\"World");
-            Assert.Equal("string", result.Item1);
-            Assert.Equal("Howdy\"World", result.Item2);
-        }
-
-        [Fact]
-        public void ConvertToString_04()
+        public void ConvertStringToString_02()
         {
             var result = Converter.ToString("Howdy:World");
             Assert.Equal("string", result.Item1);
@@ -80,11 +81,27 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToInt16FromString()
+        {
+            var result = Converter.ToObject("5", "short");
+            Assert.Equal((short)5, result);
+            Assert.Equal(typeof(short), result.GetType());
+        }
+
+        [Fact]
         public void ConvertToStringFromUInt16()
         {
             var result = Converter.ToString((ushort)5);
             Assert.Equal("ushort", result.Item1);
             Assert.Equal("5", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToUInt16FromString()
+        {
+            var result = Converter.ToObject("5", "ushort");
+            Assert.Equal((ushort)5, result);
+            Assert.Equal(typeof(ushort), result.GetType());
         }
 
         [Fact]
@@ -96,11 +113,27 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToInt32FromString()
+        {
+            var result = Converter.ToObject("5", "int");
+            Assert.Equal(5, result);
+            Assert.Equal(typeof(int), result.GetType());
+        }
+
+        [Fact]
         public void ConvertToStringFromUInt32()
         {
             var result = Converter.ToString((uint)5);
             Assert.Equal("uint", result.Item1);
             Assert.Equal("5", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToUInt32FromString()
+        {
+            var result = Converter.ToObject("5", "uint");
+            Assert.Equal((uint)5, result);
+            Assert.Equal(typeof(uint), result.GetType());
         }
 
         [Fact]
@@ -112,11 +145,27 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToInt64FromString()
+        {
+            var result = Converter.ToObject("5", "long");
+            Assert.Equal((long)5, result);
+            Assert.Equal(typeof(long), result.GetType());
+        }
+
+        [Fact]
         public void ConvertToStringFromUInt64()
         {
             var result = Converter.ToString((ulong)5);
             Assert.Equal("ulong", result.Item1);
             Assert.Equal("5", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToUInt64FromString()
+        {
+            var result = Converter.ToObject("5", "ulong");
+            Assert.Equal((ulong)5, result);
+            Assert.Equal(typeof(ulong), result.GetType());
         }
 
         [Fact]
@@ -128,11 +177,27 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToDecimalFromString()
+        {
+            var result = Converter.ToObject("5", "decimal");
+            Assert.Equal((decimal)5, result);
+            Assert.Equal(typeof(decimal), result.GetType());
+        }
+
+        [Fact]
         public void ConvertToStringFromDouble()
         {
             var result = Converter.ToString((double)5);
             Assert.Equal("double", result.Item1);
             Assert.Equal("5", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToDoubleFromString()
+        {
+            var result = Converter.ToObject("5", "double");
+            Assert.Equal((double)5, result);
+            Assert.Equal(typeof(double), result.GetType());
         }
 
         [Fact]
@@ -144,11 +209,43 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToFloatFromString_01()
+        {
+            var result = Converter.ToObject("5", "float");
+            Assert.Equal((float)5, result);
+            Assert.Equal(typeof(float), result.GetType());
+        }
+
+        [Fact]
+        public void ConvertToFloatFromString_02()
+        {
+            var result = Converter.ToObject("5", "single");
+            Assert.Equal((float)5, result);
+            Assert.Equal(typeof(float), result.GetType());
+        }
+
+        [Fact]
         public void ConvertToStringFromDateTime()
         {
             var result = Converter.ToString(new DateTime(2020, 12, 23, 23, 59, 11, DateTimeKind.Utc));
             Assert.Equal("date", result.Item1);
             Assert.Equal("2020-12-23T23:59:11.000Z", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToDateTimeFromString()
+        {
+            var result = Converter.ToObject("2020-12-23T23:59:11", "date");
+            Assert.Equal(typeof(DateTime), result.GetType());
+            var date = (DateTime)result;
+            Assert.Equal(DateTimeKind.Utc, date.Kind);
+            Assert.Equal(2020, date.Year);
+            Assert.Equal(12, date.Month);
+            Assert.Equal(23, date.Day);
+            Assert.Equal(23, date.Hour);
+            Assert.Equal(59, date.Minute);
+            Assert.Equal(11, date.Second);
+            Assert.Equal(0, date.Millisecond);
         }
 
         [Fact]
@@ -160,11 +257,27 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToTimeSpanFromString()
+        {
+            var result = Converter.ToObject("2000", "time");
+            Assert.Equal(new TimeSpan(2000), result);
+            Assert.Equal(typeof(TimeSpan), result.GetType());
+        }
+
+        [Fact]
         public void ConvertToStringFromGuid()
         {
             var result = Converter.ToString(Guid.Empty);
             Assert.Equal("guid", result.Item1);
             Assert.Equal("00000000-0000-0000-0000-000000000000", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToGuidFromString()
+        {
+            var result = Converter.ToObject("00000000-0000-0000-0000-000000000000", "guid");
+            Assert.Equal(new Guid("00000000-0000-0000-0000-000000000000"), result);
+            Assert.Equal(typeof(Guid), result.GetType());
         }
 
         [Fact]
@@ -176,11 +289,27 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToCharFromString()
+        {
+            var result = Converter.ToObject("q", "char");
+            Assert.Equal('q', result);
+            Assert.Equal(typeof(char), result.GetType());
+        }
+
+        [Fact]
         public void ConvertToStringFromByte()
         {
             var result = Converter.ToString((byte)5);
             Assert.Equal("byte", result.Item1);
             Assert.Equal("5", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToByteFromString()
+        {
+            var result = Converter.ToObject("5", "byte");
+            Assert.Equal((byte)5, result);
+            Assert.Equal(typeof(byte), result.GetType());
         }
 
         [Fact]
@@ -192,12 +321,22 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToExpressionFromString()
+        {
+            var result = Converter.ToObject("foo/bar", "x");
+            Assert.Equal(typeof(Expression), result.GetType());
+            Assert.Equal("foo/bar", (result as Expression).Value);
+        }
+
+        [Fact]
         public void ConvertToStringFromNode()
         {
-            var node = new Node("foo");
-            node.Add(new Node("howdy1", 5));
-            node.Add(new Node("howdy2", 7M));
-            var result = Converter.ToString(new Node("", null, new Node[] { node }));
+            var rootNode = new Node();
+            var hlNode = new Node("foo");
+            hlNode.Add(new Node("howdy1", 5));
+            hlNode.Add(new Node("howdy2", 7M));
+            rootNode.Add(hlNode);
+            var result = Converter.ToString(rootNode);
             Assert.Equal("node", result.Item1);
             Assert.Equal(@"foo
    howdy1:int:5
@@ -205,6 +344,24 @@ namespace magic.node.tests
 ", result.Item2);
         }
 
+        [Fact]
+        public void ConvertToNodeFromString()
+        {
+            var result = Converter.ToObject(@"foo
+   howdy1:int:5
+   howdy2:decimal:7", "node");
+            Assert.Equal(typeof(Node), result.GetType());
+            var n = result as Node;
+            Assert.Equal("foo", n.Children.First().Name);
+            Assert.Equal("howdy1", n.Children.First().Children.First().Name);
+            Assert.Equal("howdy2", n.Children.First().Children.Skip(1).First().Name);
+            Assert.Equal(5, n.Children.First().Children.First().Value);
+            Assert.Equal(7M, n.Children.First().Children.Skip(1).First().Value);
+        }
+
+        /*
+         * Helper class, to test injecting custom type into conversion to Hyperlambda value.
+         */
         class Foo
         {
             public int Value1 { get; set; }

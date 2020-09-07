@@ -32,7 +32,10 @@ namespace magic.node.tests
         public void Evaluate_01()
         {
             // Creating some example lambda to run our expression on.
-            var hl = "foo\n   bar\n   xxx\n   bar";
+            var hl = @"foo
+   bar
+   xxx
+   bar";
             var lambda = new Parser(hl).Lambda().Children;
 
             // Creating an expression, and evaluating it on above lambda.
@@ -49,6 +52,7 @@ namespace magic.node.tests
         public void Evaluate_02()
         {
             // Creating some example lambda to run our expression on.
+            // Notice, making sure we use Mac OS X logic for carriage returns.
             var hl = "foo\n   bar1\n   bar2\nfoo\n   bar3";
             var lambda = new Parser(hl).Lambda();
 

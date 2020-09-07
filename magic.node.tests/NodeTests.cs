@@ -19,6 +19,7 @@ namespace magic.node.tests
             var n = new Node();
             Assert.Equal("", n.Name);
             Assert.Null(n.Value);
+            Assert.NotNull(n.Children);
             Assert.Empty(n.Children);
         }
 
