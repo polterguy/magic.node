@@ -56,6 +56,50 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void GetNullParentPrevious()
+        {
+            var n = new Node();
+            Assert.Null(n.Previous);
+        }
+
+        [Fact]
+        public void GetNullParentNext()
+        {
+            var n = new Node();
+            Assert.Null(n.Next);
+        }
+
+        [Fact]
+        public void InsertBeforeThrows()
+        {
+            var n = new Node();
+            Assert.Throws<ArgumentException>(() => n.InsertBefore(new Node()));
+        }
+
+        [Fact]
+        public void RemoveThrows()
+        {
+            var n = new Node();
+            Assert.Throws<ArgumentException>(() => n.Remove(new Node()));
+        }
+
+        [Fact]
+        public void Clone()
+        {
+            var n1 = new Node("foo");
+            n1.Add(new Node("bar"));
+            var n2 = n1.Clone();
+            Assert.Equal(n1.ToHyperlambda(), n2.ToHyperlambda());
+        }
+
+        [Fact]
+        public void InsertAfterThrows()
+        {
+            var n = new Node();
+            Assert.Throws<ArgumentException>(() => n.InsertAfter(new Node()));
+        }
+
+        [Fact]
         public void Add()
         {
             var n = new Node("parent");
