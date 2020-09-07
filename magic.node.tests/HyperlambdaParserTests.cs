@@ -448,5 +448,72 @@ foo
     bar
 "));
         }
+
+        [Fact]
+        public void ReadNonClosedMultiLine_Throws()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"
+foo:@""howdy world
+"));
+        }
+
+        [Fact]
+        public void ReadSingleLineContainingCR_Throws()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"
+foo:""howdy world
+howdy""
+"));
+        }
+
+        [Fact]
+        public void ReadMultiLineContainingDoubleQuotes()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+world:@""foobar """" howdy""").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foobar \" howdy", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void ReadSingleLineWithEscapeCharacter()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+world:""foobar \t howdy""").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foobar \t howdy", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void ReadSingleLineWithEscapedHexCharacter()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+world:""foobar \xfefe howdy""").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foobar \xfefe howdy", result.Children.Skip(1).First().Value);
+        }
     }
 }

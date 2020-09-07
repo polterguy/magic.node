@@ -326,5 +326,20 @@ howdy"":int:5
    foo2:bar
 ", res);
         }
+
+        [Fact]
+        public void ToHyperlambda_06()
+        {
+            var node = new Node();
+            node.Add(new Node("foo1", 5));
+            node.Add(new Node("foo2", @"bar""
+howdy"));
+            var res = node.ToHyperlambda();
+            Assert.Equal(@"""""
+   foo1:int:5
+   foo2:@""bar""""
+howdy""
+", res);
+        }
     }
 }

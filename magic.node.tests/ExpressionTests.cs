@@ -76,6 +76,47 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void Evaluate_03()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   bar
+   xxx
+   bar";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../0/**");
+            var result = x.Evaluate(lambda.First()).ToList();
+
+            // Asserts.
+            Assert.Equal(4, result.Count());
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("bar", result.Skip(1).First().Name);
+            Assert.Equal("xxx", result.Skip(2).First().Name);
+            Assert.Equal("bar", result.Skip(3).First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_04()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo:node:@""foo:bar""";
+            var lambda = new Parser(hl).Lambda();
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../0/#");
+            var result = x.Evaluate(lambda);
+
+            // Asserts.
+            Assert.Single(result);
+            var str = result.First().ToHyperlambda();
+            Assert.Equal(@"""""
+   foo:bar
+", str);
+        }
+
+        [Fact]
         public void ParentIterator()
         {
             // Creating some example lambda to run our expression on.
