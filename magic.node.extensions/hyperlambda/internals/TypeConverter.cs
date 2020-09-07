@@ -86,64 +86,48 @@ namespace magic.node.extensions.hyperlambda.internals
         {
             {"string", (value) => (value as string) ?? value.ToString()},
             {"short", (value) => {
-                if (value is short)
-                    return value;
                 return Convert.ToInt16(value, CultureInfo.InvariantCulture);
             }},
             {"ushort", (value) => {
-                if (value is ushort)
-                    return value;
                 return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
             }},
             {"int", (value) => {
-                if (value is int)
-                    return value;
                 return Convert.ToInt32(value, CultureInfo.InvariantCulture);
             }},
             {"uint", (value) => {
-                if (value is uint)
-                    return value;
                 return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
             }},
             {"long", (value) => {
-                if (value is long)
-                    return value;
                 return Convert.ToInt64(value, CultureInfo.InvariantCulture);
             }},
             {"ulong", (value) => {
-                if (value is ulong)
-                    return value;
                 return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
             }},
             {"decimal", (value) => {
-                if (value is decimal)
-                    return value;
                 return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
             }},
             {"double", (value) => {
-                if (value is double)
-                    return value;
                 return Convert.ToDouble(value, CultureInfo.InvariantCulture);
             }},
             {"single", (value) => {
-                if (value is float)
-                    return value;
                 return Convert.ToSingle(value, CultureInfo.InvariantCulture);
             }},
             {"float", (value) => {
-                if (value is float)
-                    return value;
                 return Convert.ToSingle(value, CultureInfo.InvariantCulture);
             }},
             {"bool", (value) => {
                 if (value is bool)
                     return value;
-                return value.Equals(true) || value.Equals("true");
+                return value.Equals("true");
             }},
             {"date", (value) => {
                 if (value is DateTime)
                     return value;
-                return DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                return DateTime.ParseExact(
+                    value.ToString(),
+                    "yyyy-MM-ddTHH:mm:ss",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeUniversal).ToUniversalTime();
             }},
             {"time", (value) => {
                 if (value is TimeSpan)
@@ -156,13 +140,9 @@ namespace magic.node.extensions.hyperlambda.internals
                 return new Guid(value.ToString());
             }},
             {"char", (value) => {
-                if (value is char)
-                    return value;
                 return Convert.ToChar(value, CultureInfo.InvariantCulture);
             }},
             {"byte", (value) => {
-                if (value is byte)
-                    return value;
                 return Convert.ToByte(value, CultureInfo.InvariantCulture);
             }},
             {"x", (value) => {
