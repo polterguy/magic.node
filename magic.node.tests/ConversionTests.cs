@@ -4,8 +4,9 @@
  */
 
 using Xunit;
-using magic.node.extensions.hyperlambda;
 using System;
+using magic.node.expressions;
+using magic.node.extensions.hyperlambda;
 
 namespace magic.node.tests
 {
@@ -145,10 +146,62 @@ namespace magic.node.tests
         [Fact]
         public void ConvertToStringFromDateTime()
         {
-            var date = new DateTime(2020, 12, 23, 23, 59, 11, DateTimeKind.Utc);
-            var result = Converter.ToString(date);
+            var result = Converter.ToString(new DateTime(2020, 12, 23, 23, 59, 11, DateTimeKind.Utc));
             Assert.Equal("date", result.Item1);
             Assert.Equal("2020-12-23T23:59:11.000Z", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToStringFromTimeSpan()
+        {
+            var result = Converter.ToString(new TimeSpan(2000));
+            Assert.Equal("time", result.Item1);
+            Assert.Equal("2000", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToStringFromGuid()
+        {
+            var result = Converter.ToString(Guid.Empty);
+            Assert.Equal("guid", result.Item1);
+            Assert.Equal("00000000-0000-0000-0000-000000000000", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToStringFromChar()
+        {
+            var result = Converter.ToString('q');
+            Assert.Equal("char", result.Item1);
+            Assert.Equal("q", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToStringFromByte()
+        {
+            var result = Converter.ToString((byte)5);
+            Assert.Equal("byte", result.Item1);
+            Assert.Equal("5", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToStringFromExpression()
+        {
+            var result = Converter.ToString(new Expression("foo/bar"));
+            Assert.Equal("x", result.Item1);
+            Assert.Equal("foo/bar", result.Item2);
+        }
+
+        [Fact]
+        public void ConvertToStringFromNode()
+        {
+            var node = new Node("foo");
+            node.Add(new Node("howdy1", 5));
+            node.Add(new Node("howdy2", 7M));
+            var result = Converter.ToString(node);
+            Assert.Equal("node", result.Item1);
+            Assert.Equal(@"howdy1:node:
+howdy2:node:
+", result.Item2);
         }
     }
 }
