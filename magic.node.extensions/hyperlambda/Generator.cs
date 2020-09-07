@@ -55,15 +55,25 @@ namespace magic.node.extensions.hyperlambda
             if (idx.Value != null)
             {
                 // Converting type to string.
-                var value = TypeConverter.ConvertToString(idx, out string type);
+                var value = Converter.ToString(idx);
                 builder.Append(":");
 
                 // Checking if we need to provide an explicit type declaration.
-                if (!string.IsNullOrEmpty(type) && type != "string")
-                    builder.Append(type + ":");
+                if (!string.IsNullOrEmpty(value.Item1) && value.Item1 != "string")
+                    builder.Append(value.Item1 + ":");
+
+                var stringValue = value.Item2;
+                if (stringValue.Contains("\n"))
+                {
+                    stringValue = @"@""" + stringValue.Replace(@"""", @"""""") + @"""";
+                }
+                else if (stringValue.Contains(":") || stringValue.Contains("\""))
+                {
+                    stringValue = @"""" + stringValue.Replace(@"""", @"""""") + @"""";
+                }
 
                 // Appending actual value.
-                builder.Append(value);
+                builder.Append(stringValue);
             }
         }
 

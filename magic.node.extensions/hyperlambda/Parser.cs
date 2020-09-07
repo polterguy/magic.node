@@ -55,36 +55,6 @@ namespace magic.node.extensions.hyperlambda
             return _root;
         }
 
-        /// <summary>
-        /// Converts the specified string token to its equivalent object value,
-        /// according to the type parameter given.
-        ///
-        /// The type parameter must be a Hyperlambda type, such as 'int', 'date',
-        /// etc.
-        /// </summary>
-        /// <param name="value">String representation of your value.</param>
-        /// <param name="type">Hyperlambda type to convert it to.</param>
-        /// <returns>An object of type 'type' represented by the string 'value'.</returns>
-        public static object ConvertStringToken(string value, string type)
-        {
-            return TypeConverter.ConvertFromString(value, type);
-        }
-
-        /// <summary>
-        /// Converts the specified object token to its equivalent object value,
-        /// according to the type parameter given.
-        ///
-        /// The type parameter must be a Hyperlambda type, such as 'int', 'date',
-        /// etc.
-        /// </summary>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="type">Hyperlambda type to convert it to.</param>
-        /// <returns>An object of type 'type' represented by the string 'value'.</returns>
-        public static object ConvertValue(object value, string type)
-        {
-            return TypeConverter.ConvertFromValue(value, type);
-        }
-
         #region [ -- Private helper methods -- ]
 
         void Parse(StreamReader reader)
@@ -174,7 +144,7 @@ namespace magic.node.extensions.hyperlambda
                             }
                             else
                             {
-                                idxNode.Value = TypeConverter.ConvertFromString(token, idxNode.Get<string>());
+                                idxNode.Value = Converter.ToObject(token, idxNode.Get<string>());
                             }
                         }
                         previous = token;
