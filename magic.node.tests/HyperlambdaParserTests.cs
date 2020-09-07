@@ -500,7 +500,7 @@ world:""foobar \t howdy""").Lambda();
         public void ReadSingleLineWithEscapedHexCharacter()
         {
             // Creating some lambda object.
-            var result = new Parser("\r\nhowdy\r\nworld:\"\"foobar \xfefe howdy").Lambda();
+            var result = new Parser("\r\nhowdy\r\nworld:@\"\"foobar \xfefe howdy").Lambda();
 
             // Asserts.
             Assert.Equal(2, result.Children.Count());

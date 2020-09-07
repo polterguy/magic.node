@@ -30,6 +30,18 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ExpToStringAndHashCode()
+        {
+            // Creating an expression.
+            var x = new Expression("foo/bar");
+
+            // Asserts.
+            Assert.Equal("foo/bar", x.ToString());
+            Assert.Equal("foo/bar".GetHashCode(), x.Value.GetHashCode());
+            Assert.True(x.Equals(new Expression("foo/bar")));
+        }
+
+        [Fact]
         public void Evaluate_01()
         {
             // Creating some example lambda to run our expression on.
