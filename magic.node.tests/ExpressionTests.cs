@@ -37,8 +37,12 @@ namespace magic.node.tests
 
             // Asserts.
             Assert.Equal("foo/bar", x.ToString());
-            Assert.Equal("foo/bar".GetHashCode(), x.Value.GetHashCode());
+            Assert.Equal("foo/bar".GetHashCode(), x.GetHashCode());
             Assert.True(x.Equals(new Expression("foo/bar")));
+            Assert.False(x.Equals(5));
+            Assert.Equal(x.Iterators.First().ToString().GetHashCode(), x.Iterators.First().GetHashCode());
+            Assert.False(x.Iterators.First().Equals(x.Iterators.Skip(1).First()));
+            Assert.True(x.Iterators.First().Equals(new Expression("foo").Iterators.First()));
         }
 
         [Fact]

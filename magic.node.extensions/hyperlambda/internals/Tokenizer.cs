@@ -23,153 +23,163 @@ namespace magic.node.extensions.hyperlambda.internals
             _reader = reader;
         }
 
-        public IEnumerable<string> GetTokens()
+        /*
+         * Dictionary containing functors for handling characters fetched
+         * from the stream reader during parsing from a Hyperlambda stream.
+         */
+        static readonly Dictionary<char, Func<StreamReader, StringBuilder, string>> _characterFunctors = new Dictionary<char, Func<StreamReader, StringBuilder, string>>
+        {
+            {':', (reader, builder) => {
+                if (builder.Length == 0)
+                {
+                    reader.Read(); // Discarding ':'.
+                    return ":";
+                }
+                var result = builder.ToString();
+                builder.Clear();
+                return result;
+            }},
+            {'@', (reader, builder) => {
+                if (builder.Length == 0)
+                {
+                    reader.Read(); // Discarding '@'.
+                    var next = (char)reader.Read();
+                    if (next == '"')
+                    {
+                        var result = StringLiteralParser.ReadMultiLineString(reader);
+                        builder.Clear();
+                        return result;
+                    }
+                    builder.Append('@').Append(next);
+                }
+                else
+                {
+                    builder.Append('@');
+                    reader.Read();
+                }
+                return null;
+            }},
+            {'"', (reader, builder) => {
+                if (builder.Length == 0)
+                {
+                    var result = StringLiteralParser.ReadQuotedString(reader);
+                    builder.Clear();
+                    return result;
+                }
+                builder.Append('"');
+                reader.Read();
+                return null;
+            }},
+            {'\'', (reader, builder) => {
+                if (builder.Length == 0)
+                {
+                    var result = StringLiteralParser.ReadQuotedString(reader);
+                    builder.Clear();
+                    return result;
+                }
+                builder.Append('\'');
+                reader.Read();
+                return null;
+            }},
+            {'\r', (reader, builder) => {
+                if (builder.Length == 0)
+                {
+                    reader.Read(); // Discarding '\r'.
+                    if (reader.EndOfStream || (char)reader.Read() != '\n')
+                        throw new ArgumentException("CR/LF error in Hyperlambda");
+                    return "\r\n";
+                }
+                var result = builder.ToString();
+                builder.Clear();
+                return result;
+            }},
+            {'\n', (reader, builder) => {
+                if (builder.Length == 0)
+                {
+                    reader.Read(); // Discarding '\n'.
+                    return "\r\n";
+                }
+                var result = builder.ToString();
+                builder.Clear();
+                return result;
+            }},
+            {'/', (reader, builder) => {
+                if (builder.Length == 0)
+                {
+                    reader.Read(); // Discarding current '/'.
+                    if (reader.Peek() == '/')
+                    {
+                        while (!reader.EndOfStream && (char)reader.Peek() != '\n')
+                            reader.Read();
+                    }
+                    else if (reader.Peek() == '*')
+                    {
+                        // Eating until "*/".
+                        var seenEndOfComment = false;
+                        while (!reader.EndOfStream && !seenEndOfComment)
+                        {
+                            var idxComment = reader.Read();
+                            if (idxComment == '*' && reader.Peek() == '/')
+                            {
+                                reader.Read();
+                                seenEndOfComment = true;
+                            }
+                        }
+                        if (!seenEndOfComment && reader.EndOfStream)
+                            throw new ArgumentException("Syntax error in comment close to end of Hyperlambda");
+                    }
+                    else
+                    {
+                        builder.Append('/'); // Only a part of the current token.
+                    }
+                }
+                else
+                {
+                    reader.Read(); // Discarding '/' character.
+                    builder.Append('/');
+                }
+                return null;
+            }},
+            {' ', (reader, builder) => {
+                reader.Read(); // Discarding current ' '.
+                if (builder.Length > 0)
+                {
+                    builder.Append(' ');
+                    return null;
+                }
+                builder.Append(' ');
+                while (!reader.EndOfStream && (char)reader.Peek() == ' ')
+                {
+                    reader.Read();
+                    builder.Append(' ');
+                }
+                if (!reader.EndOfStream && builder.Length % 3 != 0)
+                    throw new ArgumentException("Odd number of spaces found in Hyperlambda file");
+                var result = builder.ToString();
+                builder.Clear();
+                return result;
+            }},
+        };
+
+        /*
+         * Method responsible for actually retrieving tokens from stream.
+         */
+        internal IEnumerable<string> GetTokens()
         {
             var builder = new StringBuilder();
             while (!_reader.EndOfStream)
             {
                 var current = (char)_reader.Peek();
-                switch (current)
+                if (_characterFunctors.ContainsKey(current))
                 {
-                    case ':':
-                        if (builder.Length > 0)
-                        {
-                            yield return builder.ToString();
-                            builder.Clear();
-                        }
-                        _reader.Read(); // Discarding ':'.
-                        yield return ":";
-                        break;
-
-                    case '@':
-                        if (builder.Length > 0)
-                        {
-                            builder.Append(current);
-                            _reader.Read();
-                        }
-                        else
-                        {
-                            _reader.Read(); // Discarding '@'.
-                            var next = (char)_reader.Read();
-                            if (next == '"')
-                            {
-                                yield return StringLiteralParser.ReadMultiLineString(_reader);
-                                builder.Clear();
-                            }
-                            else
-                            {
-                                builder.Append('@').Append(next);
-                            }
-                        }
-                        break;
-
-                    case '"':
-                    case '\'':
-                        if (builder.Length > 0)
-                        {
-                            builder.Append(current);
-                            _reader.Read();
-                        }
-                        else
-                        {
-                            yield return StringLiteralParser.ReadQuotedString(_reader);
-                            builder.Clear();
-                        }
-                        break;
-
-                    case '\r':
-                        if (builder.Length > 0)
-                        {
-                            yield return builder.ToString();
-                            builder.Clear();
-                        }
-                        _reader.Read(); // Discarding '\r'.
-
-                        if (_reader.EndOfStream)
-                            throw new ArgumentException("CR/LF error close to EOF");
-
-                        var lf = (char)_reader.Read();
-                        if (lf != '\n')
-                            throw new ArgumentException("CR/LF error in Hyperlambda");
-
-                        yield return "\r\n";
-                        break;
-
-                    case '\n':
-                        if (builder.Length > 0)
-                        {
-                            yield return builder.ToString();
-                            builder.Clear();
-                        }
-                        _reader.Read(); // Discarding '\n'.
-                        yield return "\r\n";
-                        break;
-
-                    case '/':
-                        if (builder.Length > 0)
-                        {
-                            _reader.Read(); // Discarding '/' character.
-                            builder.Append('/');
-                        }
-                        else
-                        {
-                            _reader.Read(); // Discarding current '/'.
-                            if (_reader.Peek() == '/')
-                            {
-                                // Eating the rest of the line.
-                                while (!_reader.EndOfStream && (char)_reader.Peek() != '\n')
-                                {
-                                    _reader.Read();
-                                }
-                            }
-                            else if (_reader.Peek() == '*')
-                            {
-                                // Eating until "*/".
-                                var seenEndOfComment = false;
-                                while (!_reader.EndOfStream && !seenEndOfComment)
-                                {
-                                    var idxComment = _reader.Read();
-                                    if (idxComment == '*' && _reader.Peek() == '/')
-                                    {
-                                        _reader.Read();
-                                        seenEndOfComment = true;
-                                    }
-                                }
-                                if (!seenEndOfComment && _reader.EndOfStream)
-                                    throw new ArgumentException("Syntax error in comment close to end of Hyperlambda");
-                            }
-                            else
-                            {
-                                builder.Append(current); // Only a part of the current token.
-                            }
-                        }
-                        break;
-
-                    case ' ':
-                        _reader.Read(); // Discarding current ' '.
-                        if (builder.Length > 0)
-                        {
-                            builder.Append(current);
-                        }
-                        else
-                        {
-                            builder.Append(' ');
-                            while (!_reader.EndOfStream && (char)_reader.Peek() == ' ')
-                            {
-                                _reader.Read();
-                                builder.Append(' ');
-                            }
-                            if (!_reader.EndOfStream && builder.Length % 3 != 0)
-                                throw new ArgumentException("Odd number of spaces found in Hyperlambda file");
-                            yield return builder.ToString();
-                            builder.Clear();
-                        }
-                        break;
-
-                    default:
-                        builder.Append(current);
-                        _reader.Read();
-                        break;
+                    var result = _characterFunctors[current](_reader, builder);
+                    if (result != null)
+                        yield return result;
+                }
+                else
+                {
+                    builder.Append(current);
+                    _reader.Read();
                 }
             }
 
