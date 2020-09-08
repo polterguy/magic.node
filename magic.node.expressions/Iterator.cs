@@ -30,52 +30,52 @@ namespace magic.node.expressions
         static readonly Dictionary<char, Func<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>>> _parametrizedIterators =
             new Dictionary<char, Func<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>>>
         {
+            /*
+             * Extrapolation iterator, resolving to name comparison, where name
+             * to compare against, is fetched from its n'th children.
+             */
             {'{', (value) => {
                 var index = int.Parse(value.Substring(1, value.Length - 2));
-                return (identity, input) =>
-                {
-                    var node = identity.Children.Skip(index).First();
-                    return input.Where(x => x.Name.Equals(EvaluateNode(node)));
-                };
+                return (identity, input) => ExtrapolationIterator(
+                    identity,
+                    input,
+                    index);
             }},
+
+            /*
+             * Value iterator, comparing the value of the iterator, with the
+             * value of the node, converting to string nefore doing comparison,
+             * if necessary.
+             */
             {'=', (value) => {
-                var lookup = value.Substring(1);
-                return (identity, input) => input.Where(x =>
-                {
-                    if (x.Value == null)
-                        return lookup.Length == 0; // In case we're looking for null values
-
-                    if (x.Value is string)
-                        return lookup.Equals(x.Value);
-
-                    return lookup.Equals(Convert.ToString(x.Value, CultureInfo.InvariantCulture));
-                });
+                var name = value.Substring(1);
+                return (identity, input) => NameEqualsIterator(
+                    identity,
+                    input,
+                    name);
             }},
+
+            /*
+             * Subscript iterator, returning from [n1 to n2> from its previous result set.
+             */
             {'[', (value) => {
                 var ints = value.Substring(1, value.Length - 2).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 var start = int.Parse(ints[0]);
                 var count = int.Parse(ints[1]);
-                return (identity, input) => input.Skip(start).Take(count);
+                return (identity, input) => SubscriptIterator(
+                    identity,
+                    input,
+                    start,
+                    count);
             }},
+
+            /*
+             * Name equality iterator, returning the first node matching the specified name,
+             * upwards in hierarchy, implying direct ancestors, and older sibling nodes.
+             */
             {'@', (value) => {
-                var lookup2 = value.Substring(1);
-                return (identity, input) =>
-                {
-                    var cur = input.FirstOrDefault()?.Previous ?? input.FirstOrDefault()?.Parent;
-                    while (cur != null && cur.Name != lookup2)
-                    {
-                        var previous = cur.Previous;
-                        if (previous == null)
-                            cur = cur.Parent;
-                        else
-                            cur = previous;
-                    }
-
-                    if (cur == null)
-                        return new Node[] { };
-
-                    return new Node[] { cur };
-                };
+                var name = value.Substring(1);
+                return (identity, input) => AncestorNameIterator(identity, input, name);
             }},
         };
 
@@ -254,6 +254,78 @@ namespace magic.node.expressions
                     yield return idxInner;
                 }
             }
+        }
+
+        /*
+         * Implementation of extrapolation iterator, resulting in name equality,
+         * where name to look for is resolved as the n'th child of the identity node's
+         * value, converted to string, if necessary, evaluating node if necessary.
+         */
+        static IEnumerable<Node> ExtrapolationIterator(
+            Node identity,
+            IEnumerable<Node> input,
+            int index)
+        {
+            var node = identity.Children.Skip(index).First();
+            return input.Where(x => x.Name.Equals(EvaluateNode(node)));
+        }
+
+        /*
+         * Name equality iterator, requiring a statically declared name, returning
+         * results of all nodes from previous result set, matching name specified.
+         */
+        static IEnumerable<Node> NameEqualsIterator(
+            Node identity,
+            IEnumerable<Node> input,
+            string name)
+        {
+            return input.Where(x => {
+                if (x.Value == null)
+                    return name.Length == 0; // In case we're looking for null values
+
+                if (x.Value is string)
+                    return name.Equals(x.Value);
+
+                return name.Equals(Convert.ToString(x.Value, CultureInfo.InvariantCulture));
+            });
+        }
+
+        /*
+         * Subscript iterator, returning a subscript of the previous result set.
+         */
+        static IEnumerable<Node> SubscriptIterator(
+            Node identity,
+            IEnumerable<Node> input,
+            int start,
+            int count)
+        {
+            return input.Skip(start).Take(count);
+        }
+
+        /*
+         * Ancestor/elder-sibling iterator, returning the first node being either
+         * a direct ancestor, or an older sibling (of self or direct ancestors),
+         * matching the specified name.
+         */
+        static IEnumerable<Node> AncestorNameIterator(
+            Node identity,
+            IEnumerable<Node> input,
+            string name)
+        {
+            var cur = input.FirstOrDefault()?.Previous ?? input.FirstOrDefault()?.Parent;
+            while (cur != null && cur.Name != name)
+            {
+                var previous = cur.Previous;
+                if (previous == null)
+                    cur = cur.Parent;
+                else
+                    cur = previous;
+            }
+
+            if (cur == null)
+                return new Node[] { };
+
+            return new Node[] { cur };
         }
 
         #endregion
