@@ -246,6 +246,8 @@ You can include the following NuGet packages into your project to access Magic N
 * `magic.node.expressions` - Gives you expression support on your nodes.
 * `magic.node.extensions` - Contains the Hyperlambda parser and generator, in addition to the typing system.
 
+However, all of these packages are indirectly included when you use [Magic](https://github.com/polterguy/magic).
+
 ## Documenting nodes, arguments to slots, etc
 
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
