@@ -96,6 +96,41 @@ can be found below.
 
 The type system is extendible, and you can easily create support for serializing your own types, by using
 the `Converter.AddConverter` method, that can be found in the `magic.node.extensions.hyperlambda` namespace.
+Below is an example of how to extend the typing system, to allow for serializing and de-serializing instances
+of a `Foo` class into Hyperlambda.
+
+```csharp
+/*
+ * Class you want to serialize into Hyperlambda.
+ */
+class Foo
+{
+    public int Value1 { get; set; }
+    public string Value2 { get; set; }
+}
+
+/*
+ * Adding our converter functions, and associating them
+ * with a type, and a Hyperlambda type name.
+ */
+Converter.AddConverter(
+    typeof(Foo),
+    "foo",
+    (obj) => {
+        var fooInput = obj as Foo;
+        return ("foo", $"{fooInput.Value1},{fooInput.Value2}");
+    }, (obj) => {
+        var strEntities = (obj as string).Split(',');
+        return new Foo
+        {
+            Value1 = int.Parse(strEntities[0]),
+            Value2 = strEntities[1],
+        };
+    });
+```
+
+The above will allow you to serialize instances of `Foo` into your Hyperlambda, and
+de-serialize these instances, once needed.
 
 ## String literals
 
