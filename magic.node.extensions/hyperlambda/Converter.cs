@@ -18,7 +18,8 @@ namespace magic.node.extensions.hyperlambda
         #region [ -- Converters -- ]
 
         // String => Func Dictionary, containing actual object to object converters for built-in types.
-        readonly static Dictionary<string, Func<object, object>> _toObjectFunctors = new Dictionary<string, Func<object, object>>()
+        readonly static Dictionary<string, Func<object, object>> _toObjectFunctors =
+            new Dictionary<string, Func<object, object>>()
         {
             {"short", (value) => Convert.ToInt16(value, CultureInfo.InvariantCulture)},
             {"ushort", (value) => Convert.ToUInt16(value, CultureInfo.InvariantCulture)},
@@ -185,6 +186,15 @@ namespace magic.node.extensions.hyperlambda
         {
             _toStringFunctors[clrType.FullName] = toStringFunctor;
             _toObjectFunctors[hyperlambdaTypename] = toObjectFunctor;
+        }
+
+        /// <summary>
+        /// Returns all sypported types for the Hyperlambda parser.
+        /// </summary>
+        /// <returns>List of Hyperlambda type names, supported by the parser, including custom types.</returns>
+        public static IEnumerable<string> ListTypes()
+        {
+            return _toObjectFunctors.Keys;
         }
     }
 }

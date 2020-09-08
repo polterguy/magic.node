@@ -178,6 +178,66 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void Evaluate_08()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   how/dy";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/how\\/dy");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("how/dy", result.First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_09()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   /howdy";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/\\\\/howdy");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("/howdy", result.First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_10()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   howdy:";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/howdy/=");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("howdy", result.First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_11()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   howdy";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/howdy/=");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("howdy", result.First().Name);
+        }
+
+        [Fact]
         public void ParentIterator()
         {
             // Creating some example lambda to run our expression on.
@@ -426,6 +486,48 @@ foo:x:../*/{0}
             // Asserts.
             Assert.Single(result);
             Assert.Equal("OK", result.First().Value);
+        }
+
+        [Fact]
+        public void CustomStaticIterator()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   howdy:XXX";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            Iterator.AddStaticIterator("^^", (identity, input) => {
+                return input.Where(x => x.GetEx<string>() == "XXX");
+            });
+            var x = new Expression("../**/^^");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("howdy", result.First().Name);
+        }
+
+        [Fact]
+        public void CustomDynamicIterator()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   howdy1:XXXXX
+   howdy2:XXX
+   howdy3:XXXXX
+";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            Iterator.AddDynamicIterator('%', (iteratorValue) => {
+                var no = int.Parse(iteratorValue.Substring(1));
+                return (identity, input) => {
+                    return input.Where(x => x.Get<string>()?.Length == no);
+                };
+            });
+            var x = new Expression("../**/%3");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("howdy2", result.First().Name);
         }
     }
 }

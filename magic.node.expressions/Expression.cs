@@ -45,7 +45,10 @@ namespace magic.node.expressions
         /// <returns>The result of the evaluation.</returns>
         public IEnumerable<Node> Evaluate(Node identity)
         {
-            // Evaluating all iterators.
+            /*
+             * Evaluating all iterators sequentially, returning the results to caller,
+             * starting from the identity node.
+             */
             IEnumerable<Node> result = new Node[] { identity };
             foreach (var idx in _iterators)
             {
@@ -104,10 +107,7 @@ namespace magic.node.expressions
             {
                 while (!reader.EndOfStream)
                 {
-                    var idx = (char)reader.Peek();
-                    if (idx == -1)
-                        break;
-
+                    var idx = (char)reader.Read();
                     if (idx == '/')
                     {
                         yield return new Iterator(builder.ToString());
@@ -115,9 +115,11 @@ namespace magic.node.expressions
                     }
                     else
                     {
-                        builder.Append(idx);
+                        if (idx == '\\' && builder.Length > 0)
+                            builder.Append((char)reader.Read()); // Supporting escaped '/' characters in iterators.
+                        else
+                            builder.Append(idx);
                     }
-                    reader.Read(); // Simply discarding currently handled character.
                 }
             }
 

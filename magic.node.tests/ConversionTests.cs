@@ -571,5 +571,31 @@ namespace magic.node.tests
             var hyperlambda = Generator.GetHyper(node.Children);
             Assert.Equal("some-value:int:5\r\nfoo:foo:" + "\"5,Howdy \\\"World\"" + "\r\nsome-other-value:decimal:5\r\n", hyperlambda);
         }
+
+        [Fact]
+        public void ListSupportedTypes()
+        {
+            var types = Converter.ListTypes();
+            Assert.True(types.Count() >= 20);
+            Assert.NotNull(types.FirstOrDefault(x => x == "short"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "ushort"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "int"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "uint"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "long"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "ulong"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "decimal"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "double"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "single"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "float"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "char"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "byte"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "string"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "bool"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "date"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "time"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "guid"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "x"));
+            Assert.NotNull(types.FirstOrDefault(x => x == "node"));
+        }
     }
 }

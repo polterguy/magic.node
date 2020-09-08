@@ -19,6 +19,38 @@ namespace magic.node.expressions
         readonly Func<Node, IEnumerable<Node>, IEnumerable<Node>> _evaluate;
 
         /*
+         * Dictionary containing lookups for non-parametrized iterators, implying an iterator that
+         * doesn't require arguments, but becomes an exact match for the iterator evaluator. Such
+         * as e.g. "..", etc.
+         */
+        static readonly Dictionary<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>> _nonParametrizedIterators =
+            new Dictionary<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>>
+        {
+            {"*", (identity, input) => input.SelectMany(x => x.Children)},
+            {"#", (identity, input) => input.Select(x => x.Value as Node)},
+            {"-", (identity, input) => input.Select(x => x.Previous ?? x.Parent.Children.Last())},
+            {"+", (identity, input) => input.Select(x => x.Next ?? x.Parent.Children.First())},
+            {".", (identity, input) => input.Select(x => x.Parent).Distinct()},
+            {"**", (identity, input) => AllDescendants(input)},
+            {"..", (identity, input) => {
+
+                /*
+                 * Notice, input might be a "no sequence enumerable",
+                 * in case previous iterator yielded no results,
+                 * so we'll have to accommodate for such cases.
+                 */
+                var idx = input.FirstOrDefault();
+                if (idx == null)
+                    return Array.Empty<Node>();
+
+                while (idx.Parent != null)
+                    idx = idx.Parent;
+
+                return new Node[] { idx };
+            }},
+        };
+
+        /*
          * Dictionary containing lookups for first character of iterator, resolving
          * to functor returning functor responsible for executing parametrized iterator.
          *
@@ -49,7 +81,7 @@ namespace magic.node.expressions
              */
             {'=', (value) => {
                 var name = value.Substring(1);
-                return (identity, input) => NameEqualsIterator(
+                return (identity, input) => ValueEqualsIterator(
                     input,
                     name);
             }},
@@ -69,7 +101,8 @@ namespace magic.node.expressions
 
             /*
              * Name equality iterator, returning the first node matching the specified name,
-             * upwards in hierarchy, implying direct ancestors, and older sibling nodes.
+             * upwards in hierarchy, implying direct ancestors, and older sibling nodes,
+             * and older siblings of direct ancestors.
              */
             {'@', (value) => {
                 var name = value.Substring(1);
@@ -77,11 +110,10 @@ namespace magic.node.expressions
             }},
         };
 
-        /// <summary>
-        /// Creates an iterator from its given string representation.
-        /// </summary>
-        /// <param name="value">String declaration of iterator</param>
-        public Iterator(string value)
+        /*
+         * Creates an iterator from its given string representation.
+         */
+        internal Iterator(string value)
         {
             Value = value;
             _evaluate = CreateEvaluator(Value);
@@ -102,6 +134,32 @@ namespace magic.node.expressions
         public IEnumerable<Node> Evaluate(Node identity, IEnumerable<Node> input)
         {
             return _evaluate(identity, input);
+        }
+
+        /// <summary>
+        /// Allows you to inject a non-parametrized iterator into the available
+        /// iterators.
+        /// </summary>
+        /// <param name="iteratorValue">Fully qualified name, to match your functor.</param>
+        /// <param name="functor">Functor to execute as your iterator name is matched.</param>
+        public static void AddStaticIterator(
+            string iteratorValue,
+            Func<Node, IEnumerable<Node>, IEnumerable<Node>> functor)
+        {
+            _nonParametrizedIterators[iteratorValue] = functor;
+        }
+
+        /// <summary>
+        /// Allos you to add a parametrized iterator into the available
+        /// iterators.
+        /// </summary>
+        /// <param name="iteratorFirstCharacter">First character your iterator must start with.</param>
+        /// <param name="createFunctor">Function that is responsible for creating your actual iterator.</param>
+        public static void AddDynamicIterator(
+            char iteratorFirstCharacter,
+            Func<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>> createFunctor)
+        {
+            _parametrizedIterators.Add(iteratorFirstCharacter, createFunctor);
         }
 
         #region [ -- Overrides -- ]
@@ -145,65 +203,11 @@ namespace magic.node.expressions
          * Creates the evaluator, which is simply a function, taking an identity node, an enumerable of
          * nodes, resuolting in a new enumerable of nodes.
          */
-        static Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateEvaluator(string value)
-        {
-            switch (value)
-            {
-                case "*":
-                    return (identity, input) => input.SelectMany(x => x.Children);
-
-                case "#":
-                    return (identity, input) => input.Select(x => x.Value as Node);
-
-                case "-":
-                    return (identity, input) => input.Select(x => x.Previous ?? x.Parent.Children.Last());
-
-                case "+":
-                    return (identity, input) => input.Select(x => x.Next ?? x.Parent.Children.First());
-
-                case ".":
-                    return (identity, input) => input.Select(x => x.Parent).Distinct();
-
-                case "..":
-                    return (identity, input) =>
-                    {
-                        // Notice, input might be a "no sequence enumerable", so we'll have to accommodate for "null returns".
-                        var idx = input.FirstOrDefault();
-                        if (idx == null)
-                            return new Node[0];
-
-                        while (idx.Parent != null)
-                            idx = idx.Parent;
-
-                        return new Node[] { idx };
-                    };
-
-                case "**":
-                    return (identity, input) =>
-                    {
-                        return AllDescendants(input);
-                    };
-
-                default:
-
-                    /*
-                     * Need to check if this is a parametrized iterator.
-                     */
-                    return CreateParametrizedIterator(value);
-            }
-        }
-
-        /*
-         * Creates a parametrized iterator. A parametrized iterator is an iterator that requires 
-         * some sort of dynamic parameter or argument(s).
-         */
-        static Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateParametrizedIterator(string iteratorValue)
+        static Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateEvaluator(string iteratorValue)
         {
             // If iterator is empty, we assume it's a name lookup, for empty name.
             if (iteratorValue == "")
-            {
                 return (identity, input) => input.Where(x => x.Name.Length == 0);
-            }
 
             // If iterator is escaped, we assume it's a name lookup.
             if (iteratorValue.StartsWith("\\", StringComparison.InvariantCulture))
@@ -212,6 +216,32 @@ namespace magic.node.expressions
                 return (identity, input) => input.Where(x => x.Name == name);
             }
 
+            // Checking if our non-parametrized iterators contains current iterator value.
+            if (_nonParametrizedIterators.ContainsKey(iteratorValue))
+                return _nonParametrizedIterators[iteratorValue];
+
+            /*
+             * Defaulting to parametrized iterator, which will default to name lookup,
+             * unless it can find a match
+             */
+            var result = CreateParametrizedIterator(iteratorValue);
+            if (result != null)
+                return result;
+
+            // Defaulting to name lookup iterator.
+            return (identity, input) => input.Where(x => x.Name == iteratorValue);
+        }
+
+        /*
+         * Creates a parametrized iterator. A parametrized iterator is an iterator that requires 
+         * some sort of dynamic parameter or argument(s).
+         *
+         * Notice, contrary to non-parametrized iterators, a parametrized iterator only looks up
+         * its iterator implementation according to the first character in its value, and not
+         * according to the whole iterator value.
+         */
+        static Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateParametrizedIterator(string iteratorValue)
+        {
             /*
              * Checking to see if we have a specialized parametrized iterator matching
              * the first character of iterator value.
@@ -227,8 +257,7 @@ namespace magic.node.expressions
             if (int.TryParse(iteratorValue, out int number))
                 return (identity, input) => input.SelectMany(x => x.Children.Skip(number).Take(1));
 
-            // Defaulting to name lookup iterator.
-            return (identity, input) => input.Where(x => x.Name == iteratorValue);
+            return null;
         }
 
         /*
@@ -281,7 +310,7 @@ namespace magic.node.expressions
          * Name equality iterator, requiring a statically declared name, returning
          * results of all nodes from previous result set, matching name specified.
          */
-        static IEnumerable<Node> NameEqualsIterator(
+        static IEnumerable<Node> ValueEqualsIterator(
             IEnumerable<Node> input,
             string name)
         {
