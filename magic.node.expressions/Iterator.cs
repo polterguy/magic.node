@@ -50,7 +50,6 @@ namespace magic.node.expressions
             {'=', (value) => {
                 var name = value.Substring(1);
                 return (identity, input) => NameEqualsIterator(
-                    identity,
                     input,
                     name);
             }},
@@ -63,7 +62,6 @@ namespace magic.node.expressions
                 var start = int.Parse(ints[0]);
                 var count = int.Parse(ints[1]);
                 return (identity, input) => SubscriptIterator(
-                    identity,
                     input,
                     start,
                     count);
@@ -275,7 +273,6 @@ namespace magic.node.expressions
          * results of all nodes from previous result set, matching name specified.
          */
         static IEnumerable<Node> NameEqualsIterator(
-            Node identity,
             IEnumerable<Node> input,
             string name)
         {
@@ -294,7 +291,6 @@ namespace magic.node.expressions
          * Subscript iterator, returning a subscript of the previous result set.
          */
         static IEnumerable<Node> SubscriptIterator(
-            Node identity,
             IEnumerable<Node> input,
             int start,
             int count)
