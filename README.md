@@ -6,10 +6,10 @@
 Magic Node is a simple name/value/children graph object, in addition to a _"Hyperlambda"_ parser, allowing you to
 create a textual string representations of graph objects easily transformed to its relational graph object syntax,
 and vice versa. This allows you to easily declaratively create execution trees using a format similar to YAML, for 
-then to access every individual node, its value, name and children, from your C#, CLR code or Hyperlambda code.
+then to access every individual node, its value, name and children, from your C#, CLR code, or Hyperlambda.
 
 It is perfect for creating a highly humanly readable relational configuration format, or smaller DSL engines,
-especially when combined with [Magic Signals](https://github.com/polterguy/magic.signals) and
+especially when combined with Magic Signals and
 [Magic Lambda](https://github.com/polterguy/magic.lambda). Below is a small
 example of Hyperlambda to give you an idea of how it looks like.
 
@@ -25,7 +25,7 @@ foo:int:5
 
 /*
  * Node with two children.
- * Notice, the value is optional, and childrne are declared
+ * Notice, the value is optional, and children are declared
  * by adding 3 spaces in front of the child's name.
  */
 foo
@@ -44,14 +44,17 @@ var name = root.Name;
 var value = root.Value;
 
 // Iterating children nodes of root node.
-foreach (var idx in root.Children)
+foreach (var idxChild in root.Children)
 {
    /* ... do stuff with idx here ... */
 }
 ```
 
 This allows you to read Hyperlambda from files, over the network, etc, to dynamically send
-relational tree structures around, and serialize these in a human readable format.
+relational tree structures around, and serialize these in a human readable format. In addition,
+Hyperlambda is also Turing Complete, when combined with for instance
+[magic.lambda](https://github.com/polterguy/magic.lambda), making it a very versatile and
+extendible _"DSL engine"_ - As in _"Domain Specific Language"_.
 
 ## Supported types
 
@@ -70,7 +73,7 @@ Hyperlambda only supports serialising the following types by default.
 * `single` = System.Float
 * `float` = System.Float - Alias for above
 * `bool` = System.Boolean
-* `date` = System.DateTime
+* `date` = System.DateTime - _Always_ interpreted and serialized as UTC time!
 * `time` = System.TimeSpan
 * `guid` = System.Guid
 * `char` = System.Char
@@ -83,11 +86,14 @@ The default type if ommitted is `string`. An example of declaring a couple of ty
 can be found below.
 
 ```
-.integer:int:5
-.boolean:bool:true
-.explicit-string:string:foo
-.inplicit-string:bar
+.foo1:int:5
+.foo2:bool:true
+.foo3:string:foo
+.foo4:bar
 ```
+
+The type system is extendible, and you can easily create support for serializing your own types, by using
+the `Converter.AddConverter` method, that can be found in the `magic.node.extensions.hyperlambda` namespace.
 
 ## String literals
 
@@ -181,6 +187,47 @@ for-each:x:./*/{0}/*/=world
 
 After evaluating the above Hyperlambda, the value of all nodes having _"world"_ as their value
 inside of **[.foo]** will be _"thomas was here"_.
+
+### Extending lambda expressions/iterators
+
+You can easily extend the expressions in this project, either with a _"static"_ iterator, implying
+a direct match - Or with a dynamic parametrized iterator, allowing you to create iterators that
+requires parameters, etc. To extend the supported iterators, use any of the following two static
+methods.
+
+* `Iterator.AddStaticIterator` - Creates a _"static"_ iterator, implying a direct match.
+* `Iterator.AddDynamicIterator` - Creates a _"dynamic iterator create function"_, allowing you to extend your iterators, with your own custom iterators, that can be parametrized. Below is a C# example, that creates a dynamic iterator,
+that will only return nodes having a value, that once converted into a string, has exactly 3 characters.
+
+```csharp
+/*
+ * Creating our custom iterator,
+ * making sure it's matched if iterator starts with the '%' character.
+ */
+Iterator.AddDynamicIterator('%', (iteratorValue) => {
+    var no = int.Parse(iteratorValue.Substring(1));
+    return (identity, input) => {
+        return input.Where(x => x.Get<string>()?.Length == no);
+    };
+});
+
+// Example Hyperlambda to execute our custom iterator on.
+var hl = @"foo
+   howdy1:XXXXX
+   howdy2:XXX
+   howdy3:XXXXX
+";
+var lambda = new Parser(hl).Lambda().Children;
+
+// Creating an expression, and evaluating it on above lambda.
+var x = new Expression("../**/%3");
+var result = x.Evaluate(lambda.First()).ToList();
+
+/*
+ * Result now contains only the **[howdy2]** node, since other nodes doesn't have
+ * exactly 3 characters in their values.
+ */
+```
 
 ## Documenting nodes, arguments to slots, etc
 

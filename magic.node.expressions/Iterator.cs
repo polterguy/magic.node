@@ -216,11 +216,16 @@ namespace magic.node.expressions
                 return (identity, input) => input.Where(x => x.Name == name);
             }
 
-            // Checking if our non-parametrized iterators contains current iterator value.
+            /*
+             * First checking non-parametrized iterators for a match.
+             */
             if (_nonParametrizedIterators.ContainsKey(iteratorValue))
                 return _nonParametrizedIterators[iteratorValue];
 
             /*
+             * Only if there are no non-parametrized iterators, we resort
+             * to looking into parametrized iterators for a match.
+             *
              * Defaulting to parametrized iterator, which will default to name lookup,
              * unless it can find a match
              */
@@ -228,7 +233,11 @@ namespace magic.node.expressions
             if (result != null)
                 return result;
 
-            // Defaulting to name lookup iterator.
+            /*
+             * Defaulting to name lookup iterator.
+             *
+             * This is the default iterator, doing a basic name lookup.
+             */
             return (identity, input) => input.Where(x => x.Name == iteratorValue);
         }
 
