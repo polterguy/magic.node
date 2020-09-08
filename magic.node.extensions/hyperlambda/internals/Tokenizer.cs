@@ -119,7 +119,7 @@ namespace magic.node.extensions.hyperlambda.internals
                 var next = (char)reader.Read();
                 if (next == '"')
                 {
-                    var result = StringLiteralParser.ReadMultiLineString(reader);
+                    var result = ParserHelper.ReadMultiLineString(reader);
                     builder.Clear();
                     return result;
                 }
@@ -140,7 +140,7 @@ namespace magic.node.extensions.hyperlambda.internals
         {
             if (builder.Length == 0)
             {
-                var result = StringLiteralParser.ReadQuotedString(reader);
+                var result = ParserHelper.ReadQuotedString(reader);
                 builder.Clear();
                 return result;
             }
@@ -156,7 +156,7 @@ namespace magic.node.extensions.hyperlambda.internals
         {
             if (builder.Length == 0)
             {
-                var result = StringLiteralParser.ReadQuotedString(reader);
+                var result = ParserHelper.ReadQuotedString(reader);
                 builder.Clear();
                 return result;
             }
@@ -208,9 +208,13 @@ namespace magic.node.extensions.hyperlambda.internals
                 reader.Read(); // Discarding current '/'.
                 var next = (char)reader.Peek();
                 if (next == '/')
-                    EatUntil(reader, "\n", false);
+                    ParserHelper.EatUntil(reader, "\n");
                 else if (next == '*')
-                    EatUntil(reader, "*/", true);
+                {
+                    if (!ParserHelper.EatUntil(reader, "*/"))
+                        throw new ArgumentException("Couldn't find end of multi line comment before EOF");
+                    reader.Read();
+                }
                 else
                     builder.Append('/'); // Only a part of the current token.
             }
@@ -246,55 +250,6 @@ namespace magic.node.extensions.hyperlambda.internals
             var result = builder.ToString();
             builder.Clear();
             return result;
-        }
-
-        #endregion
-
-        #region [ -- Private helper methods -- ]
-
-        /*
-         * Eats up character in stream, and discards them, until sequence is found.
-         */
-        static bool EatUntil(
-            StreamReader reader,
-            string sequence,
-            bool mustFind,
-            bool recursed = false)
-        {
-            while (true)
-            {
-                if (reader.EndOfStream)
-                {
-                    // Checking if we should throw exception if we don't find sequence before EOF.
-                    if (mustFind)
-                        throw new ArgumentException("Syntax error in Hyperlambda, EOF encountered prematurely.");
-                    return false;
-                }
-                var current = (char)reader.Peek();
-                if (current == sequence.First())
-                {
-                    /*
-                     * Matched first character, now checking if we're done.
-                     */
-                    reader.Read();
-                    if (sequence.Length == 1 || EatUntil(reader, sequence.Substring(1), mustFind, true))
-                        return true; // Last character in sequence found.
-                    // Else, just continue!
-                }
-                else if (recursed)
-                {
-                    /*
-                     * Notice, NOT moving stream pointer forward,
-                     * since it still might be the first character in original sequence.
-                     */
-                    return false;
-                }
-                else
-                {
-                    // Discarding current character, and moving to next character in stream.
-                    reader.Read();
-                }
-            }
         }
 
         #endregion

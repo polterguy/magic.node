@@ -117,7 +117,7 @@ namespace magic.node.expressions
                     else if (idx == '"' && builder.Length == 0)
                     {
                         // Single quoted string, allows for having iterators containing "/" in their values.
-                        builder.Append(StringLiteralParser.ReadQuotedString(reader));
+                        builder.Append(ParserHelper.ReadQuotedString(reader));
                     }
                     else
                     {

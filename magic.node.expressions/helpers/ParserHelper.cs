@@ -11,9 +11,9 @@ using System.Text;
 namespace magic.node.expressions.helpers
 {
     /// <summary>
-    /// Helper class to help parse string literals.
+    /// Helper class to help parse string literals, and other common tasks.
     /// </summary>
-    public static class StringLiteralParser
+    public static class ParserHelper
     {
         /// <summary>
         /// Reads a multline string literal, basically a string surrounded by @"".
@@ -84,7 +84,52 @@ namespace magic.node.expressions.helpers
             throw new ArgumentException("Syntax error, string literal not closed before end of input");
         }
 
+        /*
+         * Eats up character in stream, and discards them, until sequence is found.
+         */
+        /// <summary>
+        /// Eats characters in stream reader, until the specified sequence is found
+        /// </summary>
+        /// <param name="reader">Reader from where to eat characters.</param>
+        /// <param name="sequence">Stop sequence for when to stop eating characters.</param>
+        /// <returns>True if sequence was found, otherwise false if EOF was encountered before sequence could be found.</returns>
+        public static bool EatUntil(StreamReader reader, string sequence)
+        {
+            return EatUntil(reader, sequence, false);
+        }
+
         #region [ -- Private helper methods -- ]
+
+        static bool EatUntil(
+            StreamReader reader,
+            string sequence,
+            bool recursed)
+        {
+            while (true)
+            {
+                if (reader.EndOfStream)
+                    return false;
+
+                var current = (char)reader.Peek();
+                if (current == sequence.First())
+                {
+                    reader.Read(); // Discarding current character.
+                    if (sequence.Length == 1 || EatUntil(reader, sequence.Substring(1), true))
+                        return true; // Last character in sequence found.
+                }
+                else if (recursed)
+                {
+                    /*
+                     * Notice, NOT moving stream pointer forward,
+                     * since it still might be the first character in original sequence.
+                     */
+                    return false;
+                }
+
+                // Discarding current character, and moving to next character in stream.
+                reader.Read();
+            }
+        }
 
         /*
          * Reads a single character from a single line string literal, escaped
