@@ -59,98 +59,132 @@ namespace magic.node.extensions.hyperlambda
 
         void Parse(StreamReader reader)
         {
-            var currentParent = _root;
             var tokenizer = new Tokenizer(reader);
-            var en = tokenizer.GetTokens().GetEnumerator();
+            var currentParent = _root;
 
-            Node idxNode = null;
-            string previous = null;
-            int level = 0;
+            Node currentNode = null;
+            string previousToken = null;
+            int currentLevel = 0;
 
-            while (en.MoveNext())
+            foreach (var idxToken in tokenizer.GetTokens())
             {
-                var token = en.Current;
-                switch (token)
+                switch (idxToken)
                 {
                     case ":":
-                        if (idxNode == null)
-                        {
-                            idxNode = new Node();
-                            currentParent.Add(idxNode);
-                        }
-                        else if (previous == ":")
-                        {
-                            idxNode.Value = ":";
-                            break;
-                        }
-
-                        if (idxNode.Value == null)
-                            idxNode.Value = "";
-                        previous = token;
+                        var tuple = HandleColon(currentNode, currentParent, idxToken, previousToken);
+                        previousToken = tuple.Item1;
+                        currentNode = tuple.Item2;
                         break;
 
                     case "\r\n":
-                        idxNode = null; // Making sure we create a new node on next iteration.
-                        previous = token;
+                        currentNode = null; // Making sure we create a new node on next iteration.
+                        previousToken = idxToken;
                         break;
 
                     default:
 
                         // Checking if token is a scope declaration.
-                        if (idxNode == null &&
-                            token.StartsWith(" ", StringComparison.CurrentCulture) &&
-                            !token.Any(x => x != ' '))
+                        if (currentNode == null &&
+                            idxToken.Any() &&
+                            !idxToken.Any(x => x != ' '))
                         {
-                            // We have a scope declaration.
-                            int newLevel = token.Length / 3;
-                            if (newLevel > level + 1)
-                            {
-                                // Syntax error in Hyperlambda, too many consecutive SP characters.
-                                throw new ArgumentException("Too many spaces found in Hyperlambda content");
-                            }
-                            if (newLevel == level + 1)
-                            {
-                                // Children collection opens up.
-                                currentParent = currentParent.Children.Last();
-                                level = newLevel;
-                            }
-                            else
-                            {
-                                // Propagating upwards in ancestor hierarchy.
-                                while (level > newLevel)
-                                {
-                                    currentParent = currentParent.Parent;
-                                    --level;
-                                }
-                            }
+                            // Token is only SP. Hence, it's a scope declaration.
+                            var levelDeclaration = FindCurrentScope(idxToken, currentLevel, currentParent);
+                            currentLevel = levelDeclaration.Item1;
+                            currentParent = levelDeclaration.Item2;
                         }
                         else
                         {
-                            if (previous == "\r\n")
+                            if (previousToken == "\r\n")
                             {
-                                // Special case for no spaces, and previous was CR.
+                                // We're back at root level.
                                 currentParent = _root;
-                                level = 0;
+                                currentLevel = 0;
                             }
 
-                            if (idxNode == null)
-                            {
-                                idxNode = new Node(token);
-                                currentParent.Add(idxNode);
-                            }
-                            else if (idxNode.Value == null || "".Equals(idxNode.Value))
-                            {
-                                idxNode.Value = token;
-                            }
-                            else
-                            {
-                                idxNode.Value = Converter.ToObject(token, idxNode.Get<string>());
-                            }
+                            currentNode = DecorateNode(idxToken, currentNode, currentParent);
                         }
-                        previous = token;
+                        previousToken = idxToken;
                         break;
                 }
             }
+        }
+
+        (string, Node) HandleColon(
+            Node currentNode,
+            Node currentParent,
+            string idxToken,
+            string previousToken)
+        {
+            if (currentNode == null)
+            {
+                currentNode = new Node();
+                currentParent.Add(currentNode);
+            }
+            else if (previousToken == ":")
+            {
+                currentNode.Value = ":";
+                return (previousToken, currentNode);
+            }
+
+            if (currentNode.Value == null)
+                currentNode.Value = "";
+            return (idxToken, currentNode);
+        }
+
+        /*
+         * Finds current scope, and returns it as an integer, in addition
+         * to returning its new parent to caller.
+         */
+        (int, Node) FindCurrentScope(string token, int level, Node currentParent)
+        {
+            int newLevel = token.Length / 3;
+            if (newLevel > level + 1)
+            {
+                // Syntax error in Hyperlambda, too many consecutive SP characters.
+                throw new ArgumentException("Too many spaces found in Hyperlambda content");
+            }
+            if (newLevel == level + 1)
+            {
+                // Children collection opens up.
+                currentParent = currentParent.Children.Last();
+                level = newLevel;
+            }
+            else
+            {
+                // Propagating upwards in ancestor hierarchy.
+                while (level > newLevel)
+                {
+                    currentParent = currentParent.Parent;
+                    --level;
+                }
+            }
+            return (level, currentParent);
+        }
+
+        /*
+         * Decorates the given node, and/or creates a new node, and returns
+         * the node to caller.
+         */
+        Node DecorateNode(string token, Node currentNode, Node currentParent)
+        {
+            if (currentNode == null)
+            {
+                // First token for node.
+                currentNode = new Node(token);
+                currentParent.Add(currentNode);
+            }
+            else if (currentNode.Value == null || "".Equals(currentNode.Value))
+            {
+                // Second token for node.
+                currentNode.Value = token;
+            }
+            else
+            {
+                // Third token for node, hence assuming previous token was type declaration.
+                currentNode.Value = Converter.ToObject(token, currentNode.Get<string>());
+            }
+            return currentNode;
         }
 
         #endregion

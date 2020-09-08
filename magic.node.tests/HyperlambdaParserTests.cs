@@ -183,6 +183,16 @@ foo2
         }
 
         [Fact]
+        public void ComplexHierarchy_Throws()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"foo1
+   bar1
+         bar2
+   bar3"));
+        }
+
+        [Fact]
         public void DoubleQuotedString()
         {
             // Creating some lambda object.
