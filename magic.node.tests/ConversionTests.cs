@@ -86,6 +86,27 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertIntObjectToString()
+        {
+            var result = Converter.ToObject(11, "string");
+            Assert.Equal("11", result);
+        }
+
+        [Fact]
+        public void ConvertBoolObjectToString_01()
+        {
+            var result = Converter.ToObject(true, "string");
+            Assert.Equal("true", result);
+        }
+
+        [Fact]
+        public void ConvertBoolObjectToString_02()
+        {
+            var result = Converter.ToObject(false, "string");
+            Assert.Equal("false", result);
+        }
+
+        [Fact]
         public void ConvertStringToString_02()
         {
             var result = Converter.ToString("Howdy:World");

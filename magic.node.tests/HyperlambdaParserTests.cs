@@ -316,13 +316,31 @@ world:""howdy world""throws"));
         }
 
         [Fact]
-        public void ReadSingleLineComment()
+        public void ReadSingleLineComment_01()
         {
             // Creating some lambda object.
             var result = new Parser(@"
 howdy
 // This is a comment, and should be ignored!
 world:foo""bar.com").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo\"bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void ReadSingleLineComment_02()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+// This is a comment, and should be ignored!
+world:foo""bar.com
+// NOTICE, no CR/LF at end of Hyperlambda").Lambda();
 
             // Asserts.
             Assert.Equal(2, result.Children.Count());
@@ -417,6 +435,25 @@ howdy
  * Next line will make sure this throws!
  * /
 world:foo""bar.com"));
+        }
+
+        [Fact]
+        public void ReadMultiLineComment_04()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"
+howdy
+/*
+ * This is a comment, and should be ignored!
+ * / howdy world */
+world:foo""bar.com").Lambda();
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo\"bar.com", result.Children.Skip(1).First().Value);
         }
 
         [Fact]

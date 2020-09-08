@@ -264,6 +264,7 @@ namespace magic.node.extensions.hyperlambda.internals
             {
                 if (reader.EndOfStream)
                 {
+                    // Checking if we should throw exception if we don't find sequence before EOF.
                     if (mustFind)
                         throw new ArgumentException("Syntax error in Hyperlambda, EOF encountered prematurely.");
                     return false;
@@ -281,10 +282,15 @@ namespace magic.node.extensions.hyperlambda.internals
                 }
                 else if (recursed)
                 {
+                    /*
+                     * Notice, NOT moving stream pointer forward,
+                     * since it still might be the first character in original sequence.
+                     */
                     return false;
                 }
                 else
                 {
+                    // Discarding current character, and moving to next character in stream.
                     reader.Read();
                 }
             }

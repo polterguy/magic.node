@@ -20,7 +20,6 @@ namespace magic.node.extensions.hyperlambda
         // String => Func Dictionary, containing actual object to object converters for built-in types.
         readonly static Dictionary<string, Func<object, object>> _toObjectFunctors = new Dictionary<string, Func<object, object>>()
         {
-            {"string", (value) => (value as string) ?? value.ToString()},
             {"short", (value) => Convert.ToInt16(value, CultureInfo.InvariantCulture)},
             {"ushort", (value) => Convert.ToUInt16(value, CultureInfo.InvariantCulture)},
             {"int", (value) => Convert.ToInt32(value, CultureInfo.InvariantCulture)},
@@ -33,6 +32,13 @@ namespace magic.node.extensions.hyperlambda
             {"float", (value) => Convert.ToSingle(value, CultureInfo.InvariantCulture)},
             {"char", (value) => Convert.ToChar(value, CultureInfo.InvariantCulture)},
             {"byte", (value) => Convert.ToByte(value, CultureInfo.InvariantCulture)},
+            {"string", (value) => {
+                return 
+                    (value as string) ??
+                    (value == null ?
+                        "" :
+                        _toStringFunctors[value.GetType().FullName](value).Item2);
+            }},
             {"bool", (value) => {
                 if (value is bool)
                     return value;
