@@ -238,6 +238,14 @@ itself. If you exchange 3 with 5, it will only return **[howdy1]** and **[howdy3
 since it will look for values with 5 characters instead. The `Iterator` class can be found
 in the `magic.node.expressions` namespace.
 
+## Usage
+
+You can include the following NuGet packages into your project to access Magic Node directly.
+
+* `magic.node` - Core node parts.
+* `magic.node.expressions` - Gives you expression support on your nodes.
+* `magic.node.extensions` - Contains the Hyperlambda parser and generator, in addition to the typing system.
+
 ## Documenting nodes, arguments to slots, etc
 
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
