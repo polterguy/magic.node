@@ -57,28 +57,30 @@ namespace magic.node.extensions.hyperlambda
 
         #region [ -- Private helper methods -- ]
 
+        /*
+         * Parses a lambda structure from the given Hyperlambda.
+         */
         void Parse(StreamReader reader)
         {
-            var tokenizer = new Tokenizer(reader);
-            var currentParent = _root;
-
+            // State values, to keep track of where we are ibn our tokenizer process, and create lambda process.
+            Node currentParent = _root;
             Node currentNode = null;
             string previousToken = null;
             int currentLevel = 0;
-
-            foreach (var idxToken in tokenizer.GetTokens())
+            foreach (var idxToken in new Tokenizer(reader).GetTokens())
             {
                 switch (idxToken)
                 {
                     case ":":
-                        var tuple = HandleColon(currentNode, currentParent, idxToken, previousToken);
-                        previousToken = tuple.Item1;
-                        currentNode = tuple.Item2;
+                        var tuple = HandleColon(
+                            currentNode,
+                            currentParent,
+                            previousToken);
+                        currentNode = tuple;
                         break;
 
                     case "\r\n":
                         currentNode = null; // Making sure we create a new node on next iteration.
-                        previousToken = idxToken;
                         break;
 
                     default:
@@ -104,16 +106,15 @@ namespace magic.node.extensions.hyperlambda
 
                             currentNode = DecorateNode(idxToken, currentNode, currentParent);
                         }
-                        previousToken = idxToken;
                         break;
                 }
+                previousToken = idxToken;
             }
         }
 
-        (string, Node) HandleColon(
+        Node HandleColon(
             Node currentNode,
             Node currentParent,
-            string idxToken,
             string previousToken)
         {
             if (currentNode == null)
@@ -124,12 +125,12 @@ namespace magic.node.extensions.hyperlambda
             else if (previousToken == ":")
             {
                 currentNode.Value = ":";
-                return (previousToken, currentNode);
+                return currentNode;
             }
 
             if (currentNode.Value == null)
                 currentNode.Value = "";
-            return (idxToken, currentNode);
+            return currentNode;
         }
 
         /*
