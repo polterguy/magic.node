@@ -23,17 +23,35 @@ namespace magic.node.extensions.hyperlambda.internals
          * Dictionary containing functors for handling characters fetched
          * from the stream reader during parsing from a Hyperlambda stream.
          *
-         * This architecture allows you to easily expand upon the tokenizer process
+         * This architecture allows you to easily expand upon the tokenizer process,
+         * and support 'custom tokens', for cases where you want to implement some
+         * sort of LISP macro style type of injections, into the parsing process.
          */
-        static readonly Dictionary<char, Func<StreamReader, StringBuilder, string>> _characterFunctors = new Dictionary<char, Func<StreamReader, StringBuilder, string>>
+        static readonly Dictionary<char, Func<StreamReader, StringBuilder, string>> _characterFunctors =
+        new Dictionary<char, Func<StreamReader, StringBuilder, string>>
         {
+            // Separates name and value of node (possibly).
             {':', HandleColonToken},
+
+            // Starts the declaration of a multiline string literal (possibly).
             {'@', HandleAlphaToken},
+
+            // Starts the declaration of a single line string literal (possibly).
             {'"', HandleDoubleQuoteToken},
+
+            // Starts the declaration of a single line string literal (possibly).
             {'\'', HandleSingleQuoteToken},
+
+            // Is the beginning of a CR/LF sequence.
             {'\r', HandleCRToken},
+
+            // Is the entirety of a CR/LF sequence (Mac type of text files).
             {'\n', HandleLFToken},
+
+            // Is the beginning of a single line or multi line comment.
             {'/', HandleSlashToken},
+
+            // Is possibly a scope declaration for your node.
             {' ', HandleSPToken},
         };
 
@@ -53,6 +71,7 @@ namespace magic.node.extensions.hyperlambda.internals
                 var current = (char)_reader.Peek();
                 if (_characterFunctors.ContainsKey(current))
                 {
+                    // We have a specialized functor for this character.
                     var result = _characterFunctors[current](_reader, builder);
                     if (result != null)
                         yield return result;
@@ -185,26 +204,25 @@ namespace magic.node.extensions.hyperlambda.internals
             if (builder.Length == 0)
             {
                 reader.Read(); // Discarding current '/'.
-                if (reader.Peek() == '/')
+                var next = (char)reader.Peek();
+                if (next == '/')
                 {
                     while (!reader.EndOfStream && (char)reader.Peek() != '\n')
                         reader.Read();
                 }
-                else if (reader.Peek() == '*')
+                else if (next == '*')
                 {
                     // Eating until "*/".
-                    var seenEndOfComment = false;
-                    while (!reader.EndOfStream && !seenEndOfComment)
+                    while (!reader.EndOfStream)
                     {
-                        var idxComment = reader.Read();
-                        if (idxComment == '*' && reader.Peek() == '/')
+                        var idxComment = (char)reader.Read();
+                        if (idxComment == '*' && (char)reader.Peek() == '/')
                         {
                             reader.Read();
-                            seenEndOfComment = true;
+                            return null;
                         }
                     }
-                    if (!seenEndOfComment && reader.EndOfStream)
-                        throw new ArgumentException("Syntax error in comment close to end of Hyperlambda");
+                    throw new ArgumentException("Syntax error in comment close to end of Hyperlambda");
                 }
                 else
                 {
@@ -213,6 +231,7 @@ namespace magic.node.extensions.hyperlambda.internals
             }
             else
             {
+                // '/' is just a part of another token, and not a comment declaration.
                 reader.Read(); // Discarding '/' character.
                 builder.Append('/');
             }
