@@ -106,7 +106,7 @@ of a `Foo` class into Hyperlambda.
 class Foo
 {
     public int Value1 { get; set; }
-    public string Value2 { get; set; }
+    public decimal Value2 { get; set; }
 }
 
 /*
@@ -117,20 +117,22 @@ Converter.AddConverter(
     typeof(Foo),
     "foo",
     (obj) => {
-        var fooInput = obj as Foo;
-        return ("foo", $"{fooInput.Value1},{fooInput.Value2}");
+        var foo = obj as Foo;
+        return ("foo", $"{foo.Value1}-{foo.Value2}");
     }, (obj) => {
-        var strEntities = (obj as string).Split(',');
+        var str = (obj as string).Split('-');
         return new Foo
         {
-            Value1 = int.Parse(strEntities[0]),
-            Value2 = strEntities[1],
+            Value1 = int.Parse(str[0]),
+            Value2 = decimal.Parse(str[1]),
         };
     });
 ```
 
 The above will allow you to serialize instances of `Foo` into your Hyperlambda, and
-de-serialize these instances, once needed.
+de-serialize these instances, once needed. Notice, you can (of course) only supply
+and create instance of the `Foo` class as _values_ of your nodes using C# if you execute
+the above code.
 
 ## String literals
 
