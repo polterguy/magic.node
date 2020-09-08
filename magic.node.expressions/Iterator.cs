@@ -73,7 +73,7 @@ namespace magic.node.expressions
              */
             {'@', (value) => {
                 var name = value.Substring(1);
-                return (identity, input) => AncestorNameIterator(identity, input, name);
+                return (identity, input) => AncestorNameIterator(input, name);
             }},
         };
 
@@ -304,7 +304,6 @@ namespace magic.node.expressions
          * matching the specified name.
          */
         static IEnumerable<Node> AncestorNameIterator(
-            Node identity,
             IEnumerable<Node> input,
             string name)
         {
