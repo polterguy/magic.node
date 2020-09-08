@@ -92,6 +92,8 @@ can be found below.
 .foo4:bar
 ```
 
+### Extending the type system
+
 The type system is extendible, and you can easily create support for serializing your own types, by using
 the `Converter.AddConverter` method, that can be found in the `magic.node.extensions.hyperlambda` namespace.
 
@@ -196,8 +198,10 @@ requires parameters, etc. To extend the supported iterators, use any of the foll
 methods.
 
 * `Iterator.AddStaticIterator` - Creates a _"static"_ iterator, implying a direct match.
-* `Iterator.AddDynamicIterator` - Creates a _"dynamic iterator create function"_, allowing you to extend your iterators, with your own custom iterators, that can be parametrized. Below is a C# example, that creates a dynamic iterator,
-that will only return nodes having a value, that once converted into a string, has exactly 3 characters.
+* `Iterator.AddDynamicIterator` - Creates a _"dynamic iterator create function"_.
+
+Below is a C# example, that creates a dynamic iterator, that will only return nodes having a value,
+that once converted into a string, has _exactly_ `n` characters, not less and not more.
 
 ```csharp
 /*
@@ -228,6 +232,9 @@ var result = x.Evaluate(lambda.First()).ToList();
  * exactly 3 characters in their values.
  */
 ```
+
+Notice how the iterator we created above, uses the `%3` parts of the expression, to parametrize
+itself. If you exchange 3 with 5, it will only return **[howdy1]** and **[howdy3]** instead.
 
 ## Documenting nodes, arguments to slots, etc
 
