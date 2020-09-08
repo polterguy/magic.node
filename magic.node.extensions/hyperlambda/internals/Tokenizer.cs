@@ -207,14 +207,18 @@ namespace magic.node.extensions.hyperlambda.internals
                 reader.Read(); // Discarding current '/'.
                 var next = (char)reader.Peek();
                 if (next == '/')
+                {
                     ParserHelper.EatUntil(reader, "\n");
+                }
                 else if (next == '*')
                 {
                     if (!ParserHelper.EatUntil(reader, "*/"))
                         throw new ArgumentException("Couldn't find end of multi line comment before EOF");
                 }
                 else
+                {
                     builder.Append('/'); // Only a part of the current token.
+                }
             }
             else
             {
