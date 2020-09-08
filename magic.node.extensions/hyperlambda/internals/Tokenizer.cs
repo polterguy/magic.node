@@ -213,7 +213,6 @@ namespace magic.node.extensions.hyperlambda.internals
                 {
                     if (!ParserHelper.EatUntil(reader, "*/"))
                         throw new ArgumentException("Couldn't find end of multi line comment before EOF");
-                    reader.Read();
                 }
                 else
                     builder.Append('/'); // Only a part of the current token.

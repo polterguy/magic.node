@@ -84,11 +84,8 @@ namespace magic.node.expressions.helpers
             throw new ArgumentException("Syntax error, string literal not closed before end of input");
         }
 
-        /*
-         * Eats up character in stream, and discards them, until sequence is found.
-         */
         /// <summary>
-        /// Eats characters in stream reader, until the specified sequence is found
+        /// Eats characters in stream reader, until the specified sequence is found.
         /// </summary>
         /// <param name="reader">Reader from where to eat characters.</param>
         /// <param name="sequence">Stop sequence for when to stop eating characters.</param>
@@ -115,7 +112,11 @@ namespace magic.node.expressions.helpers
                 {
                     reader.Read(); // Discarding current character.
                     if (sequence.Length == 1 || EatUntil(reader, sequence.Substring(1), true))
+                    {
+                        if (sequence.Length == 1)
+                            reader.Read(); // Discarding last character in sequence from stream reader.
                         return true; // Last character in sequence found.
+                    }
                 }
                 else if (recursed)
                 {
