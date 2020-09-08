@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using magic.node.expressions.helpers;
 
 namespace magic.node.extensions.hyperlambda.internals
 {

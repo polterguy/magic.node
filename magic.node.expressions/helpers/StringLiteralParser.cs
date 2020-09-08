@@ -8,16 +8,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace magic.node.extensions.hyperlambda.internals
+namespace magic.node.expressions.helpers
 {
-    /*
-     * Helper class to help parse string literals.
-     */
-    internal static class StringLiteralParser
+    /// <summary>
+    /// Helper class to help parse string literals.
+    /// </summary>
+    public static class StringLiteralParser
     {
-        /*
-         * Reads a multline string literal, basically a string surrounded by @"".
-         */
+        /// <summary>
+        /// Reads a multline string literal, basically a string surrounded by @"".
+        /// </summary>
+        /// <param name="reader">Reader from where to extract multiline string literal.</param>
+        /// <returns>String in its entirety.</returns>
         public static string ReadMultiLineString(StreamReader reader)
         {
             var builder = new StringBuilder();
@@ -50,9 +52,11 @@ namespace magic.node.extensions.hyperlambda.internals
             throw new ArgumentException(string.Format("String literal not closed before end of input near '{0}'", builder));
         }
 
-        /*
-         * Reads a single line string literal, basically a string surrounded by only "".
-         */
+        /// <summary>
+        /// Reads a single line string literal, basically a string surrounded by only "".
+        /// </summary>
+        /// <param name="reader">Reader from where to extract string literal.</param>
+        /// <returns>String literal in its entirety.</returns>
         public static string ReadQuotedString(StreamReader reader)
         {
             var endCharacter = (char)reader.Read();
