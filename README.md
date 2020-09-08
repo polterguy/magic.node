@@ -221,20 +221,22 @@ var hl = @"foo
    howdy2:XXX
    howdy3:XXXXX
 ";
-var lambda = new Parser(hl).Lambda().Children;
+var lambda = new Parser(hl).Lambda();
 
 // Creating an expression, and evaluating it on above lambda.
 var x = new Expression("../**/%3");
-var result = x.Evaluate(lambda.First()).ToList();
+var result = x.Evaluate(lambda);
 
 /*
- * Result now contains only the **[howdy2]** node, since other nodes doesn't have
- * exactly 3 characters in their values.
+ * The result variable above now contains only the [howdy2] node,
+ * since other nodes doesn't have exactly 3 characters in their values.
  */
 ```
 
 Notice how the iterator we created above, uses the `%3` parts of the expression, to parametrize
-itself. If you exchange 3 with 5, it will only return **[howdy1]** and **[howdy3]** instead.
+itself. If you exchange 3 with 5, it will only return **[howdy1]** and **[howdy3]** instead,
+since it will look for values with 5 characters instead. The `Iterator` class can be found
+in the `magic.node.expressions` namespace.
 
 ## Documenting nodes, arguments to slots, etc
 

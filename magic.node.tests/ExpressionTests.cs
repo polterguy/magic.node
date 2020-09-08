@@ -515,7 +515,7 @@ foo:x:../*/{0}
    howdy2:XXX
    howdy3:XXXXX
 ";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = new Parser(hl).Lambda();
 
             // Creating an expression, and evaluating it on above lambda.
             Iterator.AddDynamicIterator('%', (iteratorValue) => {
@@ -525,7 +525,7 @@ foo:x:../*/{0}
                 };
             });
             var x = new Expression("../**/%3");
-            var result = x.Evaluate(lambda.First()).ToList();
+            var result = x.Evaluate(lambda);
             Assert.Single(result);
             Assert.Equal("howdy2", result.First().Name);
         }
