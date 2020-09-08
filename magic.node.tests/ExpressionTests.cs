@@ -43,6 +43,7 @@ namespace magic.node.tests
             Assert.Equal(x.Iterators.First().ToString().GetHashCode(), x.Iterators.First().GetHashCode());
             Assert.False(x.Iterators.First().Equals(x.Iterators.Skip(1).First()));
             Assert.True(x.Iterators.First().Equals(new Expression("foo").Iterators.First()));
+            Assert.False(x.Iterators.First().Equals(new object()));
         }
 
         [Fact]
@@ -128,6 +129,52 @@ namespace magic.node.tests
             Assert.Single(result);
             var str = result.First().ToHyperlambda();
             Assert.Equal("\"\"\r\n   foo:bar\r\n", str);
+        }
+
+        [Fact]
+        public void Evaluate_05()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   bar
+   xxx
+   bar";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../*/non-existing/..");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Evaluate_06()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   1";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/\\1");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("1", result.First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_07()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   """"";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/foo/*/");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("", result.First().Name);
         }
 
         [Fact]

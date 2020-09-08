@@ -199,9 +199,18 @@ namespace magic.node.expressions
          */
         static Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateParametrizedIterator(string iteratorValue)
         {
+            // If iterator is empty, we assume it's a name lookup, for empty name.
+            if (iteratorValue == "")
+            {
+                return (identity, input) => input.Where(x => x.Name.Length == 0);
+            }
+
             // If iterator is escaped, we assume it's a name lookup.
             if (iteratorValue.StartsWith("\\", StringComparison.InvariantCulture))
-                return (identity, input) => input.Where(x => x.Name == iteratorValue);
+            {
+                var name = iteratorValue.Substring(1);
+                return (identity, input) => input.Where(x => x.Name == name);
+            }
 
             /*
              * Checking to see if we have a specialized parametrized iterator matching
