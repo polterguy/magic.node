@@ -186,7 +186,7 @@ namespace magic.node.tests
             var lambda = new Parser(hl).Lambda().Children;
 
             // Creating an expression, and evaluating it on above lambda.
-            var x = new Expression("../**/how\\/dy");
+            var x = new Expression("../**/\"how/dy\"");
             var result = x.Evaluate(lambda.First()).ToList();
             Assert.Single(result);
             Assert.Equal("how/dy", result.First().Name);
@@ -201,7 +201,7 @@ namespace magic.node.tests
             var lambda = new Parser(hl).Lambda().Children;
 
             // Creating an expression, and evaluating it on above lambda.
-            var x = new Expression("../**/\\\\/howdy");
+            var x = new Expression("../**/\"/howdy\"");
             var result = x.Evaluate(lambda.First()).ToList();
             Assert.Single(result);
             Assert.Equal("/howdy", result.First().Name);
@@ -232,6 +232,21 @@ namespace magic.node.tests
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../**/howdy/=");
+            var result = x.Evaluate(lambda.First()).ToList();
+            Assert.Single(result);
+            Assert.Equal("howdy", result.First().Name);
+        }
+
+        [Fact]
+        public void Evaluate_12()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   howdy";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/\"howdy\"/=");
             var result = x.Evaluate(lambda.First()).ToList();
             Assert.Single(result);
             Assert.Equal("howdy", result.First().Name);

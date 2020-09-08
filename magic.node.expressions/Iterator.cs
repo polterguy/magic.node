@@ -150,7 +150,7 @@ namespace magic.node.expressions
         }
 
         /// <summary>
-        /// Allos you to add a parametrized iterator into the available
+        /// Allows you to add a parametrized iterator into the available
         /// iterators.
         /// </summary>
         /// <param name="iteratorFirstCharacter">First character your iterator must start with.</param>
@@ -159,7 +159,7 @@ namespace magic.node.expressions
             char iteratorFirstCharacter,
             Func<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>> createFunctor)
         {
-            _parametrizedIterators.Add(iteratorFirstCharacter, createFunctor);
+            _parametrizedIterators[iteratorFirstCharacter] = createFunctor;
         }
 
         #region [ -- Overrides -- ]
