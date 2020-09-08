@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace magic.node.extensions.hyperlambda.internals
@@ -206,28 +207,11 @@ namespace magic.node.extensions.hyperlambda.internals
                 reader.Read(); // Discarding current '/'.
                 var next = (char)reader.Peek();
                 if (next == '/')
-                {
-                    while (!reader.EndOfStream && (char)reader.Peek() != '\n')
-                        reader.Read();
-                }
+                    EatUntil(reader, "\n", false);
                 else if (next == '*')
-                {
-                    // Eating until "*/".
-                    while (!reader.EndOfStream)
-                    {
-                        var idxComment = (char)reader.Read();
-                        if (idxComment == '*' && (char)reader.Peek() == '/')
-                        {
-                            reader.Read();
-                            return null;
-                        }
-                    }
-                    throw new ArgumentException("Syntax error in comment close to end of Hyperlambda");
-                }
+                    EatUntil(reader, "*/", true);
                 else
-                {
                     builder.Append('/'); // Only a part of the current token.
-                }
             }
             else
             {
@@ -261,6 +245,49 @@ namespace magic.node.extensions.hyperlambda.internals
             var result = builder.ToString();
             builder.Clear();
             return result;
+        }
+
+        #endregion
+
+        #region [ -- Private helper methods -- ]
+
+        /*
+         * Eats up character in stream, and discards them, until sequence is found.
+         */
+        static bool EatUntil(
+            StreamReader reader,
+            string sequence,
+            bool mustFind,
+            bool recursed = false)
+        {
+            while (true)
+            {
+                if (reader.EndOfStream)
+                {
+                    if (mustFind)
+                        throw new ArgumentException("Syntax error in Hyperlambda, EOF encountered prematurely.");
+                    return false;
+                }
+                var current = (char)reader.Peek();
+                if (current == sequence.First())
+                {
+                    /*
+                     * Matched first character, now checking if we're done.
+                     */
+                    reader.Read();
+                    if (sequence.Length == 1 || EatUntil(reader, sequence.Substring(1), mustFind, true))
+                        return true; // Last character in sequence found.
+                    // Else, just continue!
+                }
+                else if (recursed)
+                {
+                    return false;
+                }
+                else
+                {
+                    reader.Read();
+                }
+            }
         }
 
         #endregion
