@@ -253,6 +253,33 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ToString_01()
+        {
+            // Creating some example lambda to run our expression on.
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/foo");
+            Assert.Equal("../**/foo", x.Value);
+        }
+
+        [Fact]
+        public void ToString_02()
+        {
+            // Creating some example lambda to run our expression on.
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/\"how/dy\"");
+            Assert.Equal("../**/\"how/dy\"", x.Value);
+        }
+
+        [Fact]
+        public void ToString_03()
+        {
+            // Creating some example lambda to run our expression on.
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../**/\"howdy\"");
+            Assert.Equal("../**/howdy", x.Value);
+        }
+
+        [Fact]
         public void ParentIterator()
         {
             // Creating some example lambda to run our expression on.

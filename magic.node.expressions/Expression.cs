@@ -22,17 +22,28 @@ namespace magic.node.expressions
         /// <summary>
         /// Creates a new expression from its string representation.
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="expression">String representation of expression to create.</param>
         public Expression(string expression)
         {
-            Value = expression;
             _iterators = new List<Iterator>(Parse(expression));
         }
 
         /// <summary>
         /// Returns the string representation of your expression.
         /// </summary>
-        public string Value { get; private set; }
+        public string Value
+        {
+            get
+            {
+                return string.Join("/", _iterators.Select(x =>
+                {
+                    // Checking if we need to quote iterator.
+                    if (x.Value.Contains("/"))
+                        return "\"" + x.Value + "\"";
+                    return x.Value;
+                }));
+            }
+        }
 
         /// <summary>
         /// Convenience method in case you want to access iterators individually.

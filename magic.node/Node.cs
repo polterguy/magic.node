@@ -12,7 +12,7 @@ namespace magic.node
     /// <summary>
     /// Graph class allowing you to declare tree structures as name/value/children collections.
     /// Note, contrary to JSON, and similar formats, the name is not a "key", and can be duplicated
-    /// multiple times in the same "scope".
+    /// multiple times in the same "scope". In addition, each node can have both a value and children.
     /// </summary>
     public class Node : ICloneable
     {
