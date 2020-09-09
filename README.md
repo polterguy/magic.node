@@ -46,8 +46,8 @@ foreach (var idxChild in root.Children)
 }
 ```
 
-This allows you to read Hyperlambda from files, over the network, etc, to dynamically send
-relational tree structures around, and serialize these in a human readable format. In addition,
+This allows you to read Hyperlambda from files, over the network, etc, to dynamically persist and send
+relational tree structures, and serialize these in a human readable format. In addition,
 Hyperlambda is also Turing Complete, when combined with for instance
 [magic.lambda](https://github.com/polterguy/magic.lambda), making it a very versatile and
 extendible _"DSL engine"_ - As in _"Domain Specific Language"_.
