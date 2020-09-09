@@ -10,17 +10,15 @@ using System.Text;
 
 namespace magic.node.extensions.helpers
 {
-    /// <summary>
-    /// Helper class to help parse string literals, and other common tasks.
-    /// </summary>
-    public static class ParserHelper
+    /*
+     * Helper class to help parse string literals, and other common tasks.
+     */
+    internal static class ParserHelper
     {
-        /// <summary>
-        /// Reads a multline string literal, basically a string surrounded by @"".
-        /// </summary>
-        /// <param name="reader">Reader from where to extract multiline string literal.</param>
-        /// <returns>String in its entirety.</returns>
-        public static string ReadMultiLineString(StreamReader reader)
+        /*
+         * Reads a multline string literal, basically a string surrounded by @"".
+         */
+        internal static string ReadMultiLineString(StreamReader reader)
         {
             var builder = new StringBuilder();
             for (var c = reader.Read(); c != -1; c = reader.Read())
@@ -52,12 +50,10 @@ namespace magic.node.extensions.helpers
             throw new ArgumentException(string.Format("String literal not closed before end of input near '{0}'", builder));
         }
 
-        /// <summary>
-        /// Reads a single line string literal, basically a string surrounded by only "".
-        /// </summary>
-        /// <param name="reader">Reader from where to extract string literal.</param>
-        /// <returns>String literal in its entirety.</returns>
-        public static string ReadQuotedString(StreamReader reader)
+        /*
+         * Reads a single line string literal, basically a string surrounded by only "".
+         */
+        internal static string ReadQuotedString(StreamReader reader)
         {
             var endCharacter = (char)reader.Read();
             var builder = new StringBuilder();
@@ -84,13 +80,10 @@ namespace magic.node.extensions.helpers
             throw new ArgumentException("Syntax error, string literal not closed before end of input");
         }
 
-        /// <summary>
-        /// Eats characters in stream reader, until the specified sequence is found.
-        /// </summary>
-        /// <param name="reader">Reader from where to eat characters.</param>
-        /// <param name="sequence">Stop sequence for when to stop eating characters.</param>
-        /// <returns>True if sequence was found, otherwise false if EOF was encountered before sequence could be found.</returns>
-        public static bool EatUntil(StreamReader reader, string sequence)
+        /*
+         * Eats characters in stream reader, until the specified sequence is found.
+         */
+        internal static bool EatUntil(StreamReader reader, string sequence)
         {
             return EatUntil(reader, sequence, false);
         }

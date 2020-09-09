@@ -290,8 +290,7 @@ I wouldn't recommend it, since it would create confusion for others using your m
 You can include the following NuGet packages into your project to access Magic Node directly.
 
 * `magic.node` - Core node parts.
-* `magic.node.expressions` - Gives you expression support on your nodes.
-* `magic.node.extensions` - Contains the Hyperlambda parser and generator, in addition to the typing system.
+* `magic.node.extensions` - Contains support for expressions, the Hyperlambda parser and generator, in addition to the typing system.
 
 However, all of these packages are indirectly included when you use [Magic](https://github.com/polterguy/magic).
 
