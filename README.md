@@ -78,7 +78,7 @@ Hyperlambda only supports serialising the following types by default.
 * `guid` = System.Guid
 * `char` = System.Char
 * `byte` = System.Byte
-* `x` = magic.node.expressions.Expression
+* `x` = magic.node.extensions.Expression
 * `node` = magic.node.Node
 
 The type declaration should be declared in your Hyperlambda in between the name and its value, separated by colon (:).
@@ -95,7 +95,7 @@ can be found below.
 ### Extending the type system
 
 The type system is extendible, and you can easily create support for serializing your own types, by using
-the `Converter.AddConverter` method, that can be found in the `magic.node.extensions.hyperlambda` namespace.
+the `Converter.AddConverter` method, that can be found in the `magic.node.extensions` namespace.
 Below is an example of how to extend the typing system, to allow for serializing and de-serializing instances
 of a `Foo` class into Hyperlambda.
 
@@ -280,7 +280,7 @@ var result = x.Evaluate(lambda);
 Notice how the iterator we created above, uses the `%3` parts of the expression, to parametrize
 itself. If you exchange 3 with 5, it will only return **[howdy1]** and **[howdy3]** instead,
 since it will look for values with 5 characters instead. The `Iterator` class can be found
-in the `magic.node.expressions` namespace.
+in the `magic.node.extensions` namespace.
 
 You can using the above syntax also override the default implementation of iterators, although
 I wouldn't recommend it, since it would create confusion for others using your modified version.
