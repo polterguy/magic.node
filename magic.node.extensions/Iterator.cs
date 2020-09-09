@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
+using magic.node.extensions.helpers;
 
 namespace magic.node.extensions
 {
@@ -329,7 +330,7 @@ namespace magic.node.extensions
                 if (x.Value is string)
                     return name.Equals(x.Value);
 
-                return name.Equals(Convert.ToString(x.Value, CultureInfo.InvariantCulture));
+                return name.Equals(Converter.ToString(x.Value).Item2);
             });
         }
 
