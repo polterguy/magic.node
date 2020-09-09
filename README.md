@@ -14,24 +14,17 @@ especially when combined with Magic Signals and
 example of Hyperlambda to give you an idea of how it looks like.
 
 ```
-/*
- * This is a multiline comment, ignored by the parser.
- * Below is a single node, with a value of 'bar' and a name of 'foo'.
- */
 foo:bar
-
-// This is a single line comment, below is another node with an integer value.
 foo:int:5
-
-/*
- * Node with two children.
- * Notice, the value is optional, and children are declared
- * by adding 3 spaces in front of the child's name.
- */
 foo
    child1:its-value
    child2:its-value
 ```
+
+3 spaces (SP) opens up the children collection of a node, and allows you to create children associated with
+some other nodes. In the example above, the **[child1]** and the **[child2]** nodes, have **[foo]** as their
+parent. A colon `:` separates the name and the value of the node. The name is to the left of the colon, and
+the value to the right.
 
 To traverse the nodes later in for instance C#, you could do something such as the following.
 
