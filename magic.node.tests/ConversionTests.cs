@@ -8,6 +8,8 @@ using System;
 using System.Linq;
 using magic.node.expressions;
 using magic.node.extensions.hyperlambda;
+using magic.node.expressions.helpers;
+using magic.node.expressions.hyperlambda;
 
 namespace magic.node.tests
 {

@@ -9,6 +9,7 @@ using magic.node.extensions;
 using magic.node.expressions;
 using magic.node.extensions.hyperlambda;
 using System;
+using magic.node.expressions.hyperlambda;
 
 namespace magic.node.tests
 {

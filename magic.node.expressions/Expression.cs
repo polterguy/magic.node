@@ -73,29 +73,19 @@ namespace magic.node.expressions
 
         #region [ -- Overrides -- ]
 
-        /// <summary>
-        /// Returns a string representation of your Expression.
-        /// </summary>
-        /// <returns>A string representation of your expression.</returns>
+        /// <inheritdoc />
         public override string ToString()
         {
             return Value;
         }
 
-        /// <summary>
-        /// Returns the hash code for your instance.
-        /// </summary>
-        /// <returns>Hash code, useful for for instance creating keys for dictionaries, etc.</returns>
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return Value.GetHashCode();
         }
 
-        /// <summary>
-        /// Comparison method, comparing the current instance to some other instance.
-        /// </summary>
-        /// <param name="obj">Right hand side to compare instance with.</param>
-        /// <returns>True if instances are logically similar.</returns>
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (!(obj is Expression ex))

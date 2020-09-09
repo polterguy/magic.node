@@ -6,9 +6,9 @@
 using System;
 using System.Globalization;
 using System.Collections.Generic;
-using magic.node.expressions;
+using magic.node.expressions.hyperlambda;
 
-namespace magic.node.extensions.hyperlambda
+namespace magic.node.expressions.helpers
 {
     /// <summary>
     /// Helper class for converting from string representations to Hyperlambda declaration objects, and vice versa.

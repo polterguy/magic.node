@@ -11,8 +11,7 @@ using System.Collections.Generic;
 namespace magic.node.expressions
 {
     /// <summary>
-    /// A single iterator component for an expression. Basically, an expression is really nothing but
-    /// a chain of iterators.
+    /// A single iterator component for an expression.
     /// </summary>
     public class Iterator
     {
@@ -21,7 +20,7 @@ namespace magic.node.expressions
         /*
          * Dictionary containing lookups for non-parametrized iterators, implying an iterator that
          * doesn't require arguments, but becomes an exact match for the iterator evaluator. Such
-         * as e.g. "..", etc.
+         * as e.g. "..", "*", etc.
          */
         static readonly Dictionary<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>> _nonParametrizedIterators =
             new Dictionary<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>>
@@ -51,7 +50,7 @@ namespace magic.node.expressions
         };
 
         /*
-         * Dictionary containing lookups for first character of iterator, resolving
+         * Dictionary containing lookups for first character of parametrized iterator, resolving
          * to functor returning functor responsible for executing parametrized iterator.
          *
          * A parametrized iterator, is an iterator that somehow requires parameters,
@@ -76,7 +75,7 @@ namespace magic.node.expressions
 
             /*
              * Value iterator, comparing the value of the iterator, with the
-             * value of the node, converting to string nefore doing comparison,
+             * value of the node, converting to string before doing comparison,
              * if necessary.
              */
             {'=', (value) => {
