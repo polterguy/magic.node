@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace magic.node.expressions.helpers
+namespace magic.node.extensions.helpers
 {
     /// <summary>
     /// Helper class to help parse string literals, and other common tasks.

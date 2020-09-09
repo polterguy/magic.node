@@ -8,10 +8,9 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using magic.node.extensions.hyperlambda.internals;
-using magic.node.expressions.helpers;
-using magic.node.extensions;
+using magic.node.extensions.helpers;
 
-namespace magic.node.expressions.hyperlambda
+namespace magic.node.extensions.hyperlambda
 {
     /// <summary>
     /// Class allowing you to parse Hyperlambda from its textual representation,

@@ -8,9 +8,9 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
-using magic.node.expressions.helpers;
+using magic.node.extensions.helpers;
 
-namespace magic.node.expressions
+namespace magic.node.extensions
 {
     /// <summary>
     /// Expression class for creating lambda expressions, referencing nodes in your Node lambda objects.

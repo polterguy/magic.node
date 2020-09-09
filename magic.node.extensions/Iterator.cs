@@ -8,7 +8,7 @@ using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
 
-namespace magic.node.expressions
+namespace magic.node.extensions
 {
     /// <summary>
     /// A single iterator component for an expression.

@@ -5,9 +5,9 @@
 
 using System.Text;
 using System.Collections.Generic;
-using magic.node.expressions.helpers;
+using magic.node.extensions.helpers;
 
-namespace magic.node.expressions.hyperlambda
+namespace magic.node.extensions.hyperlambda
 {
     /// <summary>
     /// Class to help convert a bunch of nodes into its Hyperlambda text representation.

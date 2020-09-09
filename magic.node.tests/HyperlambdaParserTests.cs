@@ -7,10 +7,8 @@ using System;
 using System.Linq;
 using Xunit;
 using magic.node.extensions.hyperlambda;
-using System.Linq.Expressions;
 using System.IO;
 using System.Text;
-using magic.node.expressions.hyperlambda;
 
 namespace magic.node.tests
 {

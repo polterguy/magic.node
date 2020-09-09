@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using magic.node.expressions.helpers;
+using magic.node.extensions.helpers;
 
 namespace magic.node.extensions.hyperlambda.internals
 {

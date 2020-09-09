@@ -6,9 +6,9 @@
 using System;
 using System.Globalization;
 using System.Collections.Generic;
-using magic.node.expressions.hyperlambda;
+using magic.node.extensions.hyperlambda;
 
-namespace magic.node.expressions.helpers
+namespace magic.node.extensions.helpers
 {
     /// <summary>
     /// Helper class for converting from string representations to Hyperlambda declaration objects, and vice versa.
@@ -130,7 +130,7 @@ namespace magic.node.expressions.helpers
             { "System.Byte", (value) => {
                 return ("byte", ((byte)value).ToString(CultureInfo.InvariantCulture));
             }},
-            { "magic.node.expressions.Expression", (value) => {
+            { "magic.node.extensions.Expression", (value) => {
                 return ("x", ((Expression)value).Value);
             }},
             { "magic.node.Node", (value) => {

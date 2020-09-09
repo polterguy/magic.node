@@ -7,8 +7,7 @@ using System;
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
-using magic.node.expressions;
-using magic.node.expressions.hyperlambda;
+using magic.node.extensions.hyperlambda;
 
 namespace magic.node.extensions
 {
