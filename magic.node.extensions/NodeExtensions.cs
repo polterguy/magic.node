@@ -27,7 +27,7 @@ namespace magic.node.extensions
         public static IEnumerable<Node> Evaluate(this Node node)
         {
             if (!(node.Value is Expression ex))
-                throw new ArgumentException($"'{node.Value}' is not a valid Expression, and hence Node cannot be evaluate.");
+                throw new ArgumentException($"'{node.Value}' is not a valid Expression, and hence Node cannot be evaluated.");
 
             return ex.Evaluate(node);
         }
@@ -64,30 +64,24 @@ namespace magic.node.extensions
         /// <returns>Value of node, or value of its evaluated expression.</returns>
         public static T GetEx<T>(this Node node)
         {
-            // Checking if we're dealing with an expression, and if so, evaluating it.
-            if (node.Value is Expression ex)
-            {
-                var value = ex.Evaluate(node);
+            // Checking if we're dealing with an expression, and if not, returning converted value.
+            if (!(node.Value is Expression ex))
+                return node.Get<T>();
 
-                // Sanity checking result.
-                if (value.Count() > 1)
-                    throw new ArgumentException("Multiple resulting nodes from expression");
+            var value = ex.Evaluate(node);
 
-                // Making sure we return default value for T if we have no result.
-                if (!value.Any())
-                    return default;
+            // Sanity checking result.
+            if (value.Count() > 1)
+                throw new ArgumentException("Multiple resulting nodes from expression.");
 
-                // Returning result of evaluation process.
-                // Notice, this process will recursively evaluate all expressions, 
-                // if one expression leads to another expression, etc.
-                return value.First().GetEx<T>();
-            }
+            // Making sure we return default value for T if we have no result.
+            if (!value.Any())
+                return default;
 
-            /*
-             * Value is not an expression, hence we can return its value instead,
-             * without further evaluating it.
-             */
-            return node.Get<T>();
+            // Returning result of evaluation process.
+            // Notice, this process will recursively evaluate all expressions, 
+            // if one expression leads to another expression, etc.
+            return value.First().GetEx<T>();
         }
 
         /// <summary>

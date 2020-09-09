@@ -223,7 +223,10 @@ namespace magic.node.extensions
              */
             if (iteratorValue.Length != 0)
             {
-                var firstCharacter = iteratorValue[0];
+                /*
+                 * Checking parametrized iterators for a match.
+                 */
+                var firstCharacter = iteratorValue.First();
                 if (_parametrizedIterators.ContainsKey(firstCharacter))
                     return _parametrizedIterators[firstCharacter](iteratorValue);
 
