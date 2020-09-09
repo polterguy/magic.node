@@ -6,9 +6,8 @@
 using Xunit;
 using System;
 using System.Linq;
-using magic.node.extensions.hyperlambda;
-using magic.node.extensions.helpers;
 using magic.node.extensions;
+using magic.node.extensions.hyperlambda;
 
 namespace magic.node.tests
 {
