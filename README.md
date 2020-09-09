@@ -27,7 +27,7 @@ parent. A colon `:` separates the name and the value of the node - The name is t
 the value to the right.
 
 You can optionally supply a type between a node's name and its value, which you can see above where we add
-the `:int:` parts between one of our **[foo]** nodes.
+the `:int:` parts between one of our **[foo]** nodes' name and value.
 
 To traverse the nodes later in for instance C#, you could do something such as the following.
 
