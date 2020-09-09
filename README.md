@@ -244,10 +244,6 @@ Below is a C# example, that creates a dynamic iterator, that will only return no
 that once converted into a string, has _exactly_ `n` characters, not less and not more.
 
 ```csharp
-/*
- * Creating our custom iterator,
- * making sure it's matched if iterator starts with the '%' character.
- */
 Iterator.AddDynamicIterator('%', (iteratorValue) => {
     var no = int.Parse(iteratorValue.Substring(1));
     return (identity, input) => {
@@ -255,7 +251,6 @@ Iterator.AddDynamicIterator('%', (iteratorValue) => {
     };
 });
 
-// Example Hyperlambda to execute our custom iterator on.
 var hl = @"foo
    howdy1:XXXXX
    howdy2:XXX
@@ -263,14 +258,8 @@ var hl = @"foo
 ";
 var lambda = new Parser(hl).Lambda();
 
-// Creating an expression, and evaluating it on above lambda.
 var x = new Expression("../**/%3");
 var result = x.Evaluate(lambda);
-
-/*
- * The result variable above now contains only the [howdy2] node,
- * since other nodes doesn't have exactly 3 characters in their values.
- */
 ```
 
 Notice how the iterator we created above, uses the `%3` parts of the expression, to parametrize
