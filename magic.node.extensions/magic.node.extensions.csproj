@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>magic.node.expressions</PackageId>
+    <PackageId>magic.node.extensions</PackageId>
     <Authors>Thomas Hansen</Authors>
     <Company>Thomas Hansen</Company>
     <Copyright>Thomas Hansen, thomas@gaiasoul.com</Copyright>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin/Release/netstandard2.0/magic.node.expressions.xml</DocumentationFile>
+    <DocumentationFile>bin/Release/netstandard2.0/magic.node.extensions.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

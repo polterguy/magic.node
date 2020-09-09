@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{0080EF1F-A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "magic.node", "magic.node\magic.node.csproj", "{AF45795C-FD6F-4240-9418-B99507B5AA93}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "magic.node.expressions", "magic.node.expressions\magic.node.expressions.csproj", "{CF576464-BE12-41D2-908C-FB17444C3B70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "magic.node.extensions", "magic.node.extensions\magic.node.extensions.csproj", "{CF576464-BE12-41D2-908C-FB17444C3B70}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "magic.node.tests", "magic.node.tests\magic.node.tests.csproj", "{120575DF-CC45-443A-BE46-3A90F528656A}"
 EndProject

@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\magic.node.expressions\magic.node.expressions.csproj" />
     <ProjectReference Include="..\magic.node.extensions\magic.node.extensions.csproj" />
     <ProjectReference Include="..\magic.node\magic.node.csproj" />
   </ItemGroup>
