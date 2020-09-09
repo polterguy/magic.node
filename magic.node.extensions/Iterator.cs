@@ -203,10 +203,6 @@ namespace magic.node.extensions
          */
         static Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateEvaluator(string iteratorValue)
         {
-            // If iterator is empty, we assume it's a name lookup, for empty name.
-            if (iteratorValue == "")
-                return (identity, input) => input.Where(x => x.Name.Length == 0);
-
             // If iterator is escaped, we assume it's a name lookup.
             if (iteratorValue.StartsWith("\\", StringComparison.InvariantCulture))
             {
@@ -215,56 +211,37 @@ namespace magic.node.extensions
             }
 
             /*
-             * First checking non-parametrized iterators for a match.
+             * First checking non-parametrized iterators for a match of entire string.
              */
             if (_nonParametrizedIterators.ContainsKey(iteratorValue))
                 return _nonParametrizedIterators[iteratorValue];
 
             /*
-             * Only if there are no non-parametrized iterators, we resort
-             * to looking into parametrized iterators for a match.
-             *
-             * Defaulting to parametrized iterator, which will default to name lookup,
-             * unless it can find a match
+             * Only if there are no non-parametrized iterators matches, we resort
+             * to looking into parametrized iterators for a match, but only if iterator
+             * value is not empty string.
              */
-            var result = CreateParametrizedIterator(iteratorValue);
-            if (result != null)
-                return result;
+            if (iteratorValue.Length != 0)
+            {
+                var firstCharacter = iteratorValue[0];
+                if (_parametrizedIterators.ContainsKey(firstCharacter))
+                    return _parametrizedIterators[firstCharacter](iteratorValue);
+
+                /*
+                 * Checking if this is an "n'th child iterator", which is true if
+                 * its content can be successfully converted into an integer.
+                 */
+                if (int.TryParse(iteratorValue, out int number))
+                    return (identity, input) => input.SelectMany(x => x.Children.Skip(number).Take(1));
+            }
 
             /*
              * Defaulting to name lookup iterator.
              *
-             * This is the default iterator, doing a basic name lookup.
+             * This is the default iterator, doing a basic name lookup, and the iterator
+             * used if none of the above results in any match.
              */
             return (identity, input) => input.Where(x => x.Name == iteratorValue);
-        }
-
-        /*
-         * Creates a parametrized iterator. A parametrized iterator is an iterator that requires 
-         * some sort of dynamic parameter or argument(s).
-         *
-         * Notice, contrary to non-parametrized iterators, a parametrized iterator only looks up
-         * its iterator implementation according to the first character in its value, and not
-         * according to the whole iterator value.
-         */
-        static Func<Node, IEnumerable<Node>, IEnumerable<Node>> CreateParametrizedIterator(string iteratorValue)
-        {
-            /*
-             * Checking to see if we have a specialized parametrized iterator matching
-             * the first character of iterator value.
-             */
-            var firstCharacter = iteratorValue[0];
-            if (_parametrizedIterators.ContainsKey(firstCharacter))
-                return _parametrizedIterators[firstCharacter](iteratorValue);
-
-            /*
-             * Checking if this is an "n'th child iterator", which is true if
-             * its content can be successfully converted into an integer.
-             */
-            if (int.TryParse(iteratorValue, out int number))
-                return (identity, input) => input.SelectMany(x => x.Children.Skip(number).Take(1));
-
-            return null;
         }
 
         /*
