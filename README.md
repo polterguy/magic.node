@@ -22,10 +22,12 @@ foo
 ```
 
 3 spaces (SP) opens up the children collection of a node, and allows you to create children associated with
-some other nodes. In the example above, the **[child1]** and the **[child2]** nodes, have **[foo]** as their
-parent. A colon `:` separates the name and the value of the node. The name is to the left of the colon, and
-the value to the right. You can optionally supply a type between a node's name and its value, which you can
-see above where we add the `:int:` parts between one of our **[foo]** nodes.
+some other node. In the example above, the **[child1]** and the **[child2]** nodes, have **[foo]** as their
+parent. A colon `:` separates the name and the value of the node - The name is to the left of the colon, and
+the value to the right.
+
+You can optionally supply a type between a node's name and its value, which you can see above where we add
+the `:int:` parts between one of our **[foo]** nodes.
 
 To traverse the nodes later in for instance C#, you could do something such as the following.
 
