@@ -119,10 +119,30 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void EscapedStringLiteral_05()
+        {
+            // Creating some lambda object.
+            var result = new Parser("foo:@\"q\n\"").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("q\r\n", result.First().Value);
+            Assert.Empty(result.First().Children);
+        }
+
+        [Fact]
         public void BadCRLFSequence_Throws()
         {
             // Creating some lambda object.
             Assert.Throws<ArgumentException>(() => new Parser("foo\r").Lambda().Children.ToList());
+        }
+
+        [Fact]
+        public void BasEscapeChar_Throws()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"foo:""\q""").Lambda().Children.ToList());
         }
 
         [Fact]
