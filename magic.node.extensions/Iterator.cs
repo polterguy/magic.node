@@ -252,8 +252,6 @@ namespace magic.node.extensions
          */
         static string EvaluateNode(Node node)
         {
-            if (node == null)
-                return "";
             if (node.Value is Expression exp)
             {
                 var expResult = exp.Evaluate(node);

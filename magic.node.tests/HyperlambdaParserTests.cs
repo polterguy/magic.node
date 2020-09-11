@@ -132,14 +132,48 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void BadCRLFSequence_Throws()
+        public void EscapedStringLiteral_06()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"foo:""\""""").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("\"", result.First().Value);
+            Assert.Empty(result.First().Children);
+        }
+
+        [Fact]
+        public void BadCRLFSequence_Throws_01()
         {
             // Creating some lambda object.
             Assert.Throws<ArgumentException>(() => new Parser("foo\r").Lambda().Children.ToList());
         }
 
         [Fact]
-        public void BasEscapeChar_Throws()
+        public void BadCRLFSequence_Throws_02()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser("foo:@\"\r\"").Lambda().Children.ToList());
+        }
+
+        [Fact]
+        public void BadCRLFSequence_Throws_03()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"foo:""\""").Lambda().Children.ToList());
+        }
+
+        [Fact]
+        public void BadCRLFSequence_Throws_04()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser(@"foo:""\r").Lambda().Children.ToList());
+        }
+
+        [Fact]
+        public void BadEscapeChar_Throws()
         {
             // Creating some lambda object.
             Assert.Throws<ArgumentException>(() => new Parser(@"foo:""\q""").Lambda().Children.ToList());

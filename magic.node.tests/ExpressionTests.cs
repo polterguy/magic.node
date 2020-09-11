@@ -252,6 +252,24 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void Evaluate_13()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   bar
+   xxx
+   bar";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../12/..");
+            var result = x.Evaluate(lambda.First()).ToList();
+
+            // Asserts.
+            Assert.Empty(result);
+        }
+
+        [Fact]
         public void ToString_01()
         {
             // Creating some example lambda to run our expression on.
