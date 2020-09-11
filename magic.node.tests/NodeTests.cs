@@ -26,6 +26,13 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void SetNameNull_Throws()
+        {
+            var n = new Node();
+            Assert.Throws<ArgumentNullException>(() => { n.Name = null; });
+        }
+
+        [Fact]
         public void OnlyName()
         {
             var n = new Node("foo");
