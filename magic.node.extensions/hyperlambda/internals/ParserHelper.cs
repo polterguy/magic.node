@@ -166,32 +166,11 @@ namespace magic.node.extensions.hyperlambda.internals
                 case 'r':
                     if ((char)reader.Read() != '\\' || (char)reader.Read() != 'n')
                         throw new ArgumentException("CR found, but no matching LF found");
-                    return "\n";
-
-                case 'x':
-                    return HexaCharacter(reader);
+                    return "\r\n";
 
                 default:
                     throw new ArgumentException("Invalid escape sequence found in string literal");
             }
-        }
-
-        /*
-         * Reads a UNICODE character in a single string literal, starting out with
-         * the '\x' characters.
-         */
-        static string HexaCharacter(StreamReader reader)
-        {
-            var builder = new StringBuilder();
-            for (var idxNo = 0; idxNo < 4; idxNo++)
-            {
-                if (reader.EndOfStream)
-                    throw new ArgumentException("EOF seen before escaped hex character was done reading");
-
-                builder.Append((char)reader.Read());
-            }
-            var integerNo = Convert.ToInt32(builder.ToString(), 16);
-            return Encoding.UTF8.GetString(BitConverter.GetBytes(integerNo).Reverse().ToArray());
         }
 
         #endregion

@@ -41,6 +41,91 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void CRSequence()
+        {
+            // Creating some lambda object.
+            var result = new Parser("foo\n").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Null(result.First().Value);
+            Assert.Empty(result.First().Children);
+        }
+
+        [Fact]
+        public void EmptyStringLiteral()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"foo:""""").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("", result.First().Value);
+            Assert.Empty(result.First().Children);
+        }
+
+        [Fact]
+        public void EscapedStringLiteral_01()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"foo:""\""""").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("\"", result.First().Value);
+            Assert.Empty(result.First().Children);
+        }
+
+        [Fact]
+        public void EscapedStringLiteral_02()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"foo:""\'""").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("'", result.First().Value);
+            Assert.Empty(result.First().Children);
+        }
+
+        [Fact]
+        public void EscapedStringLiteral_03()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"foo:""\\""").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("\\", result.First().Value);
+            Assert.Empty(result.First().Children);
+        }
+
+        [Fact]
+        public void EscapedStringLiteral_04()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"foo:""\a\b\f\t\v\r\n""").Lambda().Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("\a\b\f\t\v\r\n", result.First().Value);
+            Assert.Empty(result.First().Children);
+        }
+
+        [Fact]
+        public void BadCRLFSequence_Throws()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => new Parser("foo\r").Lambda().Children.ToList());
+        }
+
+        [Fact]
         public void ReadFromStream()
         {
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes("foo")))
