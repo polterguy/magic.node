@@ -46,14 +46,7 @@ namespace magic.node.extensions
                 return value.Equals("true");
             }},
             {"date", (value) => {
-                if (value is DateTime)
-                    return value;
-                return DateTime.ParseExact(
-                    value.ToString(),
-                    "yyyy-MM-ddTHH:mm:ss",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal)
-                    .ToUniversalTime();
+                return ConvertToDate(value);
             }},
             {"time", (value) => {
                 if (value is TimeSpan)
@@ -116,7 +109,7 @@ namespace magic.node.extensions
             { "System.DateTime", (value) => {
                 return ("date", ((DateTime)value)
                     .ToUniversalTime()
-                    .ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'"));
+                    .ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
             }},
             { "System.TimeSpan", (value) => {
                 return ("time", ((TimeSpan)value).Ticks.ToString(CultureInfo.InvariantCulture));
@@ -196,5 +189,52 @@ namespace magic.node.extensions
         {
             return _toObjectFunctors.Keys;
         }
+
+        #region [ -- Private helper methods -- ]
+
+        /*
+         * Helper method to convert an object to a DateTime instance.
+         */
+        static DateTime ConvertToDate(object value)
+        {
+            if (value is DateTime date)
+                return date;
+            var str = value as string;
+            switch (str.Length)
+            {
+                case 24:
+                    return DateTime.ParseExact(
+                        str,
+                        "yyyy-MM-ddTHH:mm:ss.fffZ",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal)
+                        .ToUniversalTime();
+                case 19:
+                    return DateTime.ParseExact(
+                        str,
+                        "yyyy-MM-ddTHH:mm:ss",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal)
+                        .ToUniversalTime();
+                case 16:
+                    return DateTime.ParseExact(
+                        str,
+                        "yyyy-MM-ddTHH:mm",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal)
+                        .ToUniversalTime();
+                case 10:
+                    return DateTime.ParseExact(
+                        str,
+                        "yyyy-MM-dd",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal)
+                        .ToUniversalTime();
+                default:
+                    throw new ArgumentException($"'{str}' is not a valid date.");
+            }
+        }
+
+        #endregion
     }
 }
