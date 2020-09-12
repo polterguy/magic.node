@@ -283,12 +283,3 @@ However, all of these packages are indirectly included when you use [Magic](http
 
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
 _"this"_ would be the name of some node - Implying in __bold__ characters, wrapped by square [brackets].
-
-## License
-
-Although most of Magic's source code is Open Source, you will need a license key to use it.
-[You can obtain a license key here](https://servergardens.com/buy/).
-Notice, 7 days after you put Magic into production, it will stop working, unless you have a valid
-license for it.
-
-* [Get licensed](https://servergardens.com/buy/)
