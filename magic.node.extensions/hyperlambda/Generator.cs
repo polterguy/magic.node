@@ -66,7 +66,10 @@ namespace magic.node.extensions.hyperlambda
                 {
                     stringValue = @"@""" + stringValue.Replace(@"""", @"""""") + @"""";
                 }
-                else if (stringValue.Contains(":") || stringValue.Contains("\""))
+                else if (stringValue.Contains(":") || 
+                    stringValue.Contains("\"") ||
+                    stringValue.StartsWith(" ") ||
+                    stringValue.EndsWith(" "))
                 {
                     stringValue = @"""" + stringValue.Replace(@"""", @"\""") + @"""";
                 }
@@ -80,7 +83,10 @@ namespace magic.node.extensions.hyperlambda
         {
             if (name.Contains("\n"))
                 name = "@\"" + name.Replace("\"", "\"\"") + "\"";
-            else if (name.Contains("\"") || name.Contains(":"))
+            else if (name.Contains("\"") ||
+                name.Contains(":") ||
+                name.StartsWith(" ") ||
+                name.EndsWith(" "))
                 name = "\"" + name.Replace("\"", "\\\"") + "\"";
             else if (idx.Value == null && name == "")
                 name = @"""""";
