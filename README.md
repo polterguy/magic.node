@@ -1,7 +1,7 @@
 
 # Magic Node for .Net
 
-[![Build status](https://travis-ci.org/polterguy/magic.node.svg?master)](https://travis-ci.org/polterguy/magic.node)
+[![Build status](https://travis-ci.com/polterguy/magic.node.svg?master)](https://travis-ci.com/polterguy/magic.node)
 
 Magic Node is a simple name/value/children graph object, in addition to a _"Hyperlambda"_ parser, allowing you to
 create a textual string representations of graph objects easily transformed to its relational graph object syntax,
