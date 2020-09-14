@@ -1,5 +1,5 @@
 
-# Magic Node for .Net
+# Magic Node
 
 [![Build status](https://travis-ci.com/polterguy/magic.node.svg?master)](https://travis-ci.com/polterguy/magic.node)
 
