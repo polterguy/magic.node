@@ -283,3 +283,18 @@ However, all of these packages are indirectly included when you use [Magic](http
 
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
 _"this"_ would be the name of some node - Implying in __bold__ characters, wrapped by square [brackets].
+
+## Quality gates
+
+- [![Build status](https://travis-ci.com/polterguy/magic.node.svg?master)](https://travis-ci.com/polterguy/magic.node)
+- [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=alert_status)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=bugs)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=code_smells)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=coverage)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=ncloc)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=security_rating)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=sqale_index)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+- [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
