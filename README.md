@@ -7,8 +7,8 @@ and vice versa. This allows you to easily declaratively create execution trees u
 then to access every individual node, its value, name and children, from your C#, CLR code, or Hyperlambda.
 For the record, Hyperlambda is _much_ easier to understand than YAML.
 
-It is perfect for creating a highly humanly readable relational configuration format, or smaller DSL engines,
-especially when combined with Magic Signals and Magic Lambda. Below is a small
+Hyperlambda is perfect for creating a highly humanly readable relational configuration format, or smaller
+DSL engines, especially when combined with Magic Signals and Magic Lambda. Below is a small
 example of Hyperlambda to give you an idea of how it looks like.
 
 ```
@@ -43,12 +43,6 @@ foreach (var idxChild in root.Children)
    /* ... do stuff with idx here ... */
 }
 ```
-
-This allows you to read Hyperlambda from files, over the network, etc, to dynamically persist and send
-relational tree structures, and serialize these in a human readable format. In addition,
-Hyperlambda is also Turing Complete, when combined with for instance
-[magic.lambda](https://github.com/polterguy/magic.lambda), making it a very versatile and
-extendible _"DSL engine"_ - As in _"Domain Specific Language"_.
 
 ## Supported types
 
