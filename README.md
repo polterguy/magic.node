@@ -7,8 +7,7 @@ and vice versa. This allows you to easily declaratively create execution trees u
 then to access every individual node, its value, name and children, from your C#, CLR code, or Hyperlambda.
 
 It is perfect for creating a highly humanly readable relational configuration format, or smaller DSL engines,
-especially when combined with Magic Signals and
-[Magic Lambda](https://github.com/polterguy/magic.lambda). Below is a small
+especially when combined with Magic Signals and Magic Lambda. Below is a small
 example of Hyperlambda to give you an idea of how it looks like.
 
 ```
