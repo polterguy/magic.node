@@ -269,7 +269,7 @@ You can include the following NuGet packages into your project to access Magic N
 * `magic.node` - Core node parts.
 * `magic.node.extensions` - Contains support for expressions, the Hyperlambda serializer and de-serializer, in addition to the typing system.
 
-However, all of these packages are indirectly included when you use [Magic](https://github.com/polterguy/magic).
+However, all of these packages are indirectly included when you use Magic.
 
 ## Documenting nodes, arguments to slots, etc
 
