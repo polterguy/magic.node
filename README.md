@@ -284,8 +284,6 @@ However, all of these packages are indirectly included when you use [Magic](http
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
 _"this"_ would be the name of some node - Implying in __bold__ characters, wrapped by square [brackets].
 
-* [Main documentation](https://polterguy.github.io/)
-
 ## Quality gates
 
 - [![Build status](https://travis-ci.com/polterguy/magic.node.svg?master)](https://travis-ci.com/polterguy/magic.node)
