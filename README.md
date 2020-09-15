@@ -5,6 +5,7 @@ Magic Node is a simple name/value/children graph object, in addition to a _"Hype
 create a textual string representations of graph objects easily transformed to its relational graph object syntax,
 and vice versa. This allows you to easily declaratively create execution trees using a format similar to YAML, for 
 then to access every individual node, its value, name and children, from your C#, CLR code, or Hyperlambda.
+For the record, Hyperlambda is _much_ easier to understand than YAML.
 
 It is perfect for creating a highly humanly readable relational configuration format, or smaller DSL engines,
 especially when combined with Magic Signals and Magic Lambda. Below is a small
