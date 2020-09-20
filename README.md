@@ -251,11 +251,21 @@ for reference purposes, let's break it down into its individual parts.
 4. Get its children
 5. Find all nodes who's value is _"wo/rld"_.
 
-If you head hurts, just relax, and move onwards - I have never needed an expression as complex
+If your head hurts, just relax, and move onwards - I have never needed an expression as complex
 as the above myself as I have been using Hyperlambda myself. It's only an example to illustrate
 the power of expressions. However, the `{0}` parts basically becomes a string substitution,
 possibly evaluating its n'th child, if the value of that child is another expression. This
 allows you to _"parametrize"_ your expressions, which might be useful every now and then.
+
+98% of your expressions will have 1-3 iterators, no complex escaping, and no parameters.
+And in fact, there's thousands of lines of Hyperlambda code in Magic, and 98% of these
+expressions are as simple as follows.
+
+```
+.arguments
+   foo1:string
+get-value:x:@.arguments/*/foo1
+```
 
 ### Extending lambda expressions/iterators
 
