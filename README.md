@@ -177,10 +177,27 @@ sub-sections of graph objects.
 Each iterator ends with a _"/"_ or a CR/LF
 sequence, and before its end, its value defines what it does. For instance the above iterator in
 the __[get-value]__ invocation, starts out with a _"@"_. This implies that the iterator will find the
-first node having a name of whatever follows its _"@"_. For the above this means looking for the first
-node who's name is _".foo"_. Below is a list of all iterators that exists in magic. Substitute _"xxx"_
-with any string, and _"n"_ with
-any number.
+first node having a name of whatever follows its _"@"_. For the above this implies looking for the first
+node who's name is _".foo"_. To see a slightly more advanced example, imagine the following.
+
+```
+.data
+   item1:john
+   item2:thomas
+   item3:peter
+
+get-value:x:@.data/*/item2
+```
+
+It might help to transform the above expression into humanly readable language. Its
+English equivalent hence becomes as follows.
+
+> Find the node with the name of '.data', then retrieve its children, and filter away everything not having a name of 'item2'
+
+Of course, the result of the above becomes _"thomas"_.
+
+Below is a list of all iterators that exists in magic. Substitute _"xxx"_ with any string,
+and _"n"_ with any number.
 
 * `*` Retrieves all children of its previous result.
 * `#` Retrieves the value of its previous result as a node by reference.
