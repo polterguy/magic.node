@@ -30,17 +30,13 @@ the `:int:` parts between one of our **[foo]** nodes' name and value.
 To traverse the nodes later in for instance C#, you could do something such as the following.
 
 ```csharp
-// Parse some piece of Hyperlambda from a string.
 var root = var result = new Parser(hyperlambda).Lambda();
 
-// Retrieving name and value from root node.
-var name = root.Name;
-var value = root.Value;
-
-// Iterating children nodes of root node.
 foreach (var idxChild in root.Children)
 {
-   /* ... do stuff with idx here ... */
+   var name = idxChild.Name;
+   var value = idxChild.Value;
+   /* ... etc ... */
 }
 ```
 
@@ -118,9 +114,20 @@ Converter.AddConverter(
 ```
 
 The above will allow you to serialize instances of `Foo` into your Hyperlambda, and
-de-serialize these instances, once needed. Notice, you can (of course) only supply
-and create instance of the `Foo` class as _values_ of your nodes using C# if you execute
-the above code.
+de-serialize these instances once needed. An example of adding a `Foo` instance into
+your Hyperlambda can be found below.
+
+```
+.foo:foo:5-7
+```
+
+Later you can retrieve your `Foo` instances in your slots, using something
+resembling the following, and all parsing and conversion will be automatically
+taken care of.
+
+```csharp
+var foo = node.Get<Foo>();
+```
 
 ## String literals
 
@@ -166,7 +173,15 @@ and hence allows you to modify _"anything"_ from _"anywhere"_.
 
 ### Iterators
 
-An expression is constructed from one or more _"iterators"_. Each iterator ends with a _"/"_ or a CR/LF
+An expression is constructed from one or more _"iterator"_. This makes an expression
+become _"dynamically chained Linq statements"_, where each iterator reacts upon
+the results of its previous iterator. Each iterator takes as input an `IEnumerable`,
+and returns as its result another `IEnumerable`, where the content of the iterator
+somehow changes its given input, according to whatever the particular iterator's
+implementation does. This approach just so happens to be perfect for retrieving
+sub-sections of graph objects.
+
+Each iterator ends with a _"/"_ or a CR/LF
 sequence, and before its end, its value defines what it does. For instance the above iterator in
 the __[get-value]__ invocation, starts out with a _"@"_. This implies that the iterator will find the
 first node having a name of whatever follows its _"@"_. For the above this means looking for the first
