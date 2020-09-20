@@ -154,14 +154,7 @@ Lambda expressions are kind of like XPath expressions, except (of course), they 
 in your Node graph object, instead of XML nodes. Below is an example to give you an idea.
 
 ```
-/*
- * Some node with some value.
- */
 .foo:hello world
-
-/*
- * Referencing the above node's value.
- */
 get-value:x:@.foo
 
 // After invocation of the above slot, its value will be "hello world".
