@@ -228,9 +228,6 @@ Below is an example of a slightly more advanced expression.
    howdy:earth
 
 /*
- * Loops through all children of [.foo] who's values
- * are "world".
- *
  * Notice!
  * This expression is probably more complex than anything
  * you'd normally need in your own code, but included for
@@ -245,7 +242,20 @@ for-each:x:@"./*/{0}/*/""=wo/rld"""
 
 After evaluating the above Hyperlambda, the value of all nodes having _"wo/rld"_ as their value
 inside of **[.foo]** will be updated to become _"thomas was here"_. Obviously, the above expression
-is a ridiculous complex example, you will probably never encounter in your own code!
+is a ridiculous complex example, that you will probably never encounter in your own code. However,
+for reference purposes, let's break it down into its individual parts.
+
+1. Get parent node
+2. Get all children
+3. Filter away everything not having the name of `{0}`, which resolves to `.:x:@.dyn`, being an expression, who's result becomes _".foo"_.
+4. Get its children
+5. Find all nodes who's value is _"wo/rld"_.
+
+If you head hurts, just relax, and move onwards - I have never needed an expression as complex
+as the above myself as I have been using Hyperlambda myself. It's only an example to illustrate
+the power of expressions. However, the `{0}` parts basically becomes a string substitution,
+possibly evaluating its n'th child, if the value of that child is another expression. This
+allows you to _"parametrize"_ your expressions, which might be useful every now and then.
 
 ### Extending lambda expressions/iterators
 
