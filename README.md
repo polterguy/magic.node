@@ -267,6 +267,10 @@ expressions are as simple as follows.
 get-value:x:@.arguments/*/foo1
 ```
 
+Which translates into the following English.
+
+> Give me the value of any **[foo1]** nodes, inside of the **[.arguments]** node.
+
 ### Extending lambda expressions/iterators
 
 You can easily extend the expressions in this project, either with a _"static"_ iterator, implying
