@@ -311,6 +311,9 @@ in the `magic.node.extensions` namespace.
 You can using the above syntax also override the default implementation of iterators, although
 I wouldn't recommend it, since it would create confusion for others using your modified version.
 
+**Notice** - To create an extension iterator is an exercise you will rarely if _ever_ need to do,
+but is included here for reference purposes.
+
 ## Usage
 
 You can include the following NuGet packages into your project to access Magic Node directly.
