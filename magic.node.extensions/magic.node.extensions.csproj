@@ -10,7 +10,7 @@
     <Description>Expression support for magic.node, giving you expressions resembling XPath to query your magic.node graph objects, in addition to other helper methods, such as the ability to read and generate string literals, convert between types, generate and parse Hyperlambda, etc.</Description>
     <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>8.2.1</PackageVersion>
+    <PackageVersion>8.2.2</PackageVersion>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/polterguy/magic.node.git</RepositoryUrl>
