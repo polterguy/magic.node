@@ -21,6 +21,7 @@ namespace magic.node.extensions
         readonly static Dictionary<string, Func<object, object>> _toObjectFunctors =
             new Dictionary<string, Func<object, object>>()
         {
+            {"bytes", (value) => Convert.FromBase64String((string)value)},
             {"short", (value) => Convert.ToInt16(value, CultureInfo.InvariantCulture)},
             {"ushort", (value) => Convert.ToUInt16(value, CultureInfo.InvariantCulture)},
             {"int", (value) => Convert.ToInt32(value, CultureInfo.InvariantCulture)},
@@ -73,6 +74,9 @@ namespace magic.node.extensions
         // String => Func Dictionary, containing actual object to string converters for built-in types.
         readonly static Dictionary<string, Func<object, (string, string)>> _toStringFunctors = new Dictionary<string, Func<object, (string, string)>>()
         {
+            { "System.Byte[]", (value) => {
+                return ("bytes", Convert.ToBase64String((byte[])value));
+            }},
             { "System.Boolean", (value) => {
                 return ("bool", ((bool)value).ToString().ToLower());
             }},

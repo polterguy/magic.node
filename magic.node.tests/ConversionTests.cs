@@ -625,6 +625,7 @@ namespace magic.node.tests
         {
             var types = Converter.ListTypes();
             Assert.True(types.Count() >= 20);
+            Assert.NotNull(types.FirstOrDefault(x => x == "bytes"));
             Assert.NotNull(types.FirstOrDefault(x => x == "short"));
             Assert.NotNull(types.FirstOrDefault(x => x == "ushort"));
             Assert.NotNull(types.FirstOrDefault(x => x == "int"));
@@ -644,6 +645,19 @@ namespace magic.node.tests
             Assert.NotNull(types.FirstOrDefault(x => x == "guid"));
             Assert.NotNull(types.FirstOrDefault(x => x == "x"));
             Assert.NotNull(types.FirstOrDefault(x => x == "node"));
+        }
+
+        [Fact]
+        public void ConvertToBytes()
+        {
+            var result = Converter.ToString(new byte[] {(byte)'x', (byte)'y'});
+            Assert.Equal("bytes", result.Item1);
+            Assert.Equal("eHk=", result.Item2);
+            var bytes = Converter.ToObject(result.Item2, "bytes") as byte[];
+            Assert.NotNull(bytes);
+            Assert.Equal(2, bytes.Length);
+            Assert.Equal((byte)'x', bytes[0]);
+            Assert.Equal((byte)'y', bytes[1]);
         }
     }
 }
