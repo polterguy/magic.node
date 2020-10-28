@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Text;
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
@@ -44,6 +45,12 @@ namespace magic.node.extensions
         {
             if (node.Value is T result)
                 return result;
+
+            // byte[] to string conversion support, and vice versa.
+            if (typeof(T) == typeof(string) && node.Value is byte[] bytes)
+                return (T)(object)Encoding.UTF8.GetString(bytes);
+            if (typeof(T) == typeof(byte[]) && node.Value is string stringValue)
+                return (T)(object)Encoding.UTF8.GetBytes(stringValue);
 
             // Converting, the simple version.
             return (T)Convert.ChangeType(node.Value, typeof(T), CultureInfo.InvariantCulture);
