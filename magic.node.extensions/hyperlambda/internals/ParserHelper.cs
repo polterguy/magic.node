@@ -160,6 +160,9 @@ namespace magic.node.extensions.hyperlambda.internals
                 case 'v':
                     return "\v";
 
+                case 'n':
+                    return "\n";
+
                 case 'r':
                     if ((char)reader.Read() != '\\' || (char)reader.Read() != 'n')
                         throw new ArgumentException("CR found, but no matching LF found");
