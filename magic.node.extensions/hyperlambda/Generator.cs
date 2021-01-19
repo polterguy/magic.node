@@ -68,6 +68,7 @@ namespace magic.node.extensions.hyperlambda
                 }
                 else if (stringValue.Contains(":") || 
                     stringValue.Contains("\"") ||
+                    stringValue.Contains("'") ||
                     stringValue.StartsWith(" ") ||
                     stringValue.EndsWith(" "))
                 {
