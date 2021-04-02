@@ -16,12 +16,11 @@
     <RepositoryUrl>https://github.com/polterguy/magic.node.git</RepositoryUrl>
     <PackageTags>graph, dynamic, syntax tree</PackageTags>
     <PackageIcon>ico.png</PackageIcon>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="../LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)"/>
-  </ItemGroup>
+  <PropertyGroup>
+    <PackageLicenseExpression>LGPL-2.1-only</PackageLicenseExpression>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Include="../ico.png" Pack="true" PackagePath="$(PackageIcon)"/>
