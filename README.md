@@ -330,7 +330,6 @@ _"this"_ would be the name of some node - Implying in __bold__ characters, wrapp
 
 ## Quality gates
 
-- [![Build status](https://travis-ci.com/polterguy/magic.node.svg?master)](https://travis-ci.com/polterguy/magic.node)
 - [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=alert_status)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
 - [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=bugs)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
 - [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=code_smells)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
