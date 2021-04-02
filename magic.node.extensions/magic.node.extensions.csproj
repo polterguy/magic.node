@@ -16,7 +16,7 @@
     <RepositoryUrl>https://github.com/polterguy/magic.node.git</RepositoryUrl>
     <PackageTags>expressions, lambda expressions, hyperlambda, xpath</PackageTags>
     <PackageIcon>ico.png</PackageIcon>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
