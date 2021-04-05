@@ -341,3 +341,8 @@ _"this"_ would be the name of some node - Implying in __bold__ characters, wrapp
 - [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=security_rating)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
 - [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=sqale_index)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
 - [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
+
+## License
+
+This project is the copyright(c) 2020-2021 of Thomas Hansen thomas@servergardens.com, and is licensed under the terms
+of the LGPL version 3, as published by the Free Software Foundation. See the enclosed LICENSE file for details.
