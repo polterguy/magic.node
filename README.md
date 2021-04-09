@@ -328,6 +328,10 @@ However, all of these packages are indirectly included when you use Magic.
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
 _"this"_ would be the name of some node - Implying in __bold__ characters, wrapped by square [brackets].
 
+## Project website
+
+The source code for this repository can be found at [github.com/polterguy/magic.node](https://github.com/polterguy/magic.node), and you can provide feedback, provide bug reports, etc at the same place.
+
 ## Quality gates
 
 - [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=polterguy_magic.node&metric=alert_status)](https://sonarcloud.io/dashboard?id=polterguy_magic.node)
