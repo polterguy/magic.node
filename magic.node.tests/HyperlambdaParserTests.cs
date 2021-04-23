@@ -254,7 +254,7 @@ namespace magic.node.tests
             var result = new Parser("foo1:bar1\r\nfoo2:bar2").Lambda().Children.ToList();
 
             // Asserts.
-            Assert.Equal(2, result.Count());
+            Assert.Equal(2, result.Count);
             Assert.Equal("foo1", result.First().Name);
             Assert.Equal("bar1", result.First().Value);
             Assert.Empty(result.First().Children);
