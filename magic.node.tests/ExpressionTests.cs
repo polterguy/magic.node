@@ -60,7 +60,7 @@ namespace magic.node.tests
             var result = x.Evaluate(lambda.First()).ToList();
 
             // Asserts.
-            Assert.Equal(2, result.Count());
+            Assert.Equal(2, result.Count);
             Assert.Equal("bar", result.First().Name);
             Assert.Equal("bar", result.Skip(1).First().Name);
         }
@@ -85,7 +85,7 @@ namespace magic.node.tests
             var result = x.Evaluate(lambda).ToList();
 
             // Asserts.
-            Assert.Equal(3, result.Count());
+            Assert.Equal(3, result.Count);
             Assert.Equal("bar1", result.First().Name);
             Assert.Equal("bar2", result.Skip(1).First().Name);
             Assert.Equal("bar3", result.Skip(2).First().Name);
@@ -106,7 +106,7 @@ namespace magic.node.tests
             var result = x.Evaluate(lambda.First()).ToList();
 
             // Asserts.
-            Assert.Equal(4, result.Count());
+            Assert.Equal(4, result.Count);
             Assert.Equal("foo", result.First().Name);
             Assert.Equal("bar", result.Skip(1).First().Name);
             Assert.Equal("xxx", result.Skip(2).First().Name);
