@@ -169,6 +169,8 @@ namespace magic.node.extensions.hyperlambda
          */
         Node DecorateNode(string token, Node currentNode, Node currentParent)
         {
+            if (token == "\r\n\n")
+                token = "\r\n";
             if (currentNode == null)
             {
                 // First token for node.

@@ -27,9 +27,16 @@ namespace magic.node.extensions.hyperlambda.internals
                 {
                     case '"':
                         if ((char)reader.Peek() == '"')
+                        {
                             builder.Append((char)reader.Read());
+                        }
                         else
-                            return builder.ToString();
+                        {
+                            var result = builder.ToString();
+                            if (result == "\r\n")
+                                result += "\n"; // Needed to separate a "new node token" from a string with only CR/LF
+                            return result;
+                        }
                         break;
 
                     case '\n':
@@ -60,7 +67,12 @@ namespace magic.node.extensions.hyperlambda.internals
             for (var c = reader.Read(); c != -1; c = reader.Read())
             {
                 if (c == endCharacter)
-                    return builder.ToString();
+                {
+                    var result = builder.ToString();
+                    if (result == "\r\n")
+                        result += "\n"; // Needed to separate a "new node token" from a string with only CR/LF
+                    return result;
+                }
 
                 switch (c)
                 {
