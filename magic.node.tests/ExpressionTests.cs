@@ -550,5 +550,73 @@ namespace magic.node.tests
             Assert.Equal("howdy2", result.First().Name);
             Assert.Equal("john", result.First().Value);
         }
+
+        [Fact]
+        public void ExtrapolatedExpression_02_THROWS()
+        {
+            Assert.Throws<ArgumentException>(() => new Expression("../*/.data/*/{../*/.arg1"));
+        }
+
+        [Fact]
+        public void ExtrapolatedExpression_03()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"
+.arg1:howdy2
+.arg2:.arg1
+.data
+   howdy1:thomas
+   howdy2:john
+   howdy3:peter
+
+";
+            var lambda = new Parser(hl).Lambda();
+            var x = new Expression("../*/.data/*/{../*/{../*/.arg2}}");
+            var result = x.Evaluate(lambda);
+            Assert.Single(result);
+            Assert.Equal("howdy2", result.First().Name);
+            Assert.Equal("john", result.First().Value);
+        }
+
+        [Fact]
+        public void ExtrapolatedExpression_04_THROWS()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"
+.arg1:howdy2
+.arg2:.arg1
+.arg2:.argXXX
+.data
+   howdy1:thomas
+   howdy2:john
+   howdy3:peter
+
+";
+            var lambda = new Parser(hl).Lambda();
+            var x = new Expression("../*/.data/*/{../*/{../*/.arg2}}");
+            Assert.Throws<ArgumentException>(() => x.Evaluate(lambda));
+        }
+
+        [Fact]
+        public void ExtrapolatedExpression_05()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"
+.arg1:howdy2
+.arg2:.arg1
+.arg2:ERROR
+.data
+   howdy1:thomas
+   howdy2:john
+   howdy3:peter
+
+";
+            var lambda = new Parser(hl).Lambda();
+            var x = new Expression("../*/.data/*/{../*/{../*/.arg2/[0,1]}}");
+            var result = x.Evaluate(lambda);
+            Assert.Single(result);
+            Assert.Equal("howdy2", result.First().Name);
+            Assert.Equal("john", result.First().Value);
+        }
     }
 }

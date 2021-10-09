@@ -122,20 +122,28 @@ namespace magic.node.extensions
                     }
                     else if (idx == '{' && builder.Length == 0)
                     {
+                        // Extrapolated expression allowing for nesting expressions.
                         var no = 0;
                         do
                         {
+                            // Reading next character, sanity checking, and appending to builder.
                             if (reader.EndOfStream)
-                                throw new ApplicationException($"Extrapolated expression was never closed in expression '{expression}'");
+                                throw new ArgumentException($"Extrapolated expression was never closed in expression '{expression}'");
                             idx = (char)reader.Read();
                             builder.Append(idx);
+
+                            // Supporting multiple levels of extrapolated expressions.
                             if (idx == '{')
                                 no += 1;
                             else if (idx == '}')
                                 no -= 1;
                         } while (no != 0);
+
+                        // Returning iterator being a nested expression.
                         yield return new Iterator(builder.ToString());
                         builder.Clear();
+
+                        // Making sure we don't return remnants in builder further down
                         if (reader.EndOfStream)
                             yield break;
                     }
