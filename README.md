@@ -224,7 +224,6 @@ Below is an example of a slightly more advanced expression.
    howdy:wo/rld
    jo:nothing
    howdy:earth
-
 .dyn:.foo
 for-each:x:@"./*/{@.dyn}/*/""=wo/rld"""
    set-value:x:@.dp/#
