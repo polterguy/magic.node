@@ -244,21 +244,6 @@ namespace magic.node.extensions
         }
 
         /*
-         * Helper method to recursively evaluate a node.
-         */
-        static string EvaluateNode(Node node)
-        {
-            if (node.Value is Expression exp)
-            {
-                var expResult = exp.Evaluate(node);
-                if (expResult.Count() > 1)
-                    throw new ArgumentException("Expression yielded multiple results when maximum one was expected");
-                return EvaluateNode(expResult.FirstOrDefault());
-            }
-            return node.Value?.ToString() ?? "";
-        }
-
-        /*
          * Helper method to return all descendants recursively for the '**' iterator.
          */
         static IEnumerable<Node> AllDescendants(IEnumerable<Node> input)
