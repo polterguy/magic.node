@@ -61,18 +61,6 @@ namespace magic.node.extensions
             new Dictionary<char, Func<string, Func<Node, IEnumerable<Node>, IEnumerable<Node>>>>
         {
             /*
-             * Extrapolation iterator, resolving to name comparison, where name
-             * to compare against, is fetched from its n'th children.
-             */
-            {'{', (value) => {
-                var index = int.Parse(value.Substring(1, value.Length - 2));
-                return (identity, input) => ExtrapolationIterator(
-                    identity,
-                    input,
-                    index);
-            }},
-
-            /*
              * Value iterator, comparing the value of the iterator, with the
              * value of the node, converting to string before doing comparison,
              * if necessary.
@@ -95,6 +83,14 @@ namespace magic.node.extensions
                     input,
                     start,
                     count);
+            }},
+
+            /*
+             * Extrapolated expression iterator, evaluating nested expression, returning value of node
+             * expression is referencing, assuming there is only one node matching expression.
+             */
+            {'{', (value) => {
+                return (identity, input) => ExtrapolatedExpressionIterator(identity, input, value);
             }},
 
             /*
@@ -278,20 +274,6 @@ namespace magic.node.extensions
         }
 
         /*
-         * Implementation of extrapolation iterator, resulting in name equality,
-         * where name to look for is resolved as the n'th child of the identity node's
-         * value, converted to string, if necessary, evaluating node if necessary.
-         */
-        static IEnumerable<Node> ExtrapolationIterator(
-            Node identity,
-            IEnumerable<Node> input,
-            int index)
-        {
-            var node = identity.Children.Skip(index).First();
-            return input.Where(x => x.Name.Equals(EvaluateNode(node)));
-        }
-
-        /*
          * Name equality iterator, requiring a statically declared name, returning
          * results of all nodes from previous result set, matching name specified.
          */
@@ -319,6 +301,22 @@ namespace magic.node.extensions
             int count)
         {
             return input.Skip(start).Take(count);
+        }
+
+        /*
+         * Extrapolated iterator, returning result of nested expression.
+         */
+        static IEnumerable<Node> ExtrapolatedExpressionIterator(
+            Node identity,
+            IEnumerable<Node> input,
+            string expression)
+        {
+            var x = new Expression(expression.Substring(1, expression.Length -2));
+            var result = x.Evaluate(identity);
+            if (result.Count() > 1)
+               throw new ApplicationException($"Extrapolated expression '{expression}' yields multiple results");
+            var name = result.FirstOrDefault()?.GetEx<string>();
+            return input.Where(y => y.Name == name);
         }
 
         /*

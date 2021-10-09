@@ -120,6 +120,25 @@ namespace magic.node.extensions
                         // Single quoted string, allows for having iterators containing "/" in their values.
                         builder.Append(ParserHelper.ReadQuotedString(reader));
                     }
+                    else if (idx == '{' && builder.Length == 0)
+                    {
+                        var no = 0;
+                        do
+                        {
+                            if (reader.EndOfStream)
+                                throw new ApplicationException($"Extrapolated expression was never closed in expression '{expression}'");
+                            idx = (char)reader.Read();
+                            builder.Append(idx);
+                            if (idx == '{')
+                                no += 1;
+                            else if (idx == '}')
+                                no -= 1;
+                        } while (no != 0);
+                        yield return new Iterator(builder.ToString());
+                        builder.Clear();
+                        if (reader.EndOfStream)
+                            yield break;
+                    }
                     else
                     {
                         builder.Append(idx);

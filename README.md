@@ -206,9 +206,7 @@ and _"n"_ with any number.
 * `.` Retrieves its previous reult set's parent node(s).
 * `..` Retrieves the root node.
 * `**` Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm.
-* `{n}` Substitutes itself with the results of its n'th child, possibly evaluating expressions found in its child node, before evaluating the result of the expression. This works similarly to `string.Format` from C#, except it
-allows you to dynamically build your expression,by parametrising it with the result of a constant,
-or the results of another expression.
+* `{x}` Extrapolated expression that will be evaluated assuming it yields one result, replacing itself with the value of whatever node it points to.
 * `=xxx` Retrieves the node with the _"xxx"_ value, converting to string if necessary.
 * `[n,n]` Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>.
 * `@xxx` Returns the first node _"before"_ in its hierarchy that matches the given _"xxx"_ in its name.
@@ -226,16 +224,9 @@ Below is an example of a slightly more advanced expression.
    howdy:wo/rld
    jo:nothing
    howdy:earth
-
-/*
- * Notice!
- * This expression is probably more complex than anything
- * you'd normally need in your own code, but included for
- * reference purposes.
- */
+ 
 .dyn:.foo
-for-each:x:@"./*/{0}/*/""=wo/rld"""
-   .:x:@.dyn
+for-each:x:@"./*/{@.dyn}/*/""=wo/rld"""
    set-value:x:@.dp/#
       :thomas was here
 ```
@@ -247,15 +238,9 @@ for reference purposes, let's break it down into its individual parts.
 
 1. Get parent node
 2. Get all children
-3. Filter away everything not having the name of `{0}`, which resolves to `.:x:@.dyn`, being an expression, who's result becomes _".foo"_.
+3. Filter away everything not having the name of the value of `{@.dyn}`, which resolves to the equivalent of `:x:@.dyn`, being an expression, who's result becomes _".foo"_.
 4. Get its children
 5. Find all nodes who's value is _"wo/rld"_.
-
-If your head hurts, just relax, and move onwards - I have never needed an expression as complex
-as the above myself as I have been using Hyperlambda myself. It's only an example to illustrate
-the power of expressions. However, the `{0}` parts basically becomes a string substitution,
-possibly evaluating its n'th child, if the value of that child is another expression. This
-allows you to _"parametrize"_ your expressions, which might be useful every now and then.
 
 98% of your expressions will have 1-3 iterators, no complex escaping, and no parameters.
 And in fact, there's thousands of lines of Hyperlambda code in Magic, and 98% of these

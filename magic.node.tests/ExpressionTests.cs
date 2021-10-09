@@ -490,80 +490,6 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void NodeReferencingIteratorConstValue()
-        {
-            // Evaluating our expression such that the node is referencing another node.
-            var hl = @"
-foo:x:../*/{0}
-   :.res
-.res:OK";
-            var lambda = new Parser(hl).Lambda();
-            var identity = lambda.Children.First();
-            var result = identity.Evaluate().ToList();
-
-            // Asserts.
-            Assert.Single(result);
-            Assert.Equal("OK", result.First().Value);
-        }
-
-        [Fact]
-        public void NodeReferencingIteratorExpressionValue_01()
-        {
-            // Evaluating our expression such that the node is referencing another node.
-            var hl = @"
-.val:.res
-foo:x:../*/{0}
-   :x:@.val
-.res:OK";
-            var lambda = new Parser(hl).Lambda();
-            var identity = lambda.Children.Skip(1).First();
-            var result = identity.Evaluate().ToList();
-
-            // Asserts.
-            Assert.Single(result);
-            Assert.Equal("OK", result.First().Value);
-        }
-
-        [Fact]
-        public void NodeReferencingIteratorExpressionValue_02()
-        {
-            // Evaluating our expression such that the node is referencing another node.
-            var hl = @"
-.val:.res
-foo:x:../*/{0}
-   :x:../*/.val
-.res:OK";
-            var lambda = new Parser(hl).Lambda();
-            var identity = lambda.Children.Skip(1).First();
-            var result = identity.Evaluate().ToList();
-
-            // Asserts.
-            Assert.Single(result);
-            Assert.Equal("OK", result.First().Value);
-        }
-
-        [Fact]
-        public void NodeReferencingIteratorExpressionValue_03()
-        {
-            // Evaluating our expression such that the node is referencing another node.
-            var hl = @"
-.val:.res
-foo:x:../*/{0}
-   :x:../*/{0}/./*/{1}
-      :.val
-      :x:../*/.val2
-.val2:.val
-.res:OK";
-            var lambda = new Parser(hl).Lambda();
-            var identity = lambda.Children.Skip(1).First();
-            var result = identity.Evaluate().ToList();
-
-            // Asserts.
-            Assert.Single(result);
-            Assert.Equal("OK", result.First().Value);
-        }
-
-        [Fact]
         public void CustomStaticIterator()
         {
             // Creating some example lambda to run our expression on.
@@ -603,6 +529,26 @@ foo:x:../*/{0}
             var result = x.Evaluate(lambda);
             Assert.Single(result);
             Assert.Equal("howdy2", result.First().Name);
+        }
+
+        [Fact]
+        public void ExtrapolatedExpression_01()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"
+.arg1:howdy2
+.data
+   howdy1:thomas
+   howdy2:john
+   howdy3:peter
+
+";
+            var lambda = new Parser(hl).Lambda();
+            var x = new Expression("../*/.data/*/{../*/.arg1}");
+            var result = x.Evaluate(lambda);
+            Assert.Single(result);
+            Assert.Equal("howdy2", result.First().Name);
+            Assert.Equal("john", result.First().Value);
         }
     }
 }
