@@ -146,6 +146,9 @@ namespace magic.node.extensions
                         // Making sure we don't return remnants in builder further down
                         if (reader.EndOfStream)
                             yield break;
+
+                        if ('/' == (char)reader.Peek())
+                            reader.Read(); // Discarding end of iterator character
                     }
                     else
                     {
