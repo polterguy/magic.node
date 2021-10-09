@@ -343,6 +343,32 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void Evaluate_18()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo:x:*/bar
+   bar:SUCCESS
+   xxx
+   barXXX";
+            var lambda = new Parser(hl).Lambda().Children.FirstOrDefault();
+            var result = lambda.Evaluate();
+            Assert.Single(result);
+            Assert.Equal("SUCCESS", result.FirstOrDefault()?.Value);
+        }
+
+        [Fact]
+        public void Evaluate_19_THROWS()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo:*/bar
+   bar:SUCCESS
+   xxx
+   barXXX";
+            var lambda = new Parser(hl).Lambda().Children.FirstOrDefault();
+            Assert.Throws<ArgumentException>(() => lambda.Evaluate());
+        }
+
+        [Fact]
         public void ToString_01()
         {
             // Creating some example lambda to run our expression on.
