@@ -270,6 +270,79 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void Evaluate_14()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   bar
+   xxx
+   bar";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../5/..");
+            var result = x.Evaluate(lambda.First()).ToList();
+
+            // Asserts.
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Evaluate_15()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   bar
+   xxx
+   bar";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../*/ERROR/@foo");
+            var result = x.Evaluate(lambda.First()).ToList();
+
+            // Asserts.
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Evaluate_16()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   bar
+   xxx
+   bar";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../*/foo/@ERROR");
+            var result = x.Evaluate(lambda.First()).ToList();
+
+            // Asserts.
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Evaluate_17()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"foo
+   bar
+   xxx
+   bar";
+            var lambda = new Parser(hl).Lambda().Children;
+
+            // Creating an expression, and evaluating it on above lambda.
+            var x = new Expression("../*/foo/*/xxx/@bar");
+            var result = x.Evaluate(lambda.First()).ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("bar", result.FirstOrDefault()?.Name);
+        }
+
+        [Fact]
         public void ToString_01()
         {
             // Creating some example lambda to run our expression on.
@@ -710,6 +783,24 @@ namespace magic.node.tests
 ";
             var lambda = new Parser(hl).Lambda();
             var x = new Expression("../*/{../*/.arg1}/*/howdy1");
+            var result = x.Evaluate(lambda);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void ExtrapolatedExpression_11()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"
+.argERROR
+.data
+   howdy1:thomas
+   howdy2:john
+   howdy3:peter
+
+";
+            var lambda = new Parser(hl).Lambda();
+            var x = new Expression("../*/{../*/.arg1}");
             var result = x.Evaluate(lambda);
             Assert.Empty(result);
         }
