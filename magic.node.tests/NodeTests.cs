@@ -367,5 +367,15 @@ namespace magic.node.tests
             var res = node.ToHyperlambda();
             Assert.Equal("\"\"\r\n   foo1:int:5\r\n   foo2:\"bar\\\"howdy\"\r\n", res);
         }
+
+        [Fact]
+        public void ConvertToStringByteArray()
+        {
+            var n1 = new Node("", "howdy world");
+            var b = n1.Get<byte[]>();
+            var n2 = new Node("", b);
+            var result = n2.Get<string>();
+            Assert.Equal("howdy world", result);
+        }
     }
 }

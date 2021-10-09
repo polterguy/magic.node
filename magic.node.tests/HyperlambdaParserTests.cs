@@ -707,5 +707,45 @@ world:""foobar \t howdy""").Lambda();
             Assert.Equal("world", result.Children.Skip(1).First().Name);
             Assert.Equal("foobar \xfefe howdy", result.Children.Skip(1).First().Value);
         }
+
+        [Fact]
+        public void NodeWithOnlyCR_LF()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"howdy:""\r\n""").Lambda();
+
+            // Asserts.
+            Assert.Single(result.Children);
+            Assert.Equal("\r\n", result.Children.FirstOrDefault()?.Value);
+        }
+
+        [Fact]
+        public void BadStringNotEscaped_THROWS()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>( () => new Parser(@"howdy:""\\").Lambda());
+        }
+
+        [Fact]
+        public void EscapedDoubleQuote()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"howdy:""\""""").Lambda();
+
+            // Asserts.
+            Assert.Single(result.Children);
+            Assert.Equal("\"", result.Children.FirstOrDefault()?.Value);
+        }
+
+        [Fact]
+        public void EscapedCR()
+        {
+            // Creating some lambda object.
+            var result = new Parser(@"howdy:""\n""").Lambda();
+
+            // Asserts.
+            Assert.Single(result.Children);
+            Assert.Equal("\n", result.Children.FirstOrDefault()?.Value);
+        }
     }
 }
