@@ -675,5 +675,25 @@ namespace magic.node.tests
             var result = x.Evaluate(lambda);
             Assert.Empty(result);
         }
+
+        [Fact]
+        public void ExtrapolatedExpression_09()
+        {
+            // Creating some example lambda to run our expression on.
+            var hl = @"
+.arg1:.data
+.data
+   howdy1:thomas
+   howdy2:john
+   howdy3:peter
+
+";
+            var lambda = new Parser(hl).Lambda();
+            var x = new Expression("../*/{../*/.arg1}/*/howdy1");
+            var result = x.Evaluate(lambda);
+            Assert.Single(result);
+            Assert.Equal("howdy1", result.First().Name);
+            Assert.Equal("thomas", result.First().Value);
+        }
     }
 }

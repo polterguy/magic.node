@@ -123,32 +123,14 @@ namespace magic.node.extensions
                     else if (idx == '{' && builder.Length == 0)
                     {
                         // Extrapolated expression allowing for nesting expressions.
-                        var no = 0;
-                        do
-                        {
-                            // Reading next character, sanity checking, and appending to builder.
-                            if (reader.EndOfStream)
-                                throw new ArgumentException($"Extrapolated expression was never closed in expression '{expression}'");
-                            idx = (char)reader.Read();
-                            builder.Append(idx);
-
-                            // Supporting multiple levels of extrapolated expressions.
-                            if (idx == '{')
-                                no += 1;
-                            else if (idx == '}')
-                                no -= 1;
-                        } while (no != 0);
-
-                        // Returning iterator being a nested expression.
-                        yield return new Iterator(builder.ToString());
-                        builder.Clear();
+                        yield return new Iterator(ParseExtrapolatedExpression(reader, expression));
 
                         // Making sure we don't return remnants in builder further down
                         if (reader.EndOfStream)
                             yield break;
 
                         if ('/' == (char)reader.Peek())
-                            reader.Read(); // Discarding end of iterator character
+                            reader.Read(); // Discarding end of iterator character to prepare for next iterator's value.
                     }
                     else
                     {
@@ -159,6 +141,40 @@ namespace magic.node.extensions
             }
 
             yield return new Iterator(builder.ToString());
+        }
+
+        /*
+         * Parses an extrapolated/nested expression.
+         */
+        string ParseExtrapolatedExpression(StreamReader reader, string expression)
+        {
+            // Buffer used to hold nested expression.
+            var builder = new StringBuilder();
+
+            // Needed to count "levels" of nexted expressions, for cases where a nested expression contains another nested expression.
+            var no = 0;
+
+            // Reading until we reach EOF or have fetched entire nested expression.
+            do
+            {
+                // Reading next character, sanity checking, and appending to builder.
+                if (reader.EndOfStream)
+                    throw new ArgumentException($"Extrapolated expression was never closed in expression '{expression}'");
+
+                // Reading next character and appending to builder.
+                var idx = (char)reader.Read();
+                builder.Append(idx);
+
+                // Supporting multiple levels of extrapolated expressions.
+                if (idx == '{')
+                    no += 1;
+                else if (idx == '}')
+                    no -= 1;
+
+            } while (no != 0); // Ensuring we don't quit before we're at "level 0" again ...
+
+            // Done, returning nexted expression.
+            return builder.ToString();
         }
 
         #endregion
