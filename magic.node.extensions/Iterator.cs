@@ -73,7 +73,7 @@ namespace magic.node.extensions
             }},
 
             /*
-             * Subscript iterator, returning from [n1 to n2> from its previous result set.
+             * Subscript iterator, returning from [n1..n2] from its previous result set.
              */
             {'[', (value) => {
                 var ints = value.Substring(1, value.Length - 2).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
