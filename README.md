@@ -25,7 +25,8 @@ parent. A colon `:` separates the name and the value of the node - The name is t
 the value to the right.
 
 You can optionally supply a type between a node's name and its value, which you can see above where we add
-the `:int:` parts between one of our **[foo]** nodes' name and value.
+the `:int:` parts between one of our **[foo]** nodes' name and value. If you don't explicitly declare a type
+then `string` will be assumed.
 
 To traverse the nodes later in for instance C#, you could do something such as the following.
 
@@ -66,8 +67,8 @@ Hyperlambda only supports serialising the following types by default.
 * `node` = magic.node.Node
 
 The type declaration should be declared in your Hyperlambda in between the name and its value, separated by colon (:).
-The default type if ommitted is `string`. An example of declaring a couple of types associated with a node's value
-can be found below.
+The default type if ommitted is `string` and strings do not need quotes or double quotes for this reason. An example
+of declaring a couple of types associated with a node's value can be found below.
 
 ```
 .foo1:int:5
@@ -145,13 +146,13 @@ foo:@"Notice how the new line doesn't end the string
     here!"
 ```
 
-Escape characters are supported for both single quote strings, and double quote strings, the same way they
+Escape characters are supported for both single quote and double quote strings the same way they
 are supported in C#, allowing you to use e.g. `\r\n` etc.
 
 ## Lambda expressions
 
-Lambda expressions are kind of like XPath expressions, except (of course), they will references nodes
-in your Node graph object, instead of XML nodes. Below is an example to give you an idea.
+Lambda expressions are kind of like XPath expressions, except they will references nodes
+in your Node graph object instead of XML nodes. Below is an example to give you an idea.
 
 ```
 .foo:hello world
@@ -196,8 +197,8 @@ English equivalent hence becomes as follows.
 
 Of course, the result of the above becomes _"thomas"_.
 
-Below is a list of all iterators that exists in magic. Substitute _"xxx"_ with any string,
-and _"n"_ with any number.
+Below is a list of all iterators that exists in magic. Substitute _"xxx"_ with a string,
+_"n"_ with a number, and _"x"_ with an expression.
 
 * `*` Retrieves all children of its previous result.
 * `#` Retrieves the value of its previous result as a node by reference.
@@ -242,7 +243,7 @@ for reference purposes, let's break it down into its individual parts.
 5. Find all nodes who's value is _"wo/rld"_.
 
 98% of your expressions will have 1-3 iterators, no complex escaping, and no parameters.
-And in fact, there's thousands of lines of Hyperlambda code in Magic, and 98% of these
+And in fact, there are thousands of lines of Hyperlambda code in Magic, and 98% of these
 expressions are as simple as follows.
 
 ```
@@ -255,11 +256,27 @@ Which translates into the following English.
 
 > Give me the value of any **[foo1]** nodes, inside of the **[.arguments]** node.
 
+Expressions can also be extrapolated, which allows you to parametrise your expressions, by nesting
+expressions, substituting parts of your expression dynamically as your code is executed. Imagine
+the following example.
+
+```
+.arg1:foo2
+.data
+   foo1:john
+   foo2:thomas
+   foo3:peter
+get-value:x:@.data/*/{@.arg1}
+```
+
+The above expression will first evaluate the `{@.arg1}` parts, which results in _"foo2"_, then evaluate the
+outer expression, which now will look like this `@.data/*/foo2`.
+
 ### Extending lambda expressions/iterators
 
-You can easily extend the expressions in this project, either with a _"static"_ iterator, implying
+You can easily extend expressions in Magic, either with a _"static"_ iterator, implying
 a direct match - Or with a dynamic parametrized iterator, allowing you to create iterators that
-requires parameters, etc. To extend the supported iterators, use any of the following two static
+requires _"parameters"_. To extend the supported iterators, use any of the following two static
 methods.
 
 * `Iterator.AddStaticIterator` - Creates a _"static"_ iterator, implying a direct match.
@@ -297,6 +314,42 @@ I wouldn't recommend it, since it would create confusion for others using your m
 
 **Notice** - To create an extension iterator is an exercise you will rarely if _ever_ need to do,
 but is included here for reference purposes.
+
+### Parsing Hyperlambda from C#
+
+Magic allows you to easily parse Hyperlambda from C# if you need it, which can be done as follows.
+
+```csharp
+using magic.node.extensions.hyperlambda;
+
+...
+var hl = GetHyperlambdaAsString();
+var result = new Parser(hl).Lambda();
+...
+```
+
+The `GetHyperlambdaAsString` above could for instance load Hyperlambda from a file, retrieve it
+from your network, or some other way retrieve a snippet of Hyperlambda text. The `Parser` parts
+above, constructs a parses for Hyperlambda, and its `Lambda` method will return your Hyperlambda
+as its `Node` equivalent. The `Parser` class also have an overloaded constructor for taking a `Stream`
+instead of a `string`.
+
+**Notice** - The `Node` returned above will be a root node, wrapping all nodes found in your
+Hyperlambda as children nodes. This is necessary in order to avoid having a single _"document node"_
+the way XML does.
+
+Once you have a `Node` graph object, you can easily reverse the process by using the `Generator`
+class, and its `GetHyper` method such as the following illustrates.
+
+```csharp
+using magic.node.extensions.hyperlambda;
+
+...
+var hl1 = GetHyperlambdaAsString();
+var result = new Parser(hl1).Lambda();
+var hl2 = Generator.GetHyper(result.Children);
+...
+```
 
 ## Usage
 
