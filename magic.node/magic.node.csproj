@@ -10,7 +10,7 @@
     <Description>A generic graph object for your own needs to implement syntax trees and similar constructs. Provides you with a name/value/children type of graph object, where your value can be any object type you wish. The project encapsulates the C# implementation of Hyperlambda, implying its lambda node structure. To use package go to https://polterguy.github.io</Description>
     <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>9.7.0</PackageVersion>
+    <PackageVersion>9.7.5</PackageVersion>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/polterguy/magic.node.git</RepositoryUrl>
