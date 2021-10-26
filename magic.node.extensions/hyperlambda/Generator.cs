@@ -109,13 +109,12 @@ namespace magic.node.extensions.hyperlambda
             var value = node.Get<string>();
 
             // Checking comment type.
-            var splits = value.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            var splits = value.Split(new char[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
             if (splits.Length == 1)
             {
                 // Single line comment.
                 builder
-                    .Append("// ")
-                    .Append(value);
+                    .Append("// ").Append(value.Trim());
             }
             else
             {

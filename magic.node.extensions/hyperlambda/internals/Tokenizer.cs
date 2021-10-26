@@ -214,7 +214,8 @@ namespace magic.node.extensions.hyperlambda.internals
                         while ((char)reader.Peek() == ' ')
                             reader.Read(); // Discarding initial SP characters.
 
-                        while ((char)reader.Peek() != '\r' && !reader.EndOfStream)
+                        next = (char)reader.Peek();
+                        while (next != '\r' && next != '\n' && !reader.EndOfStream)
                         {
                             builder.Append((char)reader.Read());
                         }
