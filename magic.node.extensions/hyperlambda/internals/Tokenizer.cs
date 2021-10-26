@@ -218,6 +218,7 @@ namespace magic.node.extensions.hyperlambda.internals
                         while (next != '\r' && next != '\n' && !reader.EndOfStream)
                         {
                             builder.Append((char)reader.Read());
+                            next = (char)reader.Peek();
                         }
                         return "..";
                     }
