@@ -230,7 +230,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     if (comments)
                     {
                         // Semantically keeping comments around.
-                        if (!ParserHelper.EatUntil(reader, "\r\n"))
+                        if (!ParserHelper.EatUntil(reader, "\n"))
                             throw new ArgumentException("Couldn't find end of multi line comment before EOF");
                         var seenAsterisk = false;
                         while (true)
@@ -251,13 +251,13 @@ namespace magic.node.extensions.hyperlambda.internals
                                     reader.Read();
                                 }
                             }
-                            else if (idx == '\r')
+                            else if (idx == '\n')
                             {
                                 reader.Read(); // Discarding '\n'.
                                 seenAsterisk = false;
                                 builder.Append("\r\n");
                             }
-                            else if (seenAsterisk)
+                            else if (seenAsterisk && idx != '\r')
                             {
                                 builder.Append(idx);
                             }
