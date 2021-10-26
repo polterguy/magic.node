@@ -747,5 +747,53 @@ world:""foobar \t howdy""").Lambda();
             Assert.Single(result.Children);
             Assert.Equal("\n", result.Children.FirstOrDefault()?.Value);
         }
+
+        [Fact]
+        public void ParseComments_01()
+        {
+            // Creating some lambda object and converting to Hyperlambda.
+            var node = new Node();
+            node.Add(new Node("..", "Comment here ..."));
+            node.Add(new Node("foo", "bar"));
+            var hl = Generator.GetHyper(node.Children, false);
+
+            // Asserts.
+            Assert.Equal("..:Comment here ...\r\nfoo:bar\r\n", hl);
+        }
+
+        [Fact]
+        public void ParseComments_02()
+        {
+            // Creating some lambda object and converting to Hyperlambda.
+            var node = new Node();
+            node.Add(new Node("..", "Comment here ..."));
+            node.Add(new Node("foo", "bar"));
+            var hl = Generator.GetHyper(node.Children, true);
+
+            // Asserts.
+            Assert.Equal("\r\n// Comment here ...\r\nfoo:bar\r\n", hl);
+        }
+
+        [Fact]
+        public void ParseComments_03()
+        {
+            // Creating some lambda object and converting to Hyperlambda.
+            var node = new Node();
+            node.Add(new Node("..", "Comment here ...\r\n... and its second line"));
+            node.Add(new Node("foo", "bar"));
+            var hl = Generator.GetHyper(node.Children, true);
+
+            // Asserts.
+            Assert.Equal("\r\n/*\r\n * Comment here ...\r\n * ... and its second line\r\n */\r\nfoo:bar\r\n", hl);
+        }
+
+        [Fact]
+        public void ParseComments_04()
+        {
+            var hl = "\r\n// Some comment\r\nfoo1:bar1\r\n\r\n/*\r\n * Howdy world,\r\n * this is comments ...\r\n */\r\nfoo2:bar2\r\n";
+            var lambda = new Parser(hl, true).Lambda();
+            var result = Generator.GetHyper(lambda.Children, true);
+            Assert.Equal(hl, result);
+        }
     }
 }

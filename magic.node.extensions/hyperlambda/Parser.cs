@@ -23,11 +23,12 @@ namespace magic.node.extensions.hyperlambda
         /// Creates a new parser intended for parsing the specified Hyperlambda.
         /// </summary>
         /// <param name="hyperlambda">Hyperlambda you want to parse.</param>
-        public Parser(string hyperlambda)
+        /// <param name="comments">If true, will semantically keeep comments and presist these as [..] nodes.</param>
+        public Parser(string hyperlambda, bool comments = false)
         {
             using (var reader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(hyperlambda))))
             {
-                Parse(reader);
+                Parse(reader, comments);
             }
         }
 
@@ -36,11 +37,12 @@ namespace magic.node.extensions.hyperlambda
         /// </summary>
         /// <param name="stream">Stream to parse Hyperlambda from. Can be a forward
         /// only stream if necessary.</param>
-        public Parser(Stream stream)
+        /// <param name="comments">If true, will semantically keeep comments and presist these as [..] nodes.</param>
+        public Parser(Stream stream, bool comments = false)
         {
             using (var reader = new StreamReader(stream, Encoding.UTF8))
             {
-                Parse(reader);
+                Parse(reader, comments);
             }
         }
 
@@ -60,14 +62,14 @@ namespace magic.node.extensions.hyperlambda
         /*
          * Parses a lambda structure from the given Hyperlambda.
          */
-        void Parse(StreamReader reader)
+        void Parse(StreamReader reader, bool comments)
         {
             // State values, to keep track of where we are ibn our tokenizer process, and create lambda process.
-            Node currentParent = _root;
+            var currentParent = _root;
             Node currentNode = null;
             string previousToken = null;
-            int currentLevel = 0;
-            foreach (var idxToken in new Tokenizer(reader).GetTokens())
+            var currentLevel = 0;
+            foreach (var idxToken in new Tokenizer(reader).GetTokens(comments))
             {
                 switch (idxToken)
                 {
