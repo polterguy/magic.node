@@ -27,8 +27,8 @@ namespace magic.node.extensions.hyperlambda.internals
          * and support 'custom tokens', for cases where you want to implement some
          * sort of LISP macro style type of injections, into the parsing process.
          */
-        static readonly Dictionary<char, Func<StreamReader, StringBuilder, bool, string>> _characterFunctors =
-        new Dictionary<char, Func<StreamReader, StringBuilder, bool, string>>
+        static readonly Dictionary<char, Func<StreamReader, StringBuilder, bool, string, string>> _characterFunctors =
+        new Dictionary<char, Func<StreamReader, StringBuilder, bool, string, string>>
         {
             // Separates name and value of node (possibly).
             {':', HandleColonToken},
@@ -66,15 +66,19 @@ namespace magic.node.extensions.hyperlambda.internals
         internal IEnumerable<string> GetTokens(bool comments)
         {
             var builder = new StringBuilder();
+            string previous = null;
             while (!_reader.EndOfStream)
             {
                 var current = (char)_reader.Peek();
                 if (_characterFunctors.ContainsKey(current))
                 {
                     // We have a specialized functor for this character.
-                    var result = _characterFunctors[current](_reader, builder, comments);
+                    var result = _characterFunctors[current](_reader, builder, comments, previous);
                     if (result != null)
+                    {
                         yield return result;
+                        previous = result;
+                    }
                 }
                 else
                 {
@@ -94,7 +98,7 @@ namespace magic.node.extensions.hyperlambda.internals
          * Handles the ':' token, since it might be the separation of a node's value,
          * and its name.
          */
-        static string HandleColonToken(StreamReader reader, StringBuilder builder, bool comments)
+        static string HandleColonToken(StreamReader reader, StringBuilder builder, bool comments, string previous)
         {
             if (builder.Length == 0)
             {
@@ -109,7 +113,7 @@ namespace magic.node.extensions.hyperlambda.internals
         /*
          * Handles the '@' character, since it might imply a multiline string.
          */
-        static string HandleAlphaToken(StreamReader reader, StringBuilder builder, bool comments)
+        static string HandleAlphaToken(StreamReader reader, StringBuilder builder, bool comments, string previous)
         {
             if (builder.Length == 0)
             {
@@ -134,7 +138,7 @@ namespace magic.node.extensions.hyperlambda.internals
         /*
          * Handles the '"' character, since it might imply a single line string.
          */
-        static string HandleDoubleQuoteToken(StreamReader reader, StringBuilder builder, bool comments)
+        static string HandleDoubleQuoteToken(StreamReader reader, StringBuilder builder, bool comments, string previous)
         {
             if (builder.Length == 0)
             {
@@ -150,7 +154,7 @@ namespace magic.node.extensions.hyperlambda.internals
         /*
          * Handles the '\'' character, since it might imply a multiline string.
          */
-        static string HandleSingleQuoteToken(StreamReader reader, StringBuilder builder, bool comments)
+        static string HandleSingleQuoteToken(StreamReader reader, StringBuilder builder, bool comments, string previous)
         {
             if (builder.Length == 0)
             {
@@ -166,7 +170,7 @@ namespace magic.node.extensions.hyperlambda.internals
         /*
          * Handles the '\r' character, assuming it's a part of a CR/LF sequence.
          */
-        static string HandleCRToken(StreamReader reader, StringBuilder builder, bool comments)
+        static string HandleCRToken(StreamReader reader, StringBuilder builder, bool comments, string previous)
         {
             if (builder.Length == 0)
             {
@@ -183,7 +187,7 @@ namespace magic.node.extensions.hyperlambda.internals
         /*
          * Handles the '\n' character, handling it as a CR/LF sequence.
          */
-        static string HandleLFToken(StreamReader reader, StringBuilder builder, bool comments)
+        static string HandleLFToken(StreamReader reader, StringBuilder builder, bool comments, string previous)
         {
             if (builder.Length == 0)
             {
@@ -199,13 +203,13 @@ namespace magic.node.extensions.hyperlambda.internals
          * Handles the '/' character, since it might be the beginning of a comment,
          * either multiline comment or single line comment.
          */
-        static string HandleSlashToken(StreamReader reader, StringBuilder builder, bool comments)
+        static string HandleSlashToken(StreamReader reader, StringBuilder builder, bool comments, string previous)
         {
             if (builder.Length == 0)
             {
                 reader.Read(); // Discarding current '/'.
                 var next = (char)reader.Peek();
-                if (next == '/')
+                if (next == '/' && previous.Trim() == "")
                 {
                     if (comments)
                     {
@@ -227,7 +231,7 @@ namespace magic.node.extensions.hyperlambda.internals
                         ParserHelper.EatUntil(reader, "\n");
                     }
                 }
-                else if (next == '*')
+                else if (next == '*' && previous.Trim() == "")
                 {
                     if (comments)
                     {
@@ -244,20 +248,35 @@ namespace magic.node.extensions.hyperlambda.internals
                             {
                                 if ((char)reader.Peek() == '/')
                                 {
-                                    reader.Read();
+                                    reader.Read(); // Done with comment
                                     break;
                                 }
                                 else
                                 {
+                                    // Start adding text into comment.
                                     seenAsterisk = true;
-                                    reader.Read();
+                                    if (builder.Length > 0)
+                                        builder.Append("\r\n");
+
+                                    // Discarding prepended SP characters.
+                                    while (true)
+                                    {
+                                        idx = (char)reader.Peek();
+                                        if (reader.EndOfStream || idx != ' ')
+                                            break;
+                                        reader.Read();
+                                    }
+                                    if (idx == '\r' || idx == '\n')
+                                    {
+                                        builder.Append(' ');
+                                        seenAsterisk = false;
+                                    }
                                 }
                             }
                             else if (idx == '\n')
                             {
                                 reader.Read(); // Discarding '\n'.
                                 seenAsterisk = false;
-                                builder.Append("\r\n");
                             }
                             else if (seenAsterisk && idx != '\r')
                             {
@@ -290,7 +309,7 @@ namespace magic.node.extensions.hyperlambda.internals
          * Handles the ' ' token (SP), since it's probably the beginning
          * of a 'scope declaration'.
          */
-        static string HandleSPToken(StreamReader reader, StringBuilder builder, bool comments)
+        static string HandleSPToken(StreamReader reader, StringBuilder builder, bool comments, string previous)
         {
             reader.Read(); // Discarding current ' '.
             if (builder.Length > 0)

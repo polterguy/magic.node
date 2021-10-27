@@ -795,5 +795,14 @@ world:""foobar \t howdy""").Lambda();
             var result = Generator.GetHyper(lambda.Children, true);
             Assert.Equal(hl, result);
         }
+
+        [Fact]
+        public void ParseNonComment()
+        {
+            var hl = ".://\r\n";
+            var lambda = new Parser(hl, true).Lambda();
+            var result = Generator.GetHyper(lambda.Children, true);
+            Assert.Equal(hl, result);
+        }
     }
 }

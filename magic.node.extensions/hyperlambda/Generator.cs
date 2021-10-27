@@ -124,10 +124,15 @@ namespace magic.node.extensions.hyperlambda
                 {
                     // Indenting correctly.
                     PrependSpacing(builder, level);
-                    builder
-                        .Append(" * ")
-                        .Append(idxComment)
-                        .Append("\r\n");
+                    if (idxComment == " ")
+                        builder
+                            .Append(" * ")
+                            .Append("\r\n");
+                    else
+                        builder
+                            .Append(" * ")
+                            .Append(idxComment)
+                            .Append("\r\n");
                 }
 
                 // Closing comment.
@@ -176,7 +181,10 @@ namespace magic.node.extensions.hyperlambda
                     stringValue = @"""" + stringValue.Replace(@"""", @"\""") + @"""";
 
                 // Appending actual value.
-                builder.Append(stringValue);
+                if (value.Item1 == "node" && value.Item2 == "")
+                    builder.Append(@"""""");
+                else
+                    builder.Append(stringValue);
             }
         }
 
