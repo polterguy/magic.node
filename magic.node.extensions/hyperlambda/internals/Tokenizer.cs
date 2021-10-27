@@ -175,8 +175,8 @@ namespace magic.node.extensions.hyperlambda.internals
             if (builder.Length == 0)
             {
                 reader.Read(); // Discarding '\r'.
-                if (reader.EndOfStream || (char)reader.Read() != '\n')
-                    throw new ArgumentException("CR/LF error in Hyperlambda");
+                if ((char)reader.Peek() == '\n')
+                    reader.Read(); // Discarding '\n'
                 return "\r\n";
             }
             var result = builder.ToString();
@@ -209,7 +209,7 @@ namespace magic.node.extensions.hyperlambda.internals
             {
                 reader.Read(); // Discarding current '/'.
                 var next = (char)reader.Peek();
-                if (next == '/' && previous.Trim() == "")
+                if (next == '/' && string.IsNullOrEmpty(previous?.Trim()))
                 {
                     if (comments)
                     {
@@ -231,7 +231,7 @@ namespace magic.node.extensions.hyperlambda.internals
                         ParserHelper.EatUntil(reader, "\n");
                     }
                 }
-                else if (next == '*' && previous.Trim() == "")
+                else if (next == '*' && string.IsNullOrEmpty(previous?.Trim()))
                 {
                     if (comments)
                     {
