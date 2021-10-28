@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using magic.node.extensions.hyperlambda.helpers;
-using magic.node.extensions.hyperlambda.helpers.tokens;
 
 namespace magic.node.extensions.hyperlambda
 {
@@ -36,7 +35,7 @@ namespace magic.node.extensions.hyperlambda
 
         #region [ -- Private methods -- ]
 
-        static void BuildNodes(Node result, List<IToken> tokens, bool keepComments)
+        static void BuildNodes(Node result, List<Token> tokens, bool keepComments)
         {
             var currentParent = result;
             Node currentNode = null;

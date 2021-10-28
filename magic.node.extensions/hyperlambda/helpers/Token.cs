@@ -3,14 +3,20 @@
 * See the enclosed LICENSE file for details.
 */
 
-namespace magic.node.extensions.hyperlambda.helpers.tokens
+namespace magic.node.extensions.hyperlambda.helpers
 {
     public enum TokenType { CRLF, MultiLineComment, Name, Separator, SingleLineComment, Space, Type, Value };
 
-    public interface IToken
+    public class Token
     {
-        string Value { get; }
+        public Token(TokenType type, string value)
+        {
+            Type = type;
+            Value = value;
+        }
 
-        TokenType Type { get; }
+        public string Value { get; }
+
+        public TokenType Type { get; }
     }
 }

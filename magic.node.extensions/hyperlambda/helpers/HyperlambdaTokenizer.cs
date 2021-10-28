@@ -9,14 +9,13 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using magic.node.extensions.hyperlambda.internals;
-using magic.node.extensions.hyperlambda.helpers.tokens;
 
 namespace magic.node.extensions.hyperlambda.helpers
 {
     public class HyperlambdaTokenizer
     {
         readonly StreamReader _reader;
-        readonly List<IToken> _tokens = new List<IToken>();
+        readonly List<Token> _tokens = new List<Token>();
 
         public HyperlambdaTokenizer(Stream stream)
         {
@@ -67,8 +66,8 @@ namespace magic.node.extensions.hyperlambda.helpers
                 if ((char)_reader.Peek() == ':')
                 {
                     _reader.Read(); // Discarding ':' character.
-                    _tokens[_tokens.Count - 1] = new TypeToken(_tokens[_tokens.Count - 1].Value);
-                    _tokens.Add(new SeparatorToken());
+                    _tokens[_tokens.Count - 1] = new Token(TokenType.Type, _tokens[_tokens.Count - 1].Value);
+                    _tokens.Add(new Token(TokenType.Separator, ":"));
                     if (!ReadTypeOrValue(false))
                         break;
                 }
@@ -79,7 +78,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             }
         }
 
-        public List<IToken> Tokens()
+        public List<Token> Tokens()
         {
             // Returning tokens to caller.
             return _tokens;
@@ -129,7 +128,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                         var spaces = builder.ToString();
                         if (spaces.Length % 3 != 0)
                             throw new ArgumentException($"Not correct number of spaces after {string.Join("", _tokens)}");
-                        _tokens.Add(new SpaceToken(spaces));
+                        _tokens.Add(new Token(TokenType.Space, spaces));
                         break;
                     }
                 }
@@ -148,7 +147,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             // If the next character is a ':' character, this node has an empty name.
             if ((char)_reader.Peek() == ':')
             {
-                _tokens.Add(new NameToken("")); // Empty name
+                _tokens.Add(new Token(TokenType.Name, "")); // Empty name
                 wasComment = false;
                 return true;
             }
@@ -165,8 +164,8 @@ namespace magic.node.extensions.hyperlambda.helpers
                 var comment = ParserHelper.ReadMultiLineComment(_reader);
                 if (comment == null)
                     throw new ArgumentException($"EOF encountered before end of multi line comment start after {string.Join("", _tokens)}");
-                _tokens.Add(new MultiLineCommentToken(comment));
-                _tokens.Add(new CRLFToken());
+                _tokens.Add(new Token(TokenType.MultiLineComment, comment));
+                _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
             }
             else if (current == '/' && next == '/')
             {
@@ -175,8 +174,8 @@ namespace magic.node.extensions.hyperlambda.helpers
                 var line = _reader.ReadLine()?.Trim();
                 if (!string.IsNullOrEmpty(line))
                 {
-                    _tokens.Add(new SingleLineCommentToken(line));
-                    _tokens.Add(new CRLFToken());
+                    _tokens.Add(new Token(TokenType.SingleLineComment, line));
+                    _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
                 }
                 wasComment = true;
             }
@@ -184,12 +183,12 @@ namespace magic.node.extensions.hyperlambda.helpers
             {
                 // Multi line string.
                 _reader.Read(); // Discarding '"' character.
-                _tokens.Add(new NameToken(ParserHelper.ReadMultiLineString(_reader)));
+                _tokens.Add(new Token(TokenType.Name, ParserHelper.ReadMultiLineString(_reader)));
             }
             else if (current == '"' || current == '\'')
             {
                 // Single line string.
-                _tokens.Add(new NameToken(ParserHelper.ReadQuotedString(_reader, current)));
+                _tokens.Add(new Token(TokenType.Name, ParserHelper.ReadQuotedString(_reader, current)));
             }
             else
             {
@@ -203,7 +202,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                         break;
                     builder.Append((char)_reader.Read());
                 }
-                _tokens.Add(new NameToken(builder.ToString()));
+                _tokens.Add(new Token(TokenType.Name, builder.ToString()));
             }
             return !_reader.EndOfStream;
         }
@@ -213,7 +212,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             if ((char)_reader.Peek() == ':')
             {
                 _reader.Read();
-                _tokens.Add(new SeparatorToken());
+                _tokens.Add(new Token(TokenType.Separator, ":"));
             }
             return !_reader.EndOfStream;
         }
@@ -223,8 +222,8 @@ namespace magic.node.extensions.hyperlambda.helpers
             var current = (char)_reader.Peek();
             if (current == '\r' || current == '\n')
             {
-                if (_tokens.LastOrDefault() is SeparatorToken)
-                    _tokens.Add(new ValueToken("")); // Empty string value (not null)
+                if (_tokens.LastOrDefault()?.Type == TokenType.Separator)
+                    _tokens.Add(new Token(TokenType.Value, "")); // Empty string value (not null)
                 return true;
             }
             _reader.Read();
@@ -233,7 +232,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             {
                 // Multi line string.
                 _reader.Read(); // Skipping '"' character.
-                _tokens.Add(new ValueToken(ParserHelper.ReadMultiLineString(_reader)));
+                _tokens.Add(new Token(TokenType.Value, ParserHelper.ReadMultiLineString(_reader)));
                 if (!_reader.EndOfStream)
                 {
                     next = (char)_reader.Peek();
@@ -244,7 +243,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             else if (current == '"' || current == '\'')
             {
                 // Single line string.
-                _tokens.Add(new ValueToken(ParserHelper.ReadQuotedString(_reader, current)));
+                _tokens.Add(new Token(TokenType.Value, ParserHelper.ReadQuotedString(_reader, current)));
                 if (!_reader.EndOfStream)
                 {
                     next = (char)_reader.Peek();
@@ -264,7 +263,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                         break;
                     builder.Append((char)_reader.Read());
                 }
-                _tokens.Add(new ValueToken(builder.ToString().Trim()));
+                _tokens.Add(new Token(TokenType.Value, builder.ToString().Trim()));
             }
             return !_reader.EndOfStream;
         }
@@ -278,7 +277,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                     break;
                 _reader.Read();
             }
-            _tokens.Add(new CRLFToken());
+            _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
             return !_reader.EndOfStream;
         }
 
