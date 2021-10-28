@@ -67,7 +67,7 @@ namespace magic.node.extensions
             {"node", (value) => {
                 if (value is Node)
                     return value;
-                return new Parser(value.ToString()).Lambda();
+                return HyperlambdaParser.Parse(value.ToString());
             }},
         };
 
@@ -131,7 +131,7 @@ namespace magic.node.extensions
                 return ("x", ((Expression)value).Value);
             }},
             { "magic.node.Node", (value) => {
-                return ("node", Generator.GetHyper(((Node)value).Children));
+                return ("node", HyperlambdaGenerator.GetHyperlambda(((Node)value).Children));
             }},
         };
 

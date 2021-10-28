@@ -8,19 +8,9 @@ using System.Collections.Generic;
 
 namespace magic.node.extensions.hyperlambda
 {
-    /// <summary>
-    /// Class to help convert a bunch of nodes into its Hyperlambda text representation.
-    /// </summary>
-    public static class Generator
+    public static class HyperlambdaGenerator
     {
-        /// <summary>
-        /// Returns the Hyperlambda/string representation of the given list of nodes.
-        /// Notice, will not serialize parent nodes, only nodes downwards in hierarchy.
-        /// </summary>
-        /// <param name="nodes">Root nodes to convert to Hyperlambda.</param>
-        /// <param name="comments">If true, will semantically parse comments nodes [..] and return Hyperlambda including comments - Otherwise will return everything 'as is'.</param>
-        /// <returns>Hyperlambda representation of nodes.</returns>
-        public static string GetHyper(IEnumerable<Node> nodes, bool comments = false)
+        public static string GetHyperlambda(IEnumerable<Node> nodes, bool comments = false)
         {
             var result = new StringBuilder();
             GetHyper(result, nodes, 0, comments);

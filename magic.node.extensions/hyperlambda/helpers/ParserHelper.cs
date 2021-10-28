@@ -60,17 +60,15 @@ namespace magic.node.extensions.hyperlambda.internals
         /*
          * Reads a single line string literal, basically a string surrounded by only "".
          */
-        internal static string ReadQuotedString(StreamReader reader)
+        internal static string ReadQuotedString(StreamReader reader, char? endsWith = null)
         {
-            var endCharacter = (char)reader.Read();
+            var endCharacter = endsWith.HasValue ? endsWith.Value : (char)reader.Read();
             var builder = new StringBuilder();
             for (var c = reader.Read(); c != -1; c = reader.Read())
             {
                 if (c == endCharacter)
                 {
                     var result = builder.ToString();
-                    if (result == "\r\n")
-                        result += "\n"; // Needed to separate a "new node token" from a string with only CR/LF
                     return result;
                 }
 
@@ -98,6 +96,32 @@ namespace magic.node.extensions.hyperlambda.internals
         internal static bool EatUntil(StreamReader reader, string sequence)
         {
             return EatUntil(reader, sequence, false);
+        }
+
+        /*
+         * Reads the next multiline comment in the specified stream, and returns it to caller if
+         * we can find any upcoming comment.
+         */
+        internal static string ReadMultiLineComment(StreamReader reader)
+        {
+            var builder = new StringBuilder();
+            while (true)
+            {
+                var line = reader.ReadLine();
+                var trimmed = line.TrimStart(new char[] { ' ', '*' }).Trim();
+                builder.Append(trimmed).Append("\r\n");
+                if (line.EndsWith("*/"))
+                    break;
+                if (reader.EndOfStream)
+                    return null;
+            }
+            if (builder.Length > 0)
+            {
+                var comment = builder.ToString();
+                comment = comment.Substring(0, comment.Length - 4).Trim();
+                return comment;
+            }
+            return null;
         }
 
         #region [ -- Private helper methods -- ]

@@ -98,7 +98,7 @@ namespace magic.node.extensions
         /// <returns></returns>
         public static string ToHyperlambda(this Node node)
         {
-            return Generator.GetHyper(new Node[] { node });
+            return HyperlambdaGenerator.GetHyperlambda(new Node[] { node });
         }
     }
 }

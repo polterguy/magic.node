@@ -53,7 +53,7 @@ namespace magic.node.tests
    bar
    xxx
    bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar");
@@ -78,7 +78,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             // Notice, making sure we use Mac OS X logic for carriage returns.
             var hl = "foo\n   bar1\n   bar2\nfoo\n   bar3";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("*/foo/*");
@@ -99,7 +99,7 @@ namespace magic.node.tests
    bar
    xxx
    bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../0/**");
@@ -118,7 +118,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = @"foo:node:@""foo:bar""";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../0/#");
@@ -138,7 +138,7 @@ namespace magic.node.tests
    bar
    xxx
    bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../*/non-existing/..");
@@ -152,7 +152,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             var hl = @"foo
    1";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../**/\\1");
@@ -167,7 +167,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             var hl = @"foo
    """"";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../**/foo/*/");
@@ -182,7 +182,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             var hl = @"foo
    how/dy";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../**/\"how/dy\"");
@@ -197,7 +197,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             var hl = @"foo
    /howdy";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../**/\"/howdy\"");
@@ -212,7 +212,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             var hl = @"foo
    howdy:";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../**/howdy/=");
@@ -227,7 +227,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             var hl = @"foo
    howdy";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../**/howdy/=");
@@ -242,7 +242,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             var hl = @"foo
    howdy";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../**/\"howdy\"/=");
@@ -259,7 +259,7 @@ namespace magic.node.tests
    bar
    xxx
    bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../12/..");
@@ -277,7 +277,7 @@ namespace magic.node.tests
    bar
    xxx
    bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../5/..");
@@ -295,7 +295,7 @@ namespace magic.node.tests
    bar
    xxx
    bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../*/ERROR/@foo");
@@ -313,7 +313,7 @@ namespace magic.node.tests
    bar
    xxx
    bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../*/foo/@ERROR");
@@ -331,7 +331,7 @@ namespace magic.node.tests
    bar
    xxx
    bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("../*/foo/*/xxx/@bar");
@@ -350,7 +350,7 @@ namespace magic.node.tests
    bar:SUCCESS
    xxx
    barXXX";
-            var lambda = new Parser(hl).Lambda().Children.FirstOrDefault();
+            var lambda = HyperlambdaParser.Parse(hl).Children.FirstOrDefault();
             var result = lambda.Evaluate();
             Assert.Single(result);
             Assert.Equal("SUCCESS", result.FirstOrDefault()?.Value);
@@ -364,7 +364,7 @@ namespace magic.node.tests
    bar:SUCCESS
    xxx
    barXXX";
-            var lambda = new Parser(hl).Lambda().Children.FirstOrDefault();
+            var lambda = HyperlambdaParser.Parse(hl).Children.FirstOrDefault();
             Assert.Throws<ArgumentException>(() => lambda.Evaluate());
         }
 
@@ -400,7 +400,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar\n   bar";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar/.");
@@ -416,7 +416,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar\n   bar";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/1/@foo");
@@ -434,7 +434,7 @@ namespace magic.node.tests
             var hl = @"foo
    bar:error
    bar:success";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/[1,1]");
@@ -451,7 +451,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1\n   bar2";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar1/+");
@@ -467,7 +467,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1\n   bar2";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar2/-");
@@ -483,7 +483,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1\n   bar2";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar1/-");
@@ -499,7 +499,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1\n   bar2";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar2/+");
@@ -515,7 +515,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1:xxx\n   bar1:yyy";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar1/=xxx");
@@ -532,7 +532,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1:int:5\n   bar1:yyy";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar1/=5");
@@ -548,7 +548,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1:bool:true\n   bar1:yyy";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar1/=true");
@@ -564,7 +564,7 @@ namespace magic.node.tests
         {
             // Creating some example lambda to run our expression on.
             var hl = "foo\n   bar1:hello world\n   bar1:yyy";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             var x = new Expression("foo/*/bar1/=hello world");
@@ -594,7 +594,7 @@ namespace magic.node.tests
             // Creating some example lambda to run our expression on.
             var hl = @"foo
    howdy:XXX";
-            var lambda = new Parser(hl).Lambda().Children;
+            var lambda = HyperlambdaParser.Parse(hl).Children;
 
             // Creating an expression, and evaluating it on above lambda.
             Iterator.AddStaticIterator("^^", (identity, input) => {
@@ -615,7 +615,7 @@ namespace magic.node.tests
    howdy2:XXX
    howdy3:XXXXX
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
 
             // Creating an expression, and evaluating it on above lambda.
             Iterator.AddDynamicIterator('%', (iteratorValue) => {
@@ -641,7 +641,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/.data/*/{../*/.arg1}");
             var result = x.Evaluate(lambda);
             Assert.Single(result);
@@ -667,7 +667,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/.data/*/{../*/{../*/.arg2}}");
             var result = x.Evaluate(lambda);
             Assert.Single(result);
@@ -688,7 +688,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/.data/*/{../*/{../*/.arg2}}");
             Assert.Throws<ArgumentException>(() => x.Evaluate(lambda));
         }
@@ -706,7 +706,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/.data/*/{../*/{../*/.arg2/[0,1]}}");
             var result = x.Evaluate(lambda);
             Assert.Single(result);
@@ -726,7 +726,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/{../*/.arg1}/*/{../*/.arg2}");
             var result = x.Evaluate(lambda);
             Assert.Single(result);
@@ -745,7 +745,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/{../*/.arg1}");
             var result = x.Evaluate(lambda);
             Assert.Empty(result);
@@ -762,7 +762,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/{../*/.arg1}");
             var result = x.Evaluate(lambda);
             Assert.Empty(result);
@@ -779,7 +779,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/{../*/.arg1}/*/howdy1");
             var result = x.Evaluate(lambda);
             Assert.Single(result);
@@ -798,7 +798,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/{../*/.arg1}/*/howdy1");
             var result = x.Evaluate(lambda);
             Assert.Empty(result);
@@ -815,7 +815,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/{../*/.arg1}");
             var result = x.Evaluate(lambda);
             Assert.Empty(result);
@@ -833,7 +833,7 @@ namespace magic.node.tests
    howdy2:john
    howdy3:peter
 ";
-            var lambda = new Parser(hl).Lambda();
+            var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/{../*/.arg1}/*/{../*/.arg2}");
             var result = x.Evaluate(lambda);
             Assert.Single(result);

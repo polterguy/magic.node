@@ -587,7 +587,7 @@ namespace magic.node.tests
                 Value2 = "Howdy World",
             }));
             node.Add(new Node("some-other-value", 5M));
-            var hyperlambda = Generator.GetHyper(node.Children);
+            var hyperlambda = HyperlambdaGenerator.GetHyperlambda(node.Children);
             Assert.Equal("some-value:int:5\r\nfoo:foo:5,Howdy World\r\nsome-other-value:decimal:5\r\n", hyperlambda);
         }
 
@@ -616,7 +616,7 @@ namespace magic.node.tests
                 Value2 = "Howdy \"World",
             }));
             node.Add(new Node("some-other-value", 5M));
-            var hyperlambda = Generator.GetHyper(node.Children);
+            var hyperlambda = HyperlambdaGenerator.GetHyperlambda(node.Children);
             Assert.Equal("some-value:int:5\r\nfoo:foo:" + "\"5,Howdy \\\"World\"" + "\r\nsome-other-value:decimal:5\r\n", hyperlambda);
         }
 
