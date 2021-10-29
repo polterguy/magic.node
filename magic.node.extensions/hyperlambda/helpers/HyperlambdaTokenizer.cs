@@ -27,7 +27,7 @@ namespace magic.node.extensions.hyperlambda.helpers
         public HyperlambdaTokenizer(Stream stream)
         {
             // Creating our stream reader which we're internally using to read tokens from the specified stream.
-            _reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream)));
+            _reader = new StreamReader(stream);
 
             // Looping until EOF of stream.
             while (!_reader.EndOfStream)

@@ -19,10 +19,30 @@ namespace magic.node.tests
     public class HyperlambdaParserTests
     {
         [Fact]
-        public void Empty()
+        public void Empty_01()
         {
             // Creating some lambda object.
             var result = HyperlambdaParser.Parse("").Children.ToList();
+
+            // Asserts.
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Empty_02()
+        {
+            // Creating some lambda object.
+            var result = HyperlambdaParser.Parse("\r\n\n\r\r\r\n\n\n").Children.ToList();
+
+            // Asserts.
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Empty_03()
+        {
+            // Creating some lambda object.
+            var result = HyperlambdaParser.Parse("    ").Children.ToList();
 
             // Asserts.
             Assert.Empty(result);
@@ -1022,6 +1042,17 @@ world:""foobar \t howdy""");
             var hl = "/*\r * howdy\n */\r\n\n\r/* howdy */";
             var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
             var tokens = tokenizer.Tokens();
+            Assert.Equal(4, tokens.Count);
+        }
+
+        [Fact]
+        public void Tokenize_14()
+        {
+            var lhs = new Token(TokenType.CRLF, "\r\n");
+            var rhs = new Token(TokenType.CRLF, "\r\n");
+            Assert.Equal(lhs, rhs);
+            Assert.NotEqual(new object(), lhs);
+            Assert.Equal(lhs.GetHashCode(), rhs.GetHashCode());
         }
     }
 }

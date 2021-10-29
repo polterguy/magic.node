@@ -94,9 +94,9 @@ namespace magic.node.extensions.hyperlambda.helpers
         }
 
         /// <inheritdoc />
-        public override bool Equals(object rhs)
+        public override bool Equals(object obj)
         {
-            return rhs is Token token && token.ToString() == ToString();
+            return obj is Token token && token.ToString() == ToString();
         }
 
         #endregion
