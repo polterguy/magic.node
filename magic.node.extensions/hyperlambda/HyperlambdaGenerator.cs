@@ -170,14 +170,16 @@ namespace magic.node.extensions.hyperlambda
 
                 // Figuring out if we need to escape value somehow, or wrap it into double quotes (""/@"").
                 var stringValue = value.Item2;
-                if (stringValue.Contains("\n"))
+                if (stringValue.Contains("\r\n"))
                     stringValue = @"@""" + stringValue.Replace(@"""", @"""""") + @"""";
                 else if (stringValue.Contains(":") || 
+                    stringValue.Contains("\r") ||
+                    stringValue.Contains("\n") ||
                     stringValue.Contains("\"") ||
                     stringValue.Contains("'") ||
                     stringValue.StartsWith(" ") ||
                     stringValue.EndsWith(" "))
-                    stringValue = @"""" + stringValue.Replace(@"""", @"\""") + @"""";
+                    stringValue = @"""" + stringValue.Replace(@"""", @"\""").Replace("\r", "\\r").Replace("\n", "\\n") + @"""";
 
                 // Appending actual value.
                 if (value.Item1 == "node" && value.Item2 == "")
