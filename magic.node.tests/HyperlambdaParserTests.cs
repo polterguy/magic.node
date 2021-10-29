@@ -1233,5 +1233,23 @@ world:""foobar \t howdy""");
             // Creating some lambda object.
             Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("// howdy\r   .:x", true).Children.ToList());
         }
+
+        [Fact]
+        public void Tokenize_27_THROWS()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("\"\\").Children.ToList());
+        }
+
+        [Fact]
+        public void Tokenize_28()
+        {
+            var hl = "\"\\\"\"";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(1, tokens.Count);
+            Assert.True(tokens.First().Type == TokenType.Name);
+            Assert.Equal("\"", tokens.First().Value);
+        }
     }
 }
