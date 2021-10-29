@@ -1054,5 +1054,92 @@ world:""foobar \t howdy""");
             Assert.NotEqual(new object(), lhs);
             Assert.Equal(lhs.GetHashCode(), rhs.GetHashCode());
         }
+
+        [Fact]
+        public void Tokenize_15()
+        {
+            var hl = "foo\r\n";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(2, tokens.Count);
+            Assert.Equal("foo", tokens.First().Value);
+            Assert.Equal("\r\n", tokens.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void Tokenize_16()
+        {
+            var hl = "foo\n";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(2, tokens.Count);
+            Assert.Equal("foo", tokens.First().Value);
+            Assert.Equal("\r\n", tokens.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void Tokenize_17()
+        {
+            var hl = "foo\r";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(2, tokens.Count);
+            Assert.Equal("foo", tokens.First().Value);
+            Assert.Equal("\r\n", tokens.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void Tokenize_18()
+        {
+            var hl = ":foo";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(3, tokens.Count);
+            Assert.Equal("", tokens.First().Value);
+            Assert.Equal(TokenType.Name, tokens.First().Type);
+            Assert.Equal(":", tokens.Skip(1).First().Value);
+            Assert.Equal(TokenType.Separator, tokens.Skip(1).First().Type);
+            Assert.Equal("foo", tokens.Skip(2).First().Value);
+            Assert.Equal(TokenType.Value, tokens.Skip(2).First().Type);
+        }
+
+        [Fact]
+        public void Tokenize_19()
+        {
+            var hl = ":foo:howdy";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(5, tokens.Count);
+
+            Assert.Equal("", tokens.First().Value);
+            Assert.Equal(TokenType.Name, tokens.First().Type);
+
+            Assert.Equal(":", tokens.Skip(1).First().Value);
+            Assert.Equal(TokenType.Separator, tokens.Skip(1).First().Type);
+
+            Assert.Equal("foo", tokens.Skip(2).First().Value);
+            Assert.Equal(TokenType.Type, tokens.Skip(2).First().Type);
+
+            Assert.Equal(":", tokens.Skip(3).First().Value);
+            Assert.Equal(TokenType.Separator, tokens.Skip(3).First().Type);
+
+            Assert.Equal("howdy", tokens.Skip(4).First().Value);
+            Assert.Equal(TokenType.Value, tokens.Skip(4).First().Type);
+        }
+
+        [Fact]
+        public void Tokenize_20()
+        {
+            var hl = "// Thomas Hansen      ";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(2, tokens.Count);
+            Assert.True(tokens.First().Type == TokenType.SingleLineComment);
+            Assert.Equal("Thomas Hansen", tokens.First().Value);
+
+            // Notice, comments have CR/LF automatically appended to the list of tokens afterwards.
+            Assert.True(tokens.Skip(1).First().Type == TokenType.CRLF);
+            Assert.Equal("\r\n", tokens.Skip(1).First().Value);
+        }
     }
 }
