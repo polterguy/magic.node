@@ -50,6 +50,11 @@ namespace magic.node.extensions.hyperlambda.helpers
             return ToString().GetHashCode();
         }
 
+        public override bool Equals(object rhs)
+        {
+            return rhs is Token token && token.ToString() == ToString();
+        }
+
         #endregion
     }
 }
