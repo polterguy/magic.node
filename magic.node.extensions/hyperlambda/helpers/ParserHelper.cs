@@ -5,7 +5,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace magic.node.extensions.hyperlambda.internals
@@ -40,13 +39,9 @@ namespace magic.node.extensions.hyperlambda.internals
                         break;
 
                     case '\n':
-                        builder.Append("\r\n");
-                        break;
-
                     case '\r':
-                        if ((char)reader.Read() != '\n')
-                            throw new ArgumentException(string.Format("Unexpected CR found without any matching LF near '{0}'", builder));
                         builder.Append("\r\n");
+                        EatCRLF(reader);
                         break;
 
                     default:
@@ -116,12 +111,15 @@ namespace magic.node.extensions.hyperlambda.internals
             return null;
         }
 
+        /*
+         * Discards all upcoming CR or LF characters in the specified stream reader.
+         */
         internal static void EatCRLF(StreamReader reader)
         {
             var next = (char)reader.Peek();
             while (!reader.EndOfStream && (next == '\r' || next == '\n'))
             {
-                reader.Read();
+                reader.Read(); // Discarding CR/LF character.
                 next = (char)reader.Peek();
             }
         }
@@ -171,9 +169,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     return "\n";
 
                 case 'r':
-                    if ((char)reader.Read() != '\\' || (char)reader.Read() != 'n')
-                        throw new ArgumentException("CR found, but no matching LF found");
-                    return "\r\n";
+                    return "\r";
 
                 default:
                     throw new ArgumentException("Invalid escape sequence found in string literal");

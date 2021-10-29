@@ -64,11 +64,8 @@ namespace magic.node.extensions.hyperlambda
             // What level we're at, implying number of SP characters divided by 3.
             var level = 0;
 
-            // If true, previous token was CR/LF token.
-            var previousWasCRLF = false;
-
             // If true, previous token was a name token.
-            var previousWasName = false;
+            Token previous = new Token(TokenType.CRLF, "\r\n");
 
             // Iterating through each tokens specified by caller.
             foreach (var idx in tokens)
@@ -76,45 +73,37 @@ namespace magic.node.extensions.hyperlambda
                 switch (idx.Type)
                 {
                     case TokenType.CRLF:
-                        previousWasCRLF = true;
                         break;
 
                     case TokenType.Separator:
-                        if (previousWasName)
+                        if (previous.Type == TokenType.Name)
                             currentNode.Value = ""; // Defaulting value in case there are no more tokens.
                         break;
 
                     case TokenType.MultiLineComment:
-                        if (keepComments)
-                            currentParent.Add(new Node("..", idx.Value));
-                        break;
-
                     case TokenType.SingleLineComment:
                         if (keepComments)
                             currentParent.Add(new Node("..", idx.Value));
                         break;
 
                     case TokenType.Name:
-                        if (previousWasCRLF)
+                        if (previous.Type == TokenType.CRLF)
                         {
                             // If previous token was CR/LF token, this token is a root level name declaration.
                             currentParent = result;
                             level = 0;
                         }
-                        previousWasName = true;
                         currentNode = new Node(idx.Value);
                         currentParent.Add(currentNode);
                         break;
 
                     case TokenType.Space:
-                        previousWasCRLF = false;
                         var scope = FindCurrentScope(idx.Value, level, currentParent);
                         level = scope.Item1;
                         currentParent = scope.Item2;
                         break;
 
                     case TokenType.Type:
-                        previousWasName = false;
                         currentNode.Value = idx.Value;
                         break;
 
@@ -125,6 +114,7 @@ namespace magic.node.extensions.hyperlambda
                             currentNode.Value = Converter.ToObject(idx.Value, currentNode.Get<string>());
                         break;
                 }
+                previous = idx;
             }
         }
 
