@@ -1182,7 +1182,7 @@ world:""foobar \t howdy""");
             var hl = "@\"foo\"";
             var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
             var tokens = tokenizer.Tokens();
-            Assert.Equal(1, tokens.Count);
+            Assert.Single(tokens);
             Assert.True(tokens.First().Type == TokenType.Name);
             Assert.Equal("foo", tokens.First().Value);
         }
@@ -1193,7 +1193,7 @@ world:""foobar \t howdy""");
             var hl = "@\"foo\rf\ng\"";
             var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
             var tokens = tokenizer.Tokens();
-            Assert.Equal(1, tokens.Count);
+            Assert.Single(tokens);
             Assert.True(tokens.First().Type == TokenType.Name);
             Assert.Equal("foo\r\nf\r\ng", tokens.First().Value);
         }
