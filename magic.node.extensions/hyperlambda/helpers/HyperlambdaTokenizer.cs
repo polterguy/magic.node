@@ -32,20 +32,14 @@ namespace magic.node.extensions.hyperlambda.helpers
             // Looping until EOF of stream.
             while (true)
             {
-                // Skipping initial CR/LF sequences
-                while (true)
-                {
-                    var cur = (char)_reader.Peek();
-                    if (cur != '\r' && cur != '\n')
-                        break;
-                    _reader.Read();
-                }
-
                 /*
                  * Initially, and after a value's CR/LF sequence, we can only have SP tokens, comments or names.
                  */
                 while (!_reader.EndOfStream)
                 {
+                    // Skipping initial CR/LF sequences
+                    ParserHelper.EatCRLF(_reader);
+
                     // Space tokens should only occur before names and comments.
                     if (!ReadSpaceToken())
                         break;
@@ -138,7 +132,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                         // Next character is not SP, '\r' or '\n'.
                         var spaces = builder.ToString();
                         if (spaces.Length % 3 != 0)
-                            throw new ArgumentException($"Not correct number of spaces after {string.Join("", _tokens)}");
+                            throw new ArgumentException($"Not correct number of spaces after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
                         _tokens.Add(new Token(TokenType.Space, spaces));
                         break;
                     }
@@ -165,7 +159,7 @@ namespace magic.node.extensions.hyperlambda.helpers
 
             // Reading the next TWO characters to figure out which type of token the next token in the stream actually is.
             var current = (char)_reader.Read();
-            var next = _reader.Peek();
+            var next = (char)_reader.Peek();
 
             // Checking type of token, which varies according to the two first characters in the stream.
             if (current == '/' && next == '*')
@@ -174,7 +168,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                 wasComment = true;
                 var comment = ParserHelper.ReadMultiLineComment(_reader);
                 if (comment == null)
-                    throw new ArgumentException($"EOF encountered before end of multi line comment start after {string.Join("", _tokens)}");
+                    throw new ArgumentException($"EOF encountered before end of multi line comment start after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
                 _tokens.Add(new Token(TokenType.MultiLineComment, comment));
                 _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
             }
@@ -250,7 +244,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                 {
                     next = (char)_reader.Peek();
                     if (next != '\r' && next != '\n')
-                        throw new ArgumentException($"Garbage characters after {string.Join("", _tokens)}");
+                        throw new ArgumentException($"Garbage characters after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
                 }
             }
             else if (current == '"' || current == '\'')
@@ -261,7 +255,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                 {
                     next = (char)_reader.Peek();
                     if (next != '\r' && next != '\n')
-                        throw new ArgumentException($"Garbage characters after {string.Join("", _tokens)}");
+                        throw new ArgumentException($"Garbage characters after: {string.Join("", _tokens.Select(x => x.Value))}");
                 }
             }
             else

@@ -37,5 +37,19 @@ namespace magic.node.extensions.hyperlambda.helpers
         /// </summary>
         /// <value>Token type</value>
         public TokenType Type { get; }
+
+        #region [ -- Overridden base class methods -- ]
+
+        public override string ToString()
+        {
+            return Type + ":" + Value;
+        }
+
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
+
+        #endregion
     }
 }

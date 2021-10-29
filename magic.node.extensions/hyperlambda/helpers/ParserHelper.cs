@@ -116,6 +116,16 @@ namespace magic.node.extensions.hyperlambda.internals
             return null;
         }
 
+        internal static void EatCRLF(StreamReader reader)
+        {
+            var next = (char)reader.Peek();
+            while (!reader.EndOfStream && (next == '\r' || next == '\n'))
+            {
+                reader.Read();
+                next = (char)reader.Peek();
+            }
+        }
+
         #region [ -- Private helper methods -- ]
 
         /*

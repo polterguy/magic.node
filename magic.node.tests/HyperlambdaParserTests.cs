@@ -990,5 +990,38 @@ world:""foobar \t howdy""");
             Assert.Equal("Thomas Hansen", tokens.Skip(11).First().Value);
             Assert.True(tokens.Skip(12).First().Type == TokenType.CRLF);
         }
+
+        [Fact]
+        public void Tokenize_12()
+        {
+            var hl = "   \r \n     \r\n\r\n\n\rfoo:  bar  \n   foo:bar\r\n\n  \r     \r\n/*    Howdy world ...\r   *   thomas   \n  hansen */\r\n/*\r\n * Thomas Hansen\r\n */";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(13, tokens.Count);
+            Assert.True(tokens.First().Type == TokenType.Name);
+            Assert.Equal("foo", tokens.First().Value);
+            Assert.True(tokens.Skip(1).First().Type == TokenType.Separator);
+            Assert.True(tokens.Skip(2).First().Type == TokenType.Value);
+            Assert.Equal("bar", tokens.Skip(2).First().Value);
+            Assert.True(tokens.Skip(3).First().Type == TokenType.CRLF);
+            Assert.True(tokens.Skip(4).First().Type == TokenType.Space);
+            Assert.True(tokens.Skip(4).First().Value.Length == 3);
+            Assert.True(tokens.Skip(5).First().Type == TokenType.Name);
+            Assert.True(tokens.Skip(6).First().Type == TokenType.Separator);
+            Assert.True(tokens.Skip(7).First().Type == TokenType.Value);
+            Assert.True(tokens.Skip(8).First().Type == TokenType.CRLF);
+            Assert.Equal("Howdy world ...\r\nthomas\r\nhansen", tokens.Skip(9).First().Value);
+            Assert.True(tokens.Skip(10).First().Type == TokenType.CRLF);
+            Assert.Equal("Thomas Hansen", tokens.Skip(11).First().Value);
+            Assert.True(tokens.Skip(12).First().Type == TokenType.CRLF);
+        }
+
+        [Fact]
+        public void Tokenize_13()
+        {
+            var hl = "/*\r * howdy\n */\r\n\n\r/* howdy */";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+        }
     }
 }
