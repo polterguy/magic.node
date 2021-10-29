@@ -91,14 +91,6 @@ namespace magic.node.extensions.hyperlambda.internals
         }
 
         /*
-         * Eats characters in stream reader, until the specified sequence is found.
-         */
-        internal static bool EatUntil(StreamReader reader, string sequence)
-        {
-            return EatUntil(reader, sequence, false);
-        }
-
-        /*
          * Reads the next multiline comment in the specified stream, and returns it to caller if
          * we can find any upcoming comment.
          */
@@ -125,37 +117,6 @@ namespace magic.node.extensions.hyperlambda.internals
         }
 
         #region [ -- Private helper methods -- ]
-
-        static bool EatUntil(
-            StreamReader reader,
-            string sequence,
-            bool recursed)
-        {
-            while (true)
-            {
-                if (reader.EndOfStream)
-                    return false;
-
-                var current = (char)reader.Peek();
-                if (current == sequence.First())
-                {
-                    reader.Read(); // Discarding current character.
-                    if (sequence.Length == 1 || EatUntil(reader, sequence.Substring(1), true))
-                        return true; // Last character in sequence found.
-                }
-                else if (recursed)
-                {
-                    /*
-                     * Notice, NOT moving stream pointer forward,
-                     * since it still might be the first character in original sequence.
-                     */
-                    return false;
-                }
-
-                // Discarding current character, and moving to next character in stream.
-                reader.Read();
-            }
-        }
 
         /*
          * Reads a single character from a single line string literal, escaped

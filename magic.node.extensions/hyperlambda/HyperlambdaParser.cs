@@ -12,8 +12,17 @@ using magic.node.extensions.hyperlambda.helpers;
 
 namespace magic.node.extensions.hyperlambda
 {
+    /// <summary>
+    /// Class that helps you parse Hyperlambda and create a Lambda/node from it.
+    /// </summary>
     public static class HyperlambdaParser
     {
+        /// <summary>
+        /// Creates a Lambda/node from the specified string Hyperlambda.
+        /// </summary>
+        /// <param name="hyperlambda">Hyperlambda to parse</param>
+        /// <param name="comments">Whether or not to include comments semantically in the resulting lambda or not</param>
+        /// <returns>The node representation of the specified Hyperlambda</returns>
         public static Node Parse(string hyperlambda, bool comments = false)
         {
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(hyperlambda)))
@@ -25,6 +34,12 @@ namespace magic.node.extensions.hyperlambda
             }
         }
 
+        /// <summary>
+        /// Creates a Lambda/node from the specified stream assumed to contain Hyperlambda.
+        /// </summary>
+        /// <param name="stream">Stream containing Hyperlambda to parse</param>
+        /// <param name="comments">Whether or not to include comments semantically in the resulting lambda or not</param>
+        /// <returns>The node representation of the specified Hyperlambda</returns>
         public static Node Parse(Stream stream, bool comments = false)
         {
             var tokens = new HyperlambdaTokenizer(stream).Tokens();
@@ -35,13 +50,27 @@ namespace magic.node.extensions.hyperlambda
 
         #region [ -- Private methods -- ]
 
+        /*
+         * Buildes nodes from the specified tokens, and puts these into the specified node.
+         */
         static void BuildNodes(Node result, List<Token> tokens, bool keepComments)
         {
+            // Current parent, implying which node to add the currently created node into.
             var currentParent = result;
+
+            // The node we're currently handling.
             Node currentNode = null;
+
+            // What level we're at, implying number of SP characters divided by 3.
             var level = 0;
+
+            // If true, previous token was CR/LF token.
             var previousWasCRLF = false;
+
+            // If true, previous token was a name token.
             var previousWasName = false;
+
+            // Iterating through each tokens specified by caller.
             foreach (var idx in tokens)
             {
                 switch (idx.Type)
@@ -68,6 +97,7 @@ namespace magic.node.extensions.hyperlambda
                     case TokenType.Name:
                         if (previousWasCRLF)
                         {
+                            // If previous token was CR/LF token, this token is a root level name declaration.
                             currentParent = result;
                             level = 0;
                         }
@@ -84,7 +114,7 @@ namespace magic.node.extensions.hyperlambda
                         break;
 
                     case TokenType.Type:
-                    previousWasName = false;
+                        previousWasName = false;
                         currentNode.Value = idx.Value;
                         break;
 

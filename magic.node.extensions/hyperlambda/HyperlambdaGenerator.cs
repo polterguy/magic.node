@@ -8,8 +8,17 @@ using System.Collections.Generic;
 
 namespace magic.node.extensions.hyperlambda
 {
+    /// <summary>
+    /// Class that allows you to create Hyperlambda from a Lambda/Node-list.
+    /// </summary>
     public static class HyperlambdaGenerator
     {
+        /// <summary>
+        /// Returns Hyperlambda for the specified collection of nodes.
+        /// </summary>
+        /// <param name="nodes">Nodes to create Hyperlambda from</param>
+        /// <param name="comments">Whether or not not keep comments or not</param>
+        /// <returns>Hyperlambda representing the specified list of nodes</returns>
         public static string GetHyperlambda(IEnumerable<Node> nodes, bool comments = false)
         {
             var result = new StringBuilder();

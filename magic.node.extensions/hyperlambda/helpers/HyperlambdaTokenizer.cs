@@ -12,11 +12,18 @@ using magic.node.extensions.hyperlambda.internals;
 
 namespace magic.node.extensions.hyperlambda.helpers
 {
+    /// <summary>
+    /// Tokenizer for Hyperlambda allowing you to easily tokenize a snippet of Hyperlambda.
+    /// </summary>
     public class HyperlambdaTokenizer
     {
         readonly StreamReader _reader;
         readonly List<Token> _tokens = new List<Token>();
 
+        /// <summary>
+        /// Creates an instance of your object, and reads all tokens from the specified stream
+        /// </summary>
+        /// <param name="stream">Stream object to read tokens from</param>
         public HyperlambdaTokenizer(Stream stream)
         {
             // Creating our stream reader which we're internally using to read tokens from the specified stream.
@@ -78,6 +85,10 @@ namespace magic.node.extensions.hyperlambda.helpers
             }
         }
 
+        /// <summary>
+        /// Returns all tokens to the caller.
+        /// </summary>
+        /// <returns></returns>
         public List<Token> Tokens()
         {
             // Returning tokens to caller.
@@ -207,6 +218,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             return !_reader.EndOfStream;
         }
 
+        // Reads the nedt separator (':' character) from the stream.
         bool ReadSeparator()
         {
             if ((char)_reader.Peek() == ':')
@@ -217,6 +229,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             return !_reader.EndOfStream;
         }
 
+        // Reads the next type or value declaration from the stream.
         bool ReadTypeOrValue(bool first)
         {
             var current = (char)_reader.Peek();
@@ -268,6 +281,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             return !_reader.EndOfStream;
         }
 
+        // Reads the next CR/LF sequence from the stream.
         bool ReadCRLF()
         {
             while(true)
