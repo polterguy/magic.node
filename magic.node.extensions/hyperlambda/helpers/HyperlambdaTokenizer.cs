@@ -30,52 +30,65 @@ namespace magic.node.extensions.hyperlambda.helpers
             _reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream)));
 
             // Looping until EOF of stream.
-            while (true)
+            while (!_reader.EndOfStream)
             {
                 /*
                  * Initially, and after a value's CR/LF sequence, we can only have SP tokens, comments or names.
                  */
-                while (!_reader.EndOfStream)
+                while (true)
                 {
                     // Skipping initial CR/LF sequences
                     ParserHelper.EatCRLF(_reader);
 
+                    // Verifying we've still got more characters in stream.
+                    if (_reader.EndOfStream)
+                        break;
+
                     // Space tokens should only occur before names and comments.
-                    if (!ReadSpaceToken())
+                    ReadSpaceToken();
+
+                    // Verifying we've still got more characters in stream.
+                    if (_reader.EndOfStream)
                         break;
 
                     // The next token, if any, purely logically must be a name token, or a comment token.
                     ReadNameOrComment(out var isComment);
+
+                    // Verifying we've still got more characters in stream.
+                    if (_reader.EndOfStream)
+                        break;
 
                     // Notice, we loop for as long as we find comments, to support multiple consecutive comments in the stream.
                     if (!isComment)
                         break;
                 }
 
+                // Verifying we've still got more characters in stream.
+                if (_reader.EndOfStream)
+                    break;
+
                 // A separator might occur after a node's name.
-                if (!ReadSeparator())
+                ReadSeparator();
+
+                // Verifying we've still got more characters in stream.
+                if (_reader.EndOfStream)
                     break;
 
                 // A type or value might occur after a the separator following the node's name.
-                if (!ReadTypeOrValue(true))
-                    break;
-
-                /*
-                 * If the next character in the stream after the value is a ':', then the value is not a value,
-                 * but in fact a type declaration - Hence we change its type, and read the actual value.
-                 */
-                if ((char)_reader.Peek() == ':')
+                if (ReadTypeOrValue() && !_reader.EndOfStream)
                 {
-                    _reader.Read(); // Discarding ':' character.
-                    _tokens[_tokens.Count - 1] = new Token(TokenType.Type, _tokens[_tokens.Count - 1].Value);
-                    _tokens.Add(new Token(TokenType.Separator, ":"));
-                    if (!ReadTypeOrValue(false))
-                        break;
+                    // Above invocation returned type token, hence now reading value.
+                    ReadSeparator();
+                    if (!_reader.EndOfStream)
+                        ReadTypeOrValue();
                 }
+ 
+                // Verifying we've still got more characters in stream.
+                if (_reader.EndOfStream)
+                    break;
 
                 // A CR/LF sequence might occur after the node's name or value.
-                if (!ReadCRLF())
-                    break;
+                ReadCRLF();
             }
         }
 
@@ -92,7 +105,7 @@ namespace magic.node.extensions.hyperlambda.helpers
         #region [ -- Private helper methods -- ]
 
         // Reads SP character and creates an SP token, if stream has SP characters at its current position.
-        bool ReadSpaceToken()
+        void ReadSpaceToken()
         {
             /*
              * Notice, we only add space tokens that have some character behind it, besides CR or LF characters.
@@ -102,14 +115,14 @@ namespace magic.node.extensions.hyperlambda.helpers
             while (true)
             {
                 if (_reader.EndOfStream)
-                    return false;
+                    return;
                 var builder = new StringBuilder();
                 var next = (char)_reader.Peek();
                 while (next == ' ')
                 {
                     builder.Append((char)_reader.Read());
                     if (_reader.EndOfStream)
-                        return false;
+                        return;
                     next = (char)_reader.Peek();
                 }
                 if (builder.Length > 0)
@@ -121,7 +134,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                         {
                             next = (char)_reader.Peek();
                             if (_reader.EndOfStream)
-                                return false;
+                                return;
                             if (next != '\r' && next != '\n')
                                 break;
                             _reader.Read();
@@ -140,11 +153,10 @@ namespace magic.node.extensions.hyperlambda.helpers
                 else
                     break;
             }
-            return !_reader.EndOfStream;
         }
 
         // Reads the next name or comment in the stream.
-        bool ReadNameOrComment(out bool wasComment)
+        void ReadNameOrComment(out bool wasComment)
         {
             // Defaulting this to false, and only changing it if we're actually reading a comment.
             wasComment = false;
@@ -154,7 +166,7 @@ namespace magic.node.extensions.hyperlambda.helpers
             {
                 _tokens.Add(new Token(TokenType.Name, "")); // Empty name
                 wasComment = false;
-                return true;
+                return;
             }
 
             // Reading the next TWO characters to figure out which type of token the next token in the stream actually is.
@@ -209,29 +221,27 @@ namespace magic.node.extensions.hyperlambda.helpers
                 }
                 _tokens.Add(new Token(TokenType.Name, builder.ToString()));
             }
-            return !_reader.EndOfStream;
         }
 
         // Reads the nedt separator (':' character) from the stream.
-        bool ReadSeparator()
+        void ReadSeparator()
         {
             if ((char)_reader.Peek() == ':')
             {
                 _reader.Read();
                 _tokens.Add(new Token(TokenType.Separator, ":"));
             }
-            return !_reader.EndOfStream;
         }
 
         // Reads the next type or value declaration from the stream.
-        bool ReadTypeOrValue(bool first)
+        bool ReadTypeOrValue()
         {
             var current = (char)_reader.Peek();
             if (current == '\r' || current == '\n')
             {
                 if (_tokens.LastOrDefault()?.Type == TokenType.Separator)
                     _tokens.Add(new Token(TokenType.Value, "")); // Empty string value (not null)
-                return true;
+                return false;
             }
             _reader.Read();
             var next = (char)_reader.Peek();
@@ -246,6 +256,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                     if (next != '\r' && next != '\n')
                         throw new ArgumentException($"Garbage characters after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
                 }
+                return false;
             }
             else if (current == '"' || current == '\'')
             {
@@ -257,6 +268,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                     if (next != '\r' && next != '\n')
                         throw new ArgumentException($"Garbage characters after: {string.Join("", _tokens.Select(x => x.Value))}");
                 }
+                return false;
             }
             else
             {
@@ -266,27 +278,26 @@ namespace magic.node.extensions.hyperlambda.helpers
                 while (true)
                 {
                     next = (char)_reader.Peek();
-                    if (_reader.EndOfStream || next == '\n' || next == '\r' || (first && next == ':'))
+                    if (_reader.EndOfStream || next == '\n' || next == '\r' || next == ':')
                         break;
                     builder.Append((char)_reader.Read());
                 }
-                _tokens.Add(new Token(TokenType.Value, builder.ToString().Trim()));
+                _tokens.Add(new Token(next == ':' ? TokenType.Type : TokenType.Value, builder.ToString().Trim()));
+                return next == ':';
             }
-            return !_reader.EndOfStream;
         }
 
         // Reads the next CR/LF sequence from the stream.
-        bool ReadCRLF()
+        void ReadCRLF()
         {
             while(true)
             {
                 var next = (char)_reader.Peek();
-                if (next != '\n' && next != '\r')
+                if (_reader.EndOfStream || (next != '\n' && next != '\r'))
                     break;
                 _reader.Read();
             }
             _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
-            return !_reader.EndOfStream;
         }
 
         #endregion

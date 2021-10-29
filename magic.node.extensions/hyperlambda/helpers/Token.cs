@@ -36,7 +36,7 @@ namespace magic.node.extensions.hyperlambda.helpers
         /// Returns the token type.
         /// </summary>
         /// <value>Token type</value>
-        public TokenType Type { get; }
+        public TokenType Type { get; internal set; }
 
         #region [ -- Overridden base class methods -- ]
 
