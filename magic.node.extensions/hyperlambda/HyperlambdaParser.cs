@@ -65,7 +65,7 @@ namespace magic.node.extensions.hyperlambda
             var level = 0;
 
             // Keeping track of previous token since it might influence how we handle current token, defaulting to CR/LF token.
-            Token previous = new Token(TokenType.CRLF, "\r\n");
+            var previous = new Token(TokenType.CRLF, "\r\n");
 
             // Iterating through each tokens specified by caller.
             foreach (var idx in tokens)
@@ -75,7 +75,16 @@ namespace magic.node.extensions.hyperlambda
                     case TokenType.MultiLineComment:
                     case TokenType.SingleLineComment:
                         if (keepComments)
-                            currentParent.Add(new Node("..", idx.Value));
+                        {
+                            if (previous.Type == TokenType.CRLF)
+                            {
+                                // If previous token was CR/LF token, this token is a root level name declaration.
+                                currentParent = result;
+                                level = 0;
+                            }
+                            var cmt = new Node("..", idx.Value);
+                            currentParent.Add(cmt);
+                        }
                         break;
 
                     case TokenType.Name:
@@ -85,6 +94,8 @@ namespace magic.node.extensions.hyperlambda
                             currentParent = result;
                             level = 0;
                         }
+                        if (keepComments && currentParent.Name == "..")
+                            throw new ArgumentException($"Tried to add a child node of a comment node having the value of {currentParent.Value}");
                         currentNode = new Node(idx.Value);
                         currentParent.Add(currentNode);
                         break;

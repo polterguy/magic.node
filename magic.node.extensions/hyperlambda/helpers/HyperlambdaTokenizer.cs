@@ -180,9 +180,15 @@ namespace magic.node.extensions.hyperlambda.helpers
                 wasComment = true;
                 var comment = ParserHelper.ReadMultiLineComment(_reader);
                 if (comment == null)
-                    throw new ArgumentException($"EOF encountered before end of multi line comment start after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
-                _tokens.Add(new Token(TokenType.MultiLineComment, comment));
-                _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
+                {
+                    if (_reader.EndOfStream)
+                        throw new ArgumentException($"EOF encountered before end of multi line comment start after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
+                }
+                else
+                {
+                    _tokens.Add(new Token(TokenType.MultiLineComment, comment));
+                    _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
+                }
             }
             else if (current == '/' && next == '/')
             {

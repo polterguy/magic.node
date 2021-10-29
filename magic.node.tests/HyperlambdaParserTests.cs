@@ -615,6 +615,40 @@ world:foo""bar.com");
         }
 
         [Fact]
+        public void ReadMultiLineComment_05()
+        {
+            // Creating some lambda object.
+            var result = HyperlambdaParser.Parse(@"
+howdy
+/**/
+world:foo""bar.com");
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo\"bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
+        public void ReadMultiLineComment_06()
+        {
+            // Creating some lambda object.
+            var result = HyperlambdaParser.Parse(@"
+howdy
+/*      */
+world:foo""bar.com");
+
+            // Asserts.
+            Assert.Equal(2, result.Children.Count());
+            Assert.Equal("howdy", result.Children.First().Name);
+            Assert.Null(result.Children.First().Value);
+            Assert.Equal("world", result.Children.Skip(1).First().Name);
+            Assert.Equal("foo\"bar.com", result.Children.Skip(1).First().Value);
+        }
+
+        [Fact]
         public void CROnlySequqnece()
         {
             // Creating some lambda object.
@@ -1051,7 +1085,7 @@ world:""foobar \t howdy""");
             var lhs = new Token(TokenType.CRLF, "\r\n");
             var rhs = new Token(TokenType.CRLF, "\r\n");
             Assert.Equal(lhs, rhs);
-            Assert.NotEqual(new object(), lhs);
+            Assert.NotEqual(lhs, new object());
             Assert.Equal(lhs.GetHashCode(), rhs.GetHashCode());
         }
 
@@ -1191,6 +1225,13 @@ world:""foobar \t howdy""");
         {
             // Creating some lambda object.
             Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("foo:\"bar\"ERROR").Children.ToList());
+        }
+
+        [Fact]
+        public void Tokenize_26_THROWS()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("// howdy\r   .:x", true).Children.ToList());
         }
     }
 }
