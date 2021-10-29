@@ -1251,5 +1251,29 @@ world:""foobar \t howdy""");
             Assert.True(tokens.First().Type == TokenType.Name);
             Assert.Equal("\"", tokens.First().Value);
         }
+
+        [Fact]
+        public void Tokenize_29()
+        {
+            var hl = "/*\r * thomas \r * \r * hansen \r */";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(2, tokens.Count);
+            Assert.True(tokens.First().Type == TokenType.MultiLineComment);
+            Assert.Equal("thomas\r\n\r\nhansen", tokens.First().Value);
+            Assert.Equal(TokenType.CRLF, tokens.Skip(1).First().Type);
+        }
+
+        [Fact]
+        public void Tokenize_30()
+        {
+            var hl = "/*\r * thomas \r *\r * hansen \r */";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(2, tokens.Count);
+            Assert.True(tokens.First().Type == TokenType.MultiLineComment);
+            Assert.Equal("thomas\r\n\r\nhansen", tokens.First().Value);
+            Assert.Equal(TokenType.CRLF, tokens.Skip(1).First().Type);
+        }
     }
 }
