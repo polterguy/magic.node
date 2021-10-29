@@ -8,7 +8,48 @@ namespace magic.node.extensions.hyperlambda.helpers
     /// <summary>
     /// Token type declaring which token type the token actually is.
     /// </summary>
-    public enum TokenType { CRLF, MultiLineComment, Name, Separator, SingleLineComment, Space, Type, Value };
+    public enum TokenType
+    {
+        /// <summary>
+        /// CR/LF sequence type of token.
+        /// </summary>
+        CRLF,
+
+        /// <summary>
+        /// Comment spanning multiple lines.
+        /// </summary>
+        MultiLineComment,
+
+        /// <summary>
+        /// Name of node.
+        /// </summary>
+        Name,
+
+        /// <summary>
+        /// Separator tokenm (:)
+        /// </summary>
+        Separator,
+
+        /// <summary>
+        /// Comment spanning only one line.
+        /// </summary>
+        SingleLineComment,
+
+        /// <summary>
+        /// Space type of token, declaring scope of upcoming node.
+        /// </summary>
+        Space,
+
+        /// <summary>
+        /// Type declaration type of token.
+        /// </summary>
+        Type,
+
+        /// <summary>
+        /// Value of node type of token.
+        /// </summary>
+        Value
+    };
 
     /// <summary>
     /// A single Hyperlambda token.
@@ -40,16 +81,19 @@ namespace magic.node.extensions.hyperlambda.helpers
 
         #region [ -- Overridden base class methods -- ]
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return Type + ":" + Value;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return ToString().GetHashCode();
         }
 
+        /// <inheritdoc />
         public override bool Equals(object rhs)
         {
             return rhs is Token token && token.ToString() == ToString();
