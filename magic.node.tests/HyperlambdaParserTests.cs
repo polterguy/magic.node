@@ -1141,5 +1141,56 @@ world:""foobar \t howdy""");
             Assert.True(tokens.Skip(1).First().Type == TokenType.CRLF);
             Assert.Equal("\r\n", tokens.Skip(1).First().Value);
         }
+
+        [Fact]
+        public void Tokenize_21()
+        {
+            var hl = "@\"foo\"";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(1, tokens.Count);
+            Assert.True(tokens.First().Type == TokenType.Name);
+            Assert.Equal("foo", tokens.First().Value);
+        }
+
+        [Fact]
+        public void Tokenize_22()
+        {
+            var hl = "@\"foo\rf\ng\"";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(1, tokens.Count);
+            Assert.True(tokens.First().Type == TokenType.Name);
+            Assert.Equal("foo\r\nf\r\ng", tokens.First().Value);
+        }
+
+        [Fact]
+        public void Tokenize_23()
+        {
+            var hl = "foo:\r";
+            var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
+            var tokens = tokenizer.Tokens();
+            Assert.Equal(4, tokens.Count);
+            Assert.True(tokens.First().Type == TokenType.Name);
+            Assert.Equal("foo", tokens.First().Value);
+            Assert.True(tokens.Skip(1).First().Type == TokenType.Separator);
+            Assert.True(tokens.Skip(2).First().Type == TokenType.Value);
+            Assert.Equal("", tokens.Skip(2).First().Value);
+            Assert.True(tokens.Skip(3).First().Type == TokenType.CRLF);
+        }
+
+        [Fact]
+        public void Tokenize_24()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("foo:@\"bar\"ERROR").Children.ToList());
+        }
+
+        [Fact]
+        public void Tokenize_25()
+        {
+            // Creating some lambda object.
+            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("foo:\"bar\"ERROR").Children.ToList());
+        }
     }
 }
