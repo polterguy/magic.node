@@ -21,4 +21,4 @@ EOF
 }
 
 echo "Create release $version for repo: $repo_full_name branch: $branch"
-curl -u polterguy:$(token) --data "$(generate_post_data)" "https://api.github.com/repos/$repo_full_name/releases"
+curl -u polterguy:$token --data "$(generate_post_data)" "https://api.github.com/repos/$repo_full_name/releases"
