@@ -2,7 +2,7 @@
 # Magic Node
 
 Magic Node is a simple name/value/children graph object, in addition to a _"Hyperlambda"_ parser, allowing you to
-create a textual string representations of graph objects easily transformed to its relational graph object syntax,
+create a textual string representations of graph objects easily transformed to its relational graph object syntax
 and vice versa. This allows you to easily declaratively create execution trees using a format similar to YAML, for 
 then to access every individual node, its value, name and children, from your C#, CLR code, or Hyperlambda.
 For the record, Hyperlambda is _much_ easier to understand than YAML.
@@ -31,7 +31,7 @@ then `string` will be assumed.
 To traverse the nodes later in for instance C#, you could do something such as the following.
 
 ```csharp
-var root = var result = new Parser(hyperlambda).Lambda();
+var root = var result = HyperlambdaParser.Parse(hyperlambda);
 
 foreach (var idxChild in root.Children)
 {
@@ -40,6 +40,10 @@ foreach (var idxChild in root.Children)
    /* ... etc ... */
 }
 ```
+
+**Notice** - When you parse Hyperlambda a _"root node"_ is explicitly created wrapping all your nodes, and
+this is the node that's returned to you after parsing. All nodes you declare in your Hyperlambda will be
+returned to you as children of this root node.
 
 ## Supported types
 
@@ -147,7 +151,11 @@ foo:@"Notice how the new line doesn't end the string
 ```
 
 Escape characters are supported for both single quote and double quote strings the same way they
-are supported in C#, allowing you to use e.g. `\r\n` etc.
+are supported in C#, allowing you to use e.g. `\r\n` etc. If you use a multi line string literal
+such as `@"qwerty"` then any CR/LF characters in it will become _"normalised"_ to CRLF. This is
+to avoid hard to track down bugs related to differences in operating systems' handling of
+CR/LF sequences. However, in single line string literals, CR and LF is preserved exactly as they
+are specified.
 
 ## Lambda expressions
 
@@ -158,12 +166,13 @@ in your Node graph object instead of XML nodes. Below is an example to give you 
 .foo:hello world
 get-value:x:@.foo
 
-// After invocation of the above slot, its value will be "hello world".
+// After invocation of the above **[get-value]**, its value will be "hello world".
 ```
 
 Most slots in Magic can accept expressions to reference nodes, values of nodes, and children of
 nodes somehow. This allows you to modify the lambda graph object, as it is currently being executed,
-and hence allows you to modify _"anything"_ from _"anywhere"_.
+and hence allows you to modify _"anything"_ from _"anywhere"_. This resembles XPath expressions
+from XML.
 
 ### Iterators
 
@@ -216,7 +225,7 @@ _"n"_ with a number, and _"x"_ with an expression.
 Notice, you can escape iterators by using backslash "\\". This allows you to look for nodes who's names
 are for instance _"3"_, without using the n'th child iterator, which would defeat the purpose. In addition,
 you can quote iterators by using double quotes `"`, to allow for having iterators with values that are normally
-not legal within an iterator, such as `/`, etc.
+not legal within an iterator, such as `/`, etc. If you quote an iterator you have to quote the entire expression.
 
 Below is an example of a slightly more advanced expression.
 
@@ -243,8 +252,8 @@ for reference purposes, let's break it down into its individual parts.
 5. Find all nodes who's value is _"wo/rld"_.
 
 98% of your expressions will have 1-3 iterators, no complex escaping, and no parameters.
-And in fact, there are thousands of lines of Hyperlambda code in Magic, and 98% of these
-expressions are as simple as follows.
+And in fact, there are thousands of lines of Hyperlambda code in Magic's middleware, and
+98% of these expressions are as simple as follows.
 
 ```
 .arguments
@@ -254,7 +263,7 @@ get-value:x:@.arguments/*/foo1
 
 Which translates into the following English.
 
-> Give me the value of any **[foo1]** nodes, inside of the **[.arguments]** node.
+> Give me the value of any **[foo1]** nodes, inside of the first **[.arguments]** node you can find upwards in the hierarchy.
 
 Expressions can also be extrapolated, which allows you to parametrise your expressions, by nesting
 expressions, substituting parts of your expression dynamically as your code is executed. Imagine
@@ -298,15 +307,15 @@ var hl = @"foo
    howdy2:XXX
    howdy3:XXXXX
 ";
-var lambda = new Parser(hl).Lambda();
+var lambda = HyperlambdaParser.Parse(hl);
 
 var x = new Expression("../**/%3");
 var result = x.Evaluate(lambda);
 ```
 
 Notice how the iterator we created above, uses the `%3` parts of the expression, to parametrize
-itself. If you exchange 3 with 5, it will only return **[howdy1]** and **[howdy3]** instead,
-since it will look for values with 5 characters instead. The `Iterator` class can be found
+itself. If you exchange 3 with 6, it will only return **[howdy1]** and **[howdy3]** instead,
+since it will look for values with 6 characters instead. The `Iterator` class can be found
 in the `magic.node.extensions` namespace.
 
 You can using the above syntax also override the default implementation of iterators, although
@@ -324,30 +333,29 @@ using magic.node.extensions.hyperlambda;
 
 ...
 var hl = GetHyperlambdaAsString();
-var result = new Parser(hl).Lambda();
+var lambda = HyperlambdaParser.Parse(hl);
 ...
 ```
 
 The `GetHyperlambdaAsString` above could for instance load Hyperlambda from a file, retrieve it
-from your network, or some other way retrieve a snippet of Hyperlambda text. The `Parser` parts
-above, constructs a parses for Hyperlambda, and its `Lambda` method will return your Hyperlambda
-as its `Node` equivalent. The `Parser` class also have an overloaded constructor for taking a `Stream`
-instead of a `string`.
+from your network, or some other way retrieve a snippet of Hyperlambda text. The `HyperlambdaParser.Parse`
+parts above will return your Hyperlambda as its `Node` equivalent. The `Parser` class also have an
+overloaded constructor for taking a `Stream` instead of a `string`.
 
 **Notice** - The `Node` returned above will be a root node, wrapping all nodes found in your
 Hyperlambda as children nodes. This is necessary in order to avoid having a single _"document node"_
 the way XML does.
 
-Once you have a `Node` graph object, you can easily reverse the process by using the `Generator`
-class, and its `GetHyper` method such as the following illustrates.
+Once you have a `Node` graph object, you can easily reverse the process by using the `HyperlambdaGenerator`
+class, and its `GetHyperlambda` method such as the following illustrates.
 
 ```csharp
 using magic.node.extensions.hyperlambda;
 
 ...
 var hl1 = GetHyperlambdaAsString();
-var result = new Parser(hl1).Lambda();
-var hl2 = Generator.GetHyper(result.Children);
+var result = HyperlambdaParser.Parse(hl1);
+var hl2 = HyperlambdaGenerator.GetHyperlambda(result.Children);
 ...
 ```
 
