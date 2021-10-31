@@ -395,3 +395,5 @@ The source code for this repository can be found at [github.com/polterguy/magic.
 
 This project is the copyright(c) 2020-2021 of Thomas Hansen thomas@servergardens.com, and is licensed under the terms
 of the LGPL version 3, as published by the Free Software Foundation. See the enclosed LICENSE file for details.
+
+* [Magic Documentation](https://polterguy.github.io/)
