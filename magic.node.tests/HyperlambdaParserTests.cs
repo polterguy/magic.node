@@ -1247,7 +1247,7 @@ world:""foobar \t howdy""");
             var hl = "\"\\\"\"";
             var tokenizer = new HyperlambdaTokenizer(new MemoryStream(Encoding.UTF8.GetBytes(hl)));
             var tokens = tokenizer.Tokens();
-            Assert.Equal(1, tokens.Count);
+            Assert.Single(tokens);
             Assert.True(tokens.First().Type == TokenType.Name);
             Assert.Equal("\"", tokens.First().Value);
         }
