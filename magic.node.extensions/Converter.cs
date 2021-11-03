@@ -163,7 +163,7 @@ namespace magic.node.extensions
                 return (null, null);
             var typeName = value.GetType().FullName;
             if (!_toStringFunctors.ContainsKey(typeName))
-                throw new ArgumentException($"I don't know how to convert from '{typeName}' to a string representation.");
+                return ("[" + typeName + "]", value.ToString());
             return _toStringFunctors[typeName](value);
         }
 
