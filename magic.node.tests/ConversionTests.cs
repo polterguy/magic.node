@@ -65,9 +65,11 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void ConvertNonConvertableObject_Throws()
+        public void ConvertNonConvertableObject()
         {
-            Assert.Throws<ArgumentException>(() => Converter.ToString(new ConversionTests()));
+            var result = Converter.ToString(new ConversionTests());
+            Assert.Contains(".ConversionTests", result.Item1);
+            Assert.Contains(".ConversionTests", result.Item2);
         }
 
         [Fact]
