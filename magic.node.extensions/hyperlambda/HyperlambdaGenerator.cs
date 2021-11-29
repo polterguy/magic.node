@@ -111,8 +111,7 @@ namespace magic.node.extensions.hyperlambda
             if (splits.Length == 1)
             {
                 // Single line comment.
-                builder
-                    .Append("// ").Append(value.Trim());
+                builder.Append("// ").Append(value.Trim());
             }
             else
             {

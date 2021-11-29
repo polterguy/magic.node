@@ -68,7 +68,7 @@ namespace magic.node.tests
         public void Evaluate_Throws()
         {
             // Notice, unless identity node's value is an expression, Evaluate will throw.
-            Assert.Throws<ArgumentException>(() => new Node().Evaluate());
+            Assert.Throws<HyperlambdaException>(() => new Node().Evaluate());
         }
 
         [Fact]
@@ -364,7 +364,7 @@ namespace magic.node.tests
    xxx
    barXXX";
             var lambda = HyperlambdaParser.Parse(hl).Children.FirstOrDefault();
-            Assert.Throws<ArgumentException>(() => lambda.Evaluate());
+            Assert.Throws<HyperlambdaException>(() => lambda.Evaluate());
         }
 
         [Fact]
@@ -651,7 +651,7 @@ namespace magic.node.tests
         [Fact]
         public void ExtrapolatedExpression_02_THROWS()
         {
-            Assert.Throws<ArgumentException>(() => new Expression("../*/.data/*/{../*/.arg1"));
+            Assert.Throws<HyperlambdaException>(() => new Expression("../*/.data/*/{../*/.arg1"));
         }
 
         [Fact]

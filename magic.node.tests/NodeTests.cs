@@ -304,7 +304,7 @@ namespace magic.node.tests
             var node = new Node("", new Expression("*"));
             node.Add(new Node("", new Expression(".")));
             node.Add(new Node(""));
-            Assert.Throws<ArgumentException>(() => node.Children.First().GetEx<int>());
+            Assert.Throws<HyperlambdaException>(() => node.Children.First().GetEx<int>());
         }
 
         [Fact]

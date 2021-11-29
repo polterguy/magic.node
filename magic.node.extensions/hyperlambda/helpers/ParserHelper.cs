@@ -41,7 +41,7 @@ namespace magic.node.extensions.hyperlambda.internals
                         break;
                 }
             }
-            throw new ArgumentException(string.Format("String literal not closed before end of input near '{0}'", builder));
+            throw new HyperlambdaException(string.Format("String literal not closed before end of input near '{0}'", builder));
         }
 
         /*
@@ -67,14 +67,14 @@ namespace magic.node.extensions.hyperlambda.internals
 
                     case '\n':
                     case '\r':
-                        throw new ArgumentException("Syntax error, string literal unexpected CR/LF");
+                        throw new HyperlambdaException("Syntax error, string literal unexpected CR/LF");
 
                     default:
                         builder.Append((char)c);
                         break;
                 }
             }
-            throw new ArgumentException("Syntax error, string literal not closed before end of input");
+            throw new HyperlambdaException("Syntax error, string literal not closed before end of input");
         }
 
         /*
@@ -133,7 +133,7 @@ namespace magic.node.extensions.hyperlambda.internals
             switch (ch)
             {
                 case -1:
-                    throw new ArgumentException("End of input found when looking for escape character in single line string literal");
+                    throw new HyperlambdaException("End of input found when looking for escape character in single line string literal");
 
                 case '"':
                     return "\"";
@@ -166,7 +166,7 @@ namespace magic.node.extensions.hyperlambda.internals
                     return "\r";
 
                 default:
-                    throw new ArgumentException("Invalid escape sequence found in string literal");
+                    throw new HyperlambdaException("Invalid escape sequence found in string literal");
             }
         }
 

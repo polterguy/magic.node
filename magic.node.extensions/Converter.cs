@@ -146,7 +146,7 @@ namespace magic.node.extensions
         public static object ToObject(object value, string type)
         {
             if (!_toObjectFunctors.ContainsKey(type))
-                throw new ArgumentException($"Unknown type declaration '{type}'");
+                throw new HyperlambdaException($"Unknown type declaration '{type}'");
             return _toObjectFunctors[type](value);
         }
 
@@ -234,7 +234,7 @@ namespace magic.node.extensions
                         DateTimeStyles.AssumeUniversal)
                         .ToUniversalTime();
                 default:
-                    throw new ArgumentException($"'{str}' is not a valid date.");
+                    throw new HyperlambdaException($"'{str}' is not a valid date.");
             }
         }
 

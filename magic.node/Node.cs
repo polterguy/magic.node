@@ -239,7 +239,7 @@ namespace magic.node
         /// and returns the result.
         /// </summary>
         /// <returns>A clone of the current node. Notice, values are also cloned,
-        /// but only if they implement ICloneable</returns>
+        /// but only if they implement ICloneable.</returns>
         public Node Clone()
         {
             var value = Value;

@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using Xunit;
+using magic.node.extensions;
 using magic.node.extensions.hyperlambda;
 using magic.node.extensions.hyperlambda.helpers;
 
@@ -178,24 +179,24 @@ namespace magic.node.tests
         }
 
         [Fact]
-        public void BadCRLFSequence_Throws_03()
+        public void BadCRLFSequences_03()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"foo:""\""").Children.ToList());
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"foo:""\""").Children.ToList());
         }
 
         [Fact]
         public void BadCRLFSequence_Throws_04()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"foo:""\r").Children.ToList());
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"foo:""\r").Children.ToList());
         }
 
         [Fact]
         public void BadEscapeChar_Throws()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"foo:""\q""").Children.ToList());
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"foo:""\q""").Children.ToList());
         }
 
         [Fact]
@@ -343,7 +344,7 @@ foo2
         public void ComplexHierarchy_Throws()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"foo1
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"foo1
    bar1
          bar2
    bar3"));
@@ -377,7 +378,7 @@ foo2
         public void SpacingError_Throws()
         {
             // Should throw, too few spaces in front of "bar1".
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("foo1\r\n bar1"));
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse("foo1\r\n bar1"));
         }
 
         [Fact]
@@ -458,7 +459,7 @@ world:foo""bar.com");
         public void EOFBeforeDone()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"
 howdy
 world:""howdy world throws"));
         }
@@ -467,7 +468,7 @@ world:""howdy world throws"));
         public void CharactersAfterClosingDoubleQuote()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"
 howdy
 world:""howdy world""throws"));
         }
@@ -585,7 +586,7 @@ world:foo""bar.com");
         public void ReadMultiLineComment_03_Throws()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"
 howdy
 /*
  * This is a comment, and should be ignored!
@@ -661,7 +662,7 @@ world:foo""bar.com");
         public void ReadOddSpacesThrows_01()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"
 foo
    // Next line throws!
   bar
@@ -672,7 +673,7 @@ foo
         public void ReadOddSpacesThrows_02()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"
 foo
    // Next line throws!
     bar
@@ -683,7 +684,7 @@ foo
         public void ReadNonClosedMultiLine_Throws()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"
 foo:@""howdy world
 "));
         }
@@ -692,7 +693,7 @@ foo:@""howdy world
         public void ReadSingleLineContainingCR_Throws()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse(@"
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"
 foo:""howdy world
 howdy""
 "));
@@ -759,7 +760,7 @@ world:""foobar \t howdy""");
         public void BadStringNotEscaped_THROWS()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>( () => HyperlambdaParser.Parse(@"howdy:""\\"));
+            Assert.Throws<HyperlambdaException>( () => HyperlambdaParser.Parse(@"howdy:""\\"));
         }
 
         [Fact]
@@ -1216,28 +1217,28 @@ world:""foobar \t howdy""");
         public void Tokenize_24()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("foo:@\"bar\"ERROR").Children.ToList());
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse("foo:@\"bar\"ERROR").Children.ToList());
         }
 
         [Fact]
         public void Tokenize_25()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("foo:\"bar\"ERROR").Children.ToList());
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse("foo:\"bar\"ERROR").Children.ToList());
         }
 
         [Fact]
         public void Tokenize_26_THROWS()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("// howdy\r   .:x", true).Children.ToList());
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse("// howdy\r   .:x", true).Children.ToList());
         }
 
         [Fact]
         public void Tokenize_27_THROWS()
         {
             // Creating some lambda object.
-            Assert.Throws<ArgumentException>(() => HyperlambdaParser.Parse("\"\\").Children.ToList());
+            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse("\"\\").Children.ToList());
         }
 
         [Fact]

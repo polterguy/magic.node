@@ -94,7 +94,7 @@ namespace magic.node.extensions.hyperlambda
                             level = 0;
                         }
                         if (keepComments && currentParent.Name == "..")
-                            throw new ArgumentException($"Tried to add a child node of a comment node having the value of {currentParent.Value}");
+                            throw new HyperlambdaException($"Tried to add a child node of a comment node having the value of {currentParent.Value}");
                         currentNode = new Node(idx.Value);
                         currentParent.Add(currentNode);
                         break;
@@ -142,7 +142,7 @@ namespace magic.node.extensions.hyperlambda
             if (newLevel > level + 1)
             {
                 // Syntax error in Hyperlambda, too many consecutive SP characters.
-                throw new ArgumentException("Too many spaces found in Hyperlambda content");
+                throw new HyperlambdaException("Too many spaces found in Hyperlambda content");
             }
             if (newLevel == level + 1)
             {

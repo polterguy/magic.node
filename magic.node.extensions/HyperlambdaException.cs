@@ -9,9 +9,7 @@ using System.Runtime.Serialization;
 namespace magic.node.extensions
 {
     /// <summary>
-    /// Exception type thrown from Hyperlambda using [throw], and other parts,
-    /// allowing you to return semantic errors to caller to explain details
-    /// about what was wrong.
+    /// Exception thrown when there is a Hyperlambda error occurring.
     /// </summary>
     [Serializable]
     public class HyperlambdaException : Exception, ISerializable
@@ -27,7 +25,7 @@ namespace magic.node.extensions
         }
 
         /// <summary>
-        /// Creates a new instance of exception.
+        /// Creates a new exception.
         /// </summary>
         /// <param name="message">Friendly message, that might or might not be returned back to client.</param>
         public HyperlambdaException(string message)
@@ -39,7 +37,7 @@ namespace magic.node.extensions
         }
 
         /// <summary>
-        /// Creates a new instance of exception
+        /// Creates a new exception.
         /// </summary>
         /// <param name="message">Friendly message, that might or might not be returned back to client.</param>
         /// <param name="innerException">Inner exception</param>
@@ -52,7 +50,7 @@ namespace magic.node.extensions
         }
 
         /// <summary>
-        /// Constructs a new instance of a Hyperlambda exception.
+        /// Creates a new exception.
         /// </summary>
         /// <param name="message">Exception error text.</param>
         /// <param name="isPublic">Whether or not exception message should propagate to client in release builds.</param>
@@ -66,7 +64,7 @@ namespace magic.node.extensions
         }
 
         /// <summary>
-        /// Constructs a new instance of a Hyperlambda exception.
+        /// Creates a new exception.
         /// </summary>
         /// <param name="message">Exception error text.</param>
         /// <param name="isPublic">Whether or not exception message should propagate to client in release builds.</param>
@@ -81,7 +79,7 @@ namespace magic.node.extensions
         }
 
         /// <summary>
-        /// Constructs a new instance of a Hyperlambda exception.
+        /// Creates a new exception.
         /// </summary>
         /// <param name="message">Exception error text.</param>
         /// <param name="isPublic">Whether or not exception message should propagate to client in release builds.</param>
@@ -99,7 +97,7 @@ namespace magic.node.extensions
         /// <summary>
         /// Whether ot not exception will propagate to client in release builds.
         /// </summary>
-        /// <value>Returns true if exception is visible to the client.</value>
+        /// <value>True if exception is returned to the client.</value>
         public bool IsPublic { get; set; }
 
         /// <summary>
@@ -111,7 +109,7 @@ namespace magic.node.extensions
         /// <summary>
         /// Name of field that triggered exception, if any.
         /// </summary>
-        /// <value>Field name that triggered exception.</value>
+        /// <value>Field that triggered exception.</value>
         public string FieldName { get; set; }
 
         #region [ -- Serialization implementation -- ]

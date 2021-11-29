@@ -145,7 +145,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                         // Next character is not SP, '\r' or '\n'.
                         var spaces = builder.ToString();
                         if (spaces.Length % 3 != 0)
-                            throw new ArgumentException($"Not correct number of spaces after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
+                            throw new HyperlambdaException($"Not correct number of spaces after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
                         _tokens.Add(new Token(TokenType.Space, spaces));
                         break;
                     }
@@ -182,7 +182,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                 if (comment == null)
                 {
                     if (_reader.EndOfStream)
-                        throw new ArgumentException($"EOF encountered before end of multi line comment start after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
+                        throw new HyperlambdaException($"EOF encountered before end of multi line comment start after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
                 }
                 else
                 {
@@ -260,7 +260,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                 {
                     next = (char)_reader.Peek();
                     if (next != '\r' && next != '\n')
-                        throw new ArgumentException($"Garbage characters after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
+                        throw new HyperlambdaException($"Garbage characters after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
                 }
                 return false;
             }
@@ -272,7 +272,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                 {
                     next = (char)_reader.Peek();
                     if (next != '\r' && next != '\n')
-                        throw new ArgumentException($"Garbage characters after: {string.Join("", _tokens.Select(x => x.Value))}");
+                        throw new HyperlambdaException($"Garbage characters after: {string.Join("", _tokens.Select(x => x.Value))}");
                 }
                 return false;
             }

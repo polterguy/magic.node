@@ -158,7 +158,7 @@ namespace magic.node.extensions
             {
                 // Reading next character, sanity checking, and appending to builder.
                 if (reader.EndOfStream)
-                    throw new ArgumentException($"Extrapolated expression was never closed in expression '{expression}'");
+                    throw new HyperlambdaException($"Extrapolated expression was never closed in expression '{expression}'");
 
                 // Reading next character and appending to builder.
                 var idx = (char)reader.Read();
