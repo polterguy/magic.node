@@ -689,7 +689,7 @@ namespace magic.node.tests
 ";
             var lambda = HyperlambdaParser.Parse(hl);
             var x = new Expression("../*/.data/*/{../*/{../*/.arg2}}");
-            Assert.Throws<ArgumentException>(() => x.Evaluate(lambda));
+            Assert.Throws<HyperlambdaException>(() => x.Evaluate(lambda));
         }
 
         [Fact]
