@@ -298,7 +298,7 @@ namespace magic.node.extensions
             var x = new Expression(expression.Substring(1, expression.Length -2));
             var result = x.Evaluate(identity);
             if (result.Count() > 1)
-               throw new ArgumentException($"Extrapolated expression '{expression}' yields multiple results");
+               throw new HyperlambdaException($"Extrapolated expression '{expression}' yields multiple results");
             var name = result.FirstOrDefault()?.GetEx<string>();
             return input.Where(y => y.Name == name);
         }
