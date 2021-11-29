@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\magic.node.extensions\dev_magic.node.extensions.csproj" />
-    <ProjectReference Include="..\magic.node\dev_magic.node.csproj" />
   </ItemGroup>
 
 </Project>
