@@ -2,9 +2,9 @@
  * Magic Cloud, copyright Aista, Ltd. See the attached LICENSE file for details.
  */
 
-using Xunit;
 using System;
 using System.Linq;
+using Xunit;
 using magic.node.extensions;
 using magic.node.extensions.hyperlambda;
 
