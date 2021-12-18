@@ -136,6 +136,14 @@ namespace magic.node.extensions
 
         #endregion
 
+        /// <summary>
+        /// Returns all Hyperlambda types Magic supports.
+        /// </summary>
+        /// <returns>All Hyperlambda types supported by current backend</returns>
+        public static IEnumerable<string> GetTypes()
+        {
+            return _toObjectFunctors.Keys;
+        }
 
         /// <summary>
         /// Converts the given string value to the type declaration specified as the type parameter.
