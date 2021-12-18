@@ -96,7 +96,7 @@ namespace magic.node.services
         {
             var result = Directory
                 .GetDirectories(folder)
-                .Select(x => x.Replace("\\", "/"))
+                .Select(x => x.Replace("\\", "/") + "/")
                 .ToList();
             result.Sort();
             return result;
