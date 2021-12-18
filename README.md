@@ -373,6 +373,22 @@ However, all of these packages are indirectly included when you use Magic.
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
 _"this"_ would be the name of some node - Implying in __bold__ characters, wrapped by square [brackets].
 
+## C# extensions
+
+If you want to, you can easily completely exchange the underlaying file system, with your own _"virtual file system"_, since all interaction with the physical file system is done through the `IFileService` and 
+`IFolderService` interfaces. This allows you to circumvent the default dependency injected service, and
+binding towards some other implementation, at least in theory allowing you to (for instance) use a database
+based file system, etc. If you want to do this, you'll need to supply your own bindings to the following
+three interfaces, using your IoC container.
+
+* `magic.node.contracts.IFileService`
+* `magic.node.contracts.IFolderService`
+* `magic.node.contracts.IStreamService`
+
+If you want to do this, you would probably want to manually declare your own implementation for these classes,
+by tapping into _"magic.library"_ somehow, or not invoking its default method that binds towards the default
+implementation classes somehow.
+
 ## Project website
 
 The source code for this repository can be found at [github.com/polterguy/magic.node](https://github.com/polterguy/magic.node), and you can provide feedback, provide bug reports, etc at the same place.
