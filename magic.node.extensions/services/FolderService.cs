@@ -3,6 +3,8 @@
  */
 
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using magic.node.extensions;
 using magic.node.contracts;
@@ -19,9 +21,23 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
+        public Task CreateAsync(string path)
+        {
+            Create(path);
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
         public void Delete(string path)
         {
             Directory.Delete(path, true);
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteAsync(string path)
+        {
+            Delete(path);
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
@@ -31,9 +47,22 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
+        public Task<bool> ExistsAsync(string path)
+        {
+            return Task.FromResult(Exists(path));
+        }
+
+        /// <inheritdoc/>
         public void Move(string source, string destination)
         {
             Directory.Move(source, destination);
+        }
+
+        /// <inheritdoc/>
+        public Task MoveAsync(string source, string destination)
+        {
+            Move(source, destination);
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
@@ -56,9 +85,27 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<string> ListFolders(string folder)
+        public Task CopyAsync(string source, string destination)
         {
-            return Directory.GetDirectories(folder);
+            Copy(source, destination);
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public List<string> ListFolders(string folder)
+        {
+            var result = Directory
+                .GetDirectories(folder)
+                .Select(x => x.Replace("\\", "/"))
+                .ToList();
+            result.Sort();
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public Task<List<string>> ListFoldersAsync(string folder)
+        {
+            return Task.FromResult(ListFolders(folder));
         }
     }
 }

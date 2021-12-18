@@ -3,6 +3,7 @@
  */
 
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using magic.node.contracts;
@@ -32,9 +33,29 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
+        public void Move(string source, string destination)
+        {
+            File.Move(source, destination);
+        }
+
+        /// <inheritdoc/>
+        public Task MoveAsync(string source, string destination)
+        {
+            Move(source, destination);
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
         public void Delete(string path)
         {
             File.Delete(path);
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteAsync(string path)
+        {
+            File.Delete(path);
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
@@ -44,9 +65,32 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<string> ListFiles(string folder)
+        public Task<bool> ExistsAsync(string path)
         {
-            return Directory.GetFiles(folder);
+            return Task.FromResult(Exists(path));
+        }
+
+        /// <inheritdoc/>
+        public List<string> ListFiles(string folder, string extension = null)
+        {
+            var files = string.IsNullOrEmpty(extension) ?
+                Directory
+                    .GetFiles(folder)
+                    .Select(x => x.Replace("\\", "/"))
+                    .ToList() :
+                Directory
+                    .GetFiles(folder)
+                    .Where(x => Path.GetExtension(x) == extension)
+                    .Select(x => x.Replace("\\", "/"))
+                    .ToList();
+            files.Sort();
+            return files;
+        }
+
+        /// <inheritdoc/>
+        public Task<List<string>> ListFilesAsync(string folder, string extension = null)
+        {
+            return Task.FromResult(ListFiles(folder, extension));
         }
 
         /// <inheritdoc/>
@@ -65,21 +109,9 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
-        public void Move(string source, string destination)
-        {
-            File.Move(source, destination);
-        }
-
-        /// <inheritdoc/>
         public void Save(string path, string content)
         {
             File.WriteAllText(path, content);
-        }
-
-        /// <inheritdoc/>
-        public void Save(string path, byte[] content)
-        {
-            File.WriteAllBytes(path, content);
         }
 
         /// <inheritdoc/>
@@ -89,6 +121,12 @@ namespace magic.node.services
             {
                 await writer.WriteAsync(content);
             }
+        }
+
+        /// <inheritdoc/>
+        public void Save(string path, byte[] content)
+        {
+            File.WriteAllBytes(path, content);
         }
 
         /// <inheritdoc/>
