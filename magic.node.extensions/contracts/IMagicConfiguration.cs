@@ -13,6 +13,6 @@ namespace magic.node.contracts
         /// Returns the specified key as a string value.
         /// </summary>
         /// <value>The string representation value of the specified key.</value>
-        string this [string key] { get; set; }
+        string this [string key] { get; }
     }
 }
