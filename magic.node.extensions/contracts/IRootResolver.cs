@@ -5,22 +5,29 @@
 namespace magic.node.contracts
 {
     /// <summary>
-    /// Contract for resolving root folder on disc for magic.lambda.io
+    /// Contract for resolving root folder/namespace on disc for all IO operations.
     /// </summary>
     public interface IRootResolver
     {
         /// <summary>
-        /// Returns the root folder that magic.lambda.io should treat as the root folder for its IO operations.
+        /// Returns the root folder or root namespace for all dynamic files, implying Hyperlambda files, endpoint files,
+        /// and other files persisted into the Magic backend somehow.
+        /// 
+        /// Typically this is the root folder for all your dynamic files, the default being "~/files/"
+        /// </summary>
+        string DynamicFiles { get; }
+
+        /// <summary>
+        /// Returns the root folder or root namespace for all IO operations in Magic.
+        /// 
+        /// Typically this is the root folder where your backend.dll file physically exists on disc.
         /// </summary>
         string RootFolder { get; }
 
         /// <summary>
-        /// Returns the root folder that magic.lambda.io should treat as the absolute root folder for its IO operations.
-        /// </summary>
-        string AbsoluteRootFolder { get; }
-
-        /// <summary>
         /// Returns the relative path given the absolute path as an argument.
+        /// 
+        /// The relative path is a path where the DynamicFiles parts of it has been removed.
         /// </summary>
         /// <param name="path">Absolute path of file or folder.</param>
         /// <returns>Relative file or folder path.</returns>
@@ -28,16 +35,11 @@ namespace magic.node.contracts
 
         /// <summary>
         /// Returns the absolute path given the relative path as an argument.
+        /// 
+        /// The absolute path is a relative path with the DynamicFiles property prepended to it.
         /// </summary>
         /// <param name="path">Relative path of file or folder.</param>
         /// <returns>Absolute file or folder path.</returns>
         string AbsolutePath(string path);
-
-        /// <summary>
-        /// Returns the absolute root path given the relative path as an argument.
-        /// </summary>
-        /// <param name="path">Relative path of file or folder.</param>
-        /// <returns>Absolute root file or folder path.</returns>
-        string RootPath(string path);
     }
 }
