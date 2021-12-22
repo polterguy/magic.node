@@ -2,6 +2,8 @@
  * Magic Cloud, copyright Aista, Ltd. See the attached LICENSE file for details.
  */
 
+using System.Collections.Generic;
+
 namespace magic.node.contracts
 {
     /// <summary>
@@ -14,5 +16,12 @@ namespace magic.node.contracts
         /// </summary>
         /// <value>The string representation value of the specified key.</value>
         string this [string key] { get; }
+
+        /// <summary>
+        /// Returns the specified section as a key/value pair.
+        /// </summary>
+        /// <param name="key">Key to return.</param>
+        /// <returns>Key/value pair of sepcific configuration section.</returns>
+        Dictionary<string, string> GetSection(string key);
     }
 }
