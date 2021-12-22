@@ -8,67 +8,10 @@ using System.Collections.Generic;
 namespace magic.node.contracts
 {
     /// <summary>
-    /// Contract for handling files for magic.lambda.io
+    /// Contract for handling files in Magic.
     /// </summary>
-    public interface IFileService
+    public interface IFileService : IIOService
     {
-        /// <summary>
-        /// Returns true if file exists.
-        /// </summary>
-        /// <param name="path">Absolute path to file</param>
-        /// <returns>True if file exists</returns>
-        bool Exists(string path);
-
-        /// <summary>
-        /// Returns true if file exists.
-        /// </summary>
-        /// <param name="path">Absolute path to file</param>
-        /// <returns>True if file exists</returns>
-        Task<bool> ExistsAsync(string path);
-
-        /// <summary>
-        /// Deletes specified file.
-        /// </summary>
-        /// <param name="path">Absolute path to file to delete</param>
-        void Delete(string path);
-
-        /// <summary>
-        /// Deletes specified file.
-        /// </summary>
-        /// <param name="path">Absolute path to file to delete</param>
-        /// <returns>Awaitable task</returns>
-        Task DeleteAsync(string path);
-
-        /// <summary>
-        /// Copies one file to another destination.
-        /// </summary>
-        /// <param name="source">File to copy.</param>
-        /// <param name="destination">Path to copy of file.</param>
-        void Copy(string source, string destination);
-
-        /// <summary>
-        /// Copies file async to new path.
-        /// </summary>
-        /// <param name="source">Path of file to copy</param>
-        /// <param name="destination">Path to copy of file.</param>
-        /// <returns>Awaitable task</returns>
-        Task CopyAsync(string source, string destination);
-
-        /// <summary>
-        /// Moves a file from source path to destination path.
-        /// </summary>
-        /// <param name="source">Path of file to move.</param>
-        /// <param name="destination">New path for file.</param>
-        void Move(string source, string destination);
-
-        /// <summary>
-        /// Moves a file from source path to destination path.
-        /// </summary>
-        /// <param name="source">Path of file to move.</param>
-        /// <param name="destination">New path for file.</param>
-        /// <returns>Awaitable task</returns>
-        Task MoveAsync(string source, string destination);
-
         /// <summary>
         /// Loads a text file, and returns its content.
         /// </summary>
