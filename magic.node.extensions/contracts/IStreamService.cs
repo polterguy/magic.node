@@ -8,37 +8,39 @@ using System.Threading.Tasks;
 namespace magic.node.contracts
 {
     /// <summary>
-    /// Contract for handling streams for magic.lambda.io.
+    /// Contract for handling streams in Magic.
     /// </summary>
     public interface IStreamService
     {
         /// <summary>
         /// Returns a stream wrapping the specified filename.
         /// </summary>
-        /// <param name="path">Absolute path to file</param>
-        /// <returns>Open Stream object</returns>
+        /// <param name="path">Absolute path to file.</param>
+        /// <returns>Open Stream object.</returns>
         Stream OpenFile(string path);
 
         /// <summary>
-        /// Returns a stream wrapping the specified filename.
+        /// Returns a stream wrapping the specified filename async.
         /// </summary>
-        /// <param name="path">Absolute path to file</param>
-        /// <returns>Open Stream object</returns>
+        /// <param name="path">Absolute path to file.</param>
+        /// <returns>Open Stream object.</returns>
         Task<Stream> OpenFileAsync(string path);
 
         /// <summary>
         /// Saves the specified stream to the specified filename.
         /// </summary>
-        /// <param name="stream">Stream to save content of</param>
-        /// <param name="path">Absolute path to filename to save stream's content to</param>
-        void SaveFile(Stream stream, string path);
+        /// <param name="stream">Stream wrapping content to save.</param>
+        /// <param name="path">Absolute path to filename to save stream's content to.</param>
+        /// <param name="overwrite">If true will overwrite existing file at specified path.</param>
+        void SaveFile(Stream stream, string path, bool overwrite);
 
         /// <summary>
-        /// Saves the specified stream to the specified filename.
+        /// Saves the specified stream to the specified filename async.
         /// </summary>
-        /// <param name="stream">Stream to save content of</param>
-        /// <param name="path">Absolute path to filename to save stream's content to</param>
-        /// <returns>Awaitable task</returns>
-        Task SaveFileAsync(Stream stream, string path);
+        /// <param name="stream">Stream wrapping content to save.</param>
+        /// <param name="path">Absolute path to filename to save stream's content to.</param>
+        /// <param name="overwrite">If true will overwrite existing file at specified path.</param>
+        /// <returns>Awaitable task.</returns>
+        Task SaveFileAsync(Stream stream, string path, bool overwrite);
     }
 }
