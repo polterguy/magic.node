@@ -18,6 +18,12 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
+        public Task<Stream> OpenFileAsync(string path)
+        {
+            return Task.FromResult<Stream>(File.OpenRead(path));
+        }
+
+        /// <inheritdoc/>
         public void SaveFile(Stream stream, string path)
         {
             using (var fileStream = File.Create(path))
@@ -33,18 +39,6 @@ namespace magic.node.services
             {
                 await stream.CopyToAsync(fileStream);
             }
-        }
-
-        /// <inheritdoc/>
-        public bool Exists(string path)
-        {
-            return File.Exists(path);
-        }
-
-        /// <inheritdoc/>
-        public void Delete(string path)
-        {
-            File.Delete(path);
         }
     }
 }

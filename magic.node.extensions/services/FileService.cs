@@ -109,6 +109,18 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
+        public byte[] LoadBinary(string path)
+        {
+            return File.ReadAllBytes(path);
+        }
+
+        /// <inheritdoc/>
+        public Task<byte[]> LoadBinaryAsync(string path)
+        {
+            return Task.FromResult(File.ReadAllBytes(path));
+        }
+
+        /// <inheritdoc/>
         public void Save(string path, string content)
         {
             File.WriteAllText(path, content);

@@ -84,6 +84,20 @@ namespace magic.node.contracts
         Task<string> LoadAsync(string path);
 
         /// <summary>
+        /// Loads a binary file, and returns its content.
+        /// </summary>
+        /// <param name="path">Path of file to load.</param>
+        /// <returns>Binary content of file.</returns>
+        byte[] LoadBinary(string path);
+
+        /// <summary>
+        /// Loads a binary file async, and returns its content.
+        /// </summary>
+        /// <param name="path">Path of file to load.</param>
+        /// <returns>Binary content of file.</returns>
+        Task<byte[]> LoadBinaryAsync(string path);
+
+        /// <summary>
         /// Saves the specified content into a file at the specified path.
         /// </summary>
         /// <param name="path">Path of file to save.</param>
