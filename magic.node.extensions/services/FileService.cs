@@ -127,18 +127,18 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
+        public void Save(string path, byte[] content)
+        {
+            File.WriteAllBytes(path, content);
+        }
+
+        /// <inheritdoc/>
         public async Task SaveAsync(string path, string content)
         {
             using (var writer = File.CreateText(path))
             {
                 await writer.WriteAsync(content);
             }
-        }
-
-        /// <inheritdoc/>
-        public void Save(string path, byte[] content)
-        {
-            File.WriteAllBytes(path, content);
         }
 
         /// <inheritdoc/>
