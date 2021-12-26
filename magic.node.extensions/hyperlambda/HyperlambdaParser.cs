@@ -72,30 +72,24 @@ namespace magic.node.extensions.hyperlambda
                 {
                     case TokenType.MultiLineComment:
                     case TokenType.SingleLineComment:
-                        if (keepComments)
-                        {
-                            if (previous.Type == TokenType.CRLF)
-                            {
-                                // If previous token was CR/LF token, this token is a root level name declaration.
-                                currentParent = result;
-                                level = 0;
-                            }
-                            var cmt = new Node("..", idx.Value);
-                            currentParent.Add(cmt);
-                        }
+                        HandleComment(
+                            previous,
+                            idx,
+                            ref currentParent,
+                            ref level,
+                            keepComments,
+                            result);
                         break;
 
                     case TokenType.Name:
-                        if (previous.Type == TokenType.CRLF)
-                        {
-                            // If previous token was CR/LF token, this token is a root level name declaration.
-                            currentParent = result;
-                            level = 0;
-                        }
-                        if (keepComments && currentParent.Name == "..")
-                            throw new HyperlambdaException($"Tried to add a child node of a comment node having the value of {currentParent.Value}");
-                        currentNode = new Node(idx.Value);
-                        currentParent.Add(currentNode);
+                        HandleName(
+                            previous,
+                            idx,
+                            ref currentParent,
+                            ref currentNode,
+                            ref level,
+                            keepComments,
+                            result);
                         break;
 
                     case TokenType.Separator:
@@ -109,26 +103,90 @@ namespace magic.node.extensions.hyperlambda
                         break;
 
                     case TokenType.Value:
-                        if (currentNode != null)
-                        {
-                            if (string.IsNullOrEmpty(currentNode.Get<string>()))
-                                currentNode.Value = idx.Value;
-                            else
-                                currentNode.Value = Converter.ToObject(idx.Value, currentNode.Get<string>());
-                        }
+                        HandleValue(idx, currentNode);
                         break;
 
                     case TokenType.CRLF:
                         break;
 
                     case TokenType.Space:
-                        var scope = FindCurrentScope(idx.Value, level, currentParent);
-                        level = scope.Item1;
-                        currentParent = scope.Item2;
+                        HandleSpace(idx, ref currentParent, ref level);
                         break;
                 }
                 previous = idx;
             }
+        }
+
+        /*
+         * Handles a space token.
+         */
+        static void HandleSpace(Token currentToken, ref Node currentParent, ref int level)
+        {
+            var scope = FindCurrentScope(currentToken.Value, level, currentParent);
+            level = scope.Item1;
+            currentParent = scope.Item2;
+        }
+
+        /*
+         * Handles a value token.
+         */
+        static void HandleValue(Token currentToken, Node currentNode)
+        {
+            if (currentNode != null)
+            {
+                if (string.IsNullOrEmpty(currentNode.Get<string>()))
+                    currentNode.Value = currentToken.Value;
+                else
+                    currentNode.Value = Converter.ToObject(currentToken.Value, currentNode.Get<string>());
+            }
+        }
+
+        /*
+         * Handles a comment token type.
+         */
+        static void HandleComment(
+            Token previous,
+            Token currentToken,
+            ref Node currentParent,
+            ref int level,
+            bool keepComments,
+            Node result)
+        {
+            if (keepComments)
+            {
+                if (previous.Type == TokenType.CRLF)
+                {
+                    // If previous token was CR/LF token, this token is a root level name declaration.
+                    currentParent = result;
+                    level = 0;
+                }
+                var cmt = new Node("..", currentToken.Value);
+                currentParent.Add(cmt);
+            }
+        }
+
+        /*
+         * Handles a name token.
+         */
+        static void HandleName(
+            Token previous,
+            Token idx,
+            ref Node currentParent,
+            ref Node currentNode,
+            ref int level,
+            bool keepComments,
+            Node result)
+        {
+            if (previous.Type == TokenType.CRLF)
+            {
+                // If previous token was CR/LF token, this token is a root level name declaration.
+                currentParent = result;
+                level = 0;
+            }
+            if (keepComments && currentParent.Name == "..")
+                throw new HyperlambdaException($"Tried to add a child node of a comment node having the value of {currentParent.Value}");
+            currentNode = new Node(idx.Value);
+            currentParent.Add(currentNode);
         }
 
         /*
