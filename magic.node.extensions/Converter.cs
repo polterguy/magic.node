@@ -192,15 +192,6 @@ namespace magic.node.extensions
             _toObjectFunctors[hyperlambdaTypename] = toObjectFunctor;
         }
 
-        /// <summary>
-        /// Returns all sypported types for the Hyperlambda parser.
-        /// </summary>
-        /// <returns>List of Hyperlambda type names, supported by the parser, including custom types.</returns>
-        public static IEnumerable<string> ListTypes()
-        {
-            return _toObjectFunctors.Keys;
-        }
-
         #region [ -- Private helper methods -- ]
 
         /*

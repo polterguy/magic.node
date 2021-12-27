@@ -624,7 +624,7 @@ namespace magic.node.tests
         [Fact]
         public void ListSupportedTypes()
         {
-            var types = Converter.ListTypes();
+            var types = Converter.GetTypes();
             Assert.True(types.Count() >= 20);
             Assert.NotNull(types.FirstOrDefault(x => x == "bytes"));
             Assert.NotNull(types.FirstOrDefault(x => x == "short"));
@@ -659,6 +659,15 @@ namespace magic.node.tests
             Assert.Equal(2, bytes.Length);
             Assert.Equal((byte)'x', bytes[0]);
             Assert.Equal((byte)'y', bytes[1]);
+        }
+
+        [Fact]
+        public void ConvertTo_Throws()
+        {
+            var result = Converter.ToString(new byte[] {(byte)'x', (byte)'y'});
+            Assert.Equal("bytes", result.Item1);
+            Assert.Equal("eHk=", result.Item2);
+            Assert.Throws<HyperlambdaException>(() => Converter.ToObject(result.Item2, "NON-EXISTING"));
         }
     }
 }
