@@ -386,12 +386,12 @@ following formal specification `->` means _"must be followed by if existing"_, `
 and `|` implies _"logical or"_. The square brackets `[]` implies a logical grouping of some token type(s), and the `x` parts is
 an assignable variable starting at 0, optionally incremented by one for each iteration through the loop. `(0..x)`
 implies  _"zero to x repetitions"_ and `(x..x+1)` implies _"x to x+1 number of repetitions"_. The `=` character assigns the
-numbers of repetitions in its RHS value to the variable `x`.
+numbers of repetitions in its RHS value to the variable `x`. The default number of repetitions if none are expliicitly given is 1.
 
 1. **Set x to 0**
 2. **CRLF(0..n)** - Any number of CRLF sequences.
-3. **\[x=IND(0..x)->COM(1..1)->CRLF(1..n)\](0..n)** - Any number of comments followed by CRLF.
-4. **\[x=IND(0..x)->\[NAM(1..1)->\[\[SEP(1..1)->VAL(1..1)\] | \[SEP(1..1)->TYP(1..1)->SEP(1..1)->VAL(0..1)\] | NULL\](0..1)\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]** - Zero or one name, with optionally an associated type, and/or value, followed by a CRLF sequence
+3. **\[x=IND(0..x)->COM->CRLF(1..n)\](0..n)** - Any number of comments followed by CRLF.
+4. **\[x=IND(0..x)->\[NAM->\[\[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\] | NULL\](0..1)\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]** - Zero or one name, with optionally an associated type, and/or value, followed by a CRLF sequence
 5. **GOTO 2** - Repeat while not EOF
 
 ## Usage
