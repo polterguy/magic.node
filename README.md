@@ -381,11 +381,11 @@ with CR/LF sequences as a part of their actual value.
 
 The formal specification of Hyperlambda is derived from combining the above 7 tokens into the following. Notice, in the
 following formal specification `->` means _"must be followed by if existing"_, `(0..n)` implies _"zero to any number of repetitions"_,
-`(0..1)` implies _"zero to 1 repetition"_, `(1..1)` implies _"exactly one must exist"_ and `|` implies _"logical or"_.
-The square brackets `[]` implies a logical grouping of some token type, and the `x` parts is an assignable variable
-starting at 0, optionally incremented by one for each iteration through the following loop. `(0..x)` implies 
-_"zero to x repetitions"_ and `(x..x+1)` implies _"x to x+1 number of repetitions"_. The `=` character assigns the number
-of repetitions on its RHS value to the variable `x`.
+`(0..1)` implies _"zero to 1 repetition"_, `(1..1)` implies _"exactly one must exist"_, `(1..n)` implies _"at least one must exist"_,
+and `|` implies _"logical or"_. The square brackets `[]` implies a logical grouping of some token type, and the `x` parts is
+an assignable variable starting at 0, optionally incremented by one for each iteration through the following loop. `(0..x)`
+implies  _"zero to x repetitions"_ and `(x..x+1)` implies _"x to x+1 number of repetitions"_. The `=` character assigns the
+number of repetitions on its RHS value to the variable `x`.
 
 0. **Set x to 0**
 1. **\[CRLF\](0..n)**
