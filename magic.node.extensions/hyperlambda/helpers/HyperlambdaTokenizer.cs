@@ -309,6 +309,21 @@ namespace magic.node.extensions.hyperlambda.helpers
             }
         }
 
+        /*
+         * Reads the next CR/LF sequence from the stream.
+         */
+        void EatCRLF()
+        {
+            while(true)
+            {
+                var next = (char)_reader.Peek();
+                if (_reader.EndOfStream || (next != '\n' && next != '\r'))
+                    break;
+                _reader.Read();
+            }
+            _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
+        }
+
         void EatCRLF(StringBuilder builder, char next)
         {
             if (next == '\n' || next == '\r')
@@ -400,21 +415,6 @@ namespace magic.node.extensions.hyperlambda.helpers
                 if (next != '\r' && next != '\n')
                     throw new HyperlambdaException($"Garbage characters after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
             }
-        }
-
-        /*
-         * Reads the next CR/LF sequence from the stream.
-         */
-        void EatCRLF()
-        {
-            while(true)
-            {
-                var next = (char)_reader.Peek();
-                if (_reader.EndOfStream || (next != '\n' && next != '\r'))
-                    break;
-                _reader.Read();
-            }
-            _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
         }
 
         #endregion
