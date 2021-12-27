@@ -28,39 +28,6 @@ You can optionally supply a type between a node's name and its value, which you 
 the `:int:` parts between one of our **[foo]** nodes' name and value. If you don't explicitly declare a type
 then `string` will be assumed.
 
-## Formal specification of Hyperlambda
-
-Hyperlambda contains 7 possible tokens in total. These are as follows.
-
-1. **IND** - Indent token consisting of 3 SP characters `   `.
-2. **COM** - Comment token. Either C style (`/**/`) or C++ (`//`) style comments.
-3. **NAM** - Name token declaring the name of some node.
-4. **SEP** - Separator token separating the name of a node from its type, and/or value.
-5. **TYP** - Type token declaring the type of value preceeding it.
-6. **VAL** - Value token, being the value of the node.
-7. **CRLF** - CRLF character sequence, implying carriage return + line feed. Notice, the Hyperlambda parser will mostly treat all sequences of CR, LF, CR/LF indiscriminately as a `CRLF` sequence.
-
-Notice, a **VAL** and a **NAM** token can be wrapped inside of quotes (') or double quotes ("), like a C# string type.
-In addition to wrapping it inside a multiline C# type of string (@""). This allows you to declare **VAL** and **NAM** tokens
-with CR/LF sequences as a part of their value.
-
-The formal specification of Hyperlambda is derived from combining the above 7 tokens into the following.
-
-1. **\[COM(0..1)+\[CRLF(1..n)\]\](0..n)**
-2. **\[NAM(0..1)->\[SEP(0..1)->VAL(0..1)\]|\[SEP(0..1)->TYP(1..1)->VAL(0..1)\]\]**
-3. **\[CRLF(0..n)\]**
-4. **\[IND(0..1)\]**
-5. **GOTO 1**
-
-Or to translate into human readable text, it says as follows.
-
-1. A multiline comment or a single line comment followed by a CRLF sequence zero to n times.
-2. Any number of CRLF sequences.
-3. A name followed by either a separator and a value, or a separator, type, and value, zero to 1 times.
-4. Any number of CRLF sequences.
-5. Optionally 3 SP characters.
-6. Repeat from top.
-
 ## Parsing Hyperlambda from C#
 
 To traverse the nodes later in for instance C#, you could do something such as the following.
@@ -392,6 +359,94 @@ var hl1 = GetHyperlambdaAsString();
 var result = HyperlambdaParser.Parse(hl1);
 var hl2 = HyperlambdaGenerator.GetHyperlambda(result.Children);
 ...
+```
+
+## Formal specification of Hyperlambda
+
+Hyperlambda contains 8 possible tokens in total, however since single line comments and multi line comments are
+interchangeable, we simplify the specification by combining these into one logical token type. Tokens possibly
+found in Hyperlambda hence becomes as follows.
+
+1. **IND** - Indent token consisting of _exactly_ 3 SP characters.
+2. **COM** - Comment token. Either C style (`/**/`) or C++ (`//`) style comments.
+3. **NAM** - Name token declaring the name of some node.
+4. **SEP** - Separator token separating the name of a node from its type, and/or value.
+5. **TYP** - Type token declaring the type of value preceeding it.
+6. **VAL** - Value token, being the value of the node.
+7. **CRLF** - CRLF character sequence, implying a CR, LF or CRLF. Except for inside string literals, Hyperlambda does not discriminate between and of these 3 possible combinations, and they all become interchangeable CRLF token types after parsing.
+
+Notice, a **VAL** and a **NAM** token can be wrapped inside of quotes (') or double quotes ("), like a C# string type.
+In addition to wrapping it inside a multiline C# type of string (@""). This allows you to declare **VAL** and **NAM** tokens
+with CR/LF sequences as a part of their actual value.
+
+The formal specification of Hyperlambda is derived from combining the above 7 tokens into the following. Notice, in the
+following formal specification `->` means _"must be followed by if existing"_, `(0..n)` implies _"zero to any number of repetitions"_,
+`(0..1)` implies _"zero to 1 repetition"_, `(1..1)` implies _"exactly one must exist"_ and `|` implies _"logical or"_.
+The square brackets `[]` implies a logical grouping of some token type, and the `x` parts is an assignable variable
+starting at 0, optionally incremented by one for each iteration through the following loop. `(0..x)` implies 
+_"zero to x repetitions"_ and `(x..x+1)` implies _"x to x+1 number of repetitions"_. The `=` character assigns the number
+of repetitions on its RHS value to the variable `x`.
+
+1. **\[CRLF\](0..n)**
+2. **\[x=IND(0..x)->COM(0..1)->\[CRLF(1..1)\]\]->\[CRLF(0..n)\](0..n)**
+3. **\[x=IND(0..x)->NAM(0..1)->\[SEP(0..1)->VAL(0..1)\]|\[SEP(0..1)->TYP(1..1)->VAL(0..1)\]\](0..1)->\[CRLF(0..n)\]**
+4. **x=\[IND(x..x+1)\]**
+5. **GOTO 1**
+
+The above says basically; Any number of CRLF tokens, followed by any optional number of comments, separated by at least one
+CRLF sequence, but possibly more CRLF sequences, followed by any number of CRLF sequences. Then optionally one name followed
+by optionally one separator, followed by optionally one value - Or optionally one separator followed by exactly one type,
+and optionally one value. Then followed by any number of CRLF sequences, followed by optionally one IND token, for then to
+repeat back to step 1 again recursively.
+
+As examples realise that all the following Hyperlambda snippets are 100% perfectly legal Hyperlambda.
+
+**Empty string, nothing**
+
+```
+```
+
+**Only comments**
+
+```
+// Some single line comment.
+
+
+/*
+ * Some multi line comment.
+ */
+```
+
+**One node without type or value, and one comment**
+
+```
+foo
+
+
+// Some comment.
+```
+
+**One node with a value and a child without a value**
+
+```
+foo:bar
+   child1
+```
+
+**Illegal Hyperlambda**
+
+```
+foo
+      bar:ILLEGAL node
+```
+
+The last example violates rule 5 from our above list, which says (0..1) **IND** tokens. However, the following
+is perfectly legal due to the recursive nature of Hyperlambda.
+
+```
+foo
+   bar1:Fine
+      bar2:Also fine
 ```
 
 ## Usage
