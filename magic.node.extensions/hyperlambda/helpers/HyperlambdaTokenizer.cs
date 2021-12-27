@@ -104,10 +104,7 @@ namespace magic.node.extensions.hyperlambda.helpers
                     break;
 
                 // The next token, if any, purely logically must be a name token, or a comment token.
-                var isComment = ReadNameOrComment();
-
-                // Verifying we've still got more characters in stream, and that we didn't encounter a comment.
-                if (_reader.EndOfStream || !isComment)
+                if (!ReadNameOrComment() || _reader.EndOfStream)
                     break;
             }
         }
@@ -128,37 +125,41 @@ namespace magic.node.extensions.hyperlambda.helpers
             var current = (char)_reader.Read();
             var next = (char)_reader.Peek();
 
-            // Checking type of token, which varies according to the two first characters in the stream.
+            // Checking if this is a multi line comment
             if (current == '/' && next == '*')
             {
                 // Multiline comment.
                 ReadMultiLineComment();
                 return true; // Is comment.
             }
-            else if (current == '/' && next == '/')
+
+            // Checking if this is a single line comment.
+            if (current == '/' && next == '/')
             {
                 // Single line comment.
                 ReadSingleLineComment();
                 return true; // Is comment.
             }
-            else if (current == '@' && next == '"')
+
+            // Checking if this is a multiline string.
+            if (current == '@' && next == '"')
             {
                 // Multiline string.
                 _reader.Read(); // Discarding '"' character.
                 _tokens.Add(new Token(TokenType.Name, ParserHelper.ReadMultiLineString(_reader)));
+                return false;
             }
-            else if (current == '"' || current == '\'')
+
+            // Checking if this is a single line string.
+            if (current == '"' || current == '\'')
             {
                 // Single line string.
                 _tokens.Add(new Token(TokenType.Name, ParserHelper.ReadQuotedString(_reader, current)));
-            }
-            else
-            {
-                // Normal node name, without quotes.
-                ReadName(current);
+                return false;
             }
 
-            // Is NOT comment.
+            // Normal node name, without quotes.
+            ReadName(current);
             return false;
         }
 
