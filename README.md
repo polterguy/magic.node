@@ -390,7 +390,7 @@ numbers of repetitions in its RHS value to the variable `x`.
 1. **Set x to 0**
 2. **CRLF(0..n)**
 3. **\[\[x=IND(0..x)\]->COM(1..1)->CRLF(1..n)\](0..n)**
-4. **\[\[x=IND(0..x)\]->NAM(1..1)->\[\[SEP(1..1)->VAL(0..1)\]|\[SEP(1..1)->TYP(1..1)->SEP(1..1)->VAL(0..1)\]\]\](0..1)->\[CRLF(0..n)\]->\[x=IND(x..x+1)\]**
+4. **\[\[x=IND(0..x)\]->NAM(1..1)->\[\[SEP(1..1)->VAL(0..1)\]|\[SEP(1..1)->TYP(1..1)->SEP(1..1)->VAL(0..1)\]\](0..1)\](0..1)->\[CRLF(0..n)\]->\[x=IND(x..x+1)\]**
 5. **GOTO 2**
 
 The above says basically; Any number of CRLF tokens, followed by any optional number of comments, separated by at least one
