@@ -390,11 +390,11 @@ implies  _"zero to x repetitions"_ where `x` is the value of x, and `[x..x+1]` i
 The `=` character assigns the numbers of repetitions in its RHS value to the variable `x`. The default number of repetitions
 if none are explicitly given is 1.
 
-1. **x=0**
-2. **CRLF\[0..n\]**
-3. **(COM->CRLF\[1..n\])\[0..n\]**
-4. **(NAM->(NUL | (SEP->VAL\[0..1\]) | (SEP->TYP->SEP->VAL\[0..1\])))\[0..1\]->CRLF\[0..n\]->(x=IND\[x..x+1\])\[0..1\]**
-5. **GOTO 3 while not EOF**
+0. **x=0**
+1. **CRLF\[0..n\]**
+2. **(COM->CRLF\[1..n\])\[0..n\]**
+3. **(NAM->(NUL | (SEP->VAL\[0..1\]) | (SEP->TYP->SEP->VAL\[0..1\])))\[0..1\]->CRLF\[0..n\]->(x=IND\[x..x+1\])**
+4. **GOTO 1 while not EOF**
 
 ## Usage
 
