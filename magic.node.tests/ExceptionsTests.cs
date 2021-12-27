@@ -84,27 +84,27 @@ namespace magic.node.tests
             Assert.Equal("Some message II", exception.Message);
         }
 
-        void Throws_01()
+        static void Throws_01()
         {
             throw new HyperlambdaException();
         }
 
-        void Throws_02()
+        static void Throws_02()
         {
             throw new HyperlambdaException("Some message", new ArgumentNullException());
         }
 
-        void Throws_03()
+        static void Throws_03()
         {
             throw new HyperlambdaException("Some message", true, 499);
         }
 
-        void Throws_04()
+        static void Throws_04()
         {
             throw new HyperlambdaException("Some message II", false, 477, "Howdy");
         }
 
-        void Throws_05()
+        static void Throws_05()
         {
             throw new HyperlambdaException("Some message II", false, 477, "Howdy", new ArgumentNullException());
         }
