@@ -389,16 +389,16 @@ of repetitions on its RHS value to the variable `x`.
 
 0. **Set x to 0**
 1. **\[CRLF\](0..n)**
-2. **\[\[x=IND(0..x)\]->COM(1..1)->\[CRLF(1..1)\]\]->\[CRLF(0..n)\](0..n)**
+2. **\[\[\[x=IND(0..x)\]->COM(1..1)->\[CRLF(1..1)\]\]->\[CRLF(0..n)\]\](0..n)**
 3. **\[\[x=IND(0..x)\]->NAM(1..1)->\[\[SEP(1..1)->VAL(1..1)\]|\[SEP(1..1)->TYP(1..1)->VAL(1..1)\]\]\](0..1)->\[CRLF(0..n)\]**
 4. **x=\[IND(x..x+1)\]** - But _only_ executed if point 3 had at least a name.
 5. **GOTO 1**
 
 The above says basically; Any number of CRLF tokens, followed by any optional number of comments, separated by at least one
-CRLF sequence, but possibly more CRLF sequences, followed by any number of CRLF sequences. Then optionally one name followed
-by optionally one separator, followed by optionally one value - Or optionally one separator followed by exactly one type,
-and optionally one value. Then followed by any number of CRLF sequences, followed by optionally one IND token, for then to
-repeat back to step 1 again recursively.
+CRLF sequence, followed by any number of CRLF sequences. Then optionally one name followed
+by optionally one separator, followed by optionally one value - Or followed by optionally one separator followed by exactly
+one type, and optionally one separator for the to be followed by optionally one value. Then followed by any number of CRLF
+sequences, followed by optionally x+1 IND token, assigning number of IND to x, and then repeat back to step 1 again.
 
 As examples realise that all the following Hyperlambda snippets are 100% perfectly legal Hyperlambda.
 
@@ -441,8 +441,19 @@ foo
       bar:ILLEGAL node
 ```
 
-The last example violates rule 5 from our above list, which says (0..1) **IND** tokens. However, the following
-is perfectly legal due to the recursive nature of Hyperlambda.
+**Illegal, indents before name node has been seen**
+
+```
+   foo:illegal
+```
+
+**Illegal, indents before name node**
+
+```
+   // Illegal.
+```
+
+**Legal, only indents after name tokens**
 
 ```
 foo
