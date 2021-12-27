@@ -389,8 +389,8 @@ numbers of repetitions in its RHS value to the variable `x`.
 
 0. **Set x to 0**
 1. **\[CRLF\](0..n)**
-2. **\[\[x=IND(0..x)\]->COM(1..1)->\[CRLF(1..n)\]\](0..n)**
-3. **\[\[x=IND(0..x)\]->NAM(1..1)->\[\[SEP(1..1)->VAL(0..1)\]|\[SEP(1..1)->TYP(1..1)->VAL(0..1)\]\]\](0..1)->\[CRLF(0..n)\]**
+2. **\[\[x=IND(0..x)\]->COM(1..1)->CRLF(1..n)\](0..n)**
+3. **\[\[x=IND(0..x)\]->NAM(1..1)->\[\[SEP(1..1)->VAL(0..1)\]|\[SEP(1..1)->TYP(1..1)->SEP(1..1)->VAL(0..1)\]\]\](0..1)->\[CRLF(0..n)\]**
 4. **\[x=IND(x..x+1)\]** - But _only_ executed if point 3 had at least a name and ended with at least one CRLF.
 5. **GOTO 1**
 
