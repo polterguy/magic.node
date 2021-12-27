@@ -389,11 +389,11 @@ implies  _"zero to x repetitions"_ and `(x..x+1)` implies _"x to x+1 number of r
 numbers of repetitions in its RHS value to the variable `x`. The default number of repetitions if none are expliicitly given is 1.
 
 0. **Set x to 0**
-1. **CRLF(0..n)** - Any number of CRLF sequences.
+1. **CRLF(0..n)**
 2. **x=IND(0..x)**
-3. **\[COM->CRLF(1..n)\](0..n)** - Any number of comments followed by CRLF.
-4. **\[NAM->\[NULL | \[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\]\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]** - Zero or one name, with optionally an associated type, and/or value, followed by a CRLF sequence
-5. **GOTO 1** - Repeat while not EOF
+3. **\[COM->CRLF(1..n)\](0..n)**
+4. **\[NAM->\[NULL | \[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\]\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]**
+5. **GOTO 1 while not EOF**
 
 ## Usage
 
