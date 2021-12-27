@@ -364,7 +364,8 @@ var hl2 = HyperlambdaGenerator.GetHyperlambda(result.Children);
 ## Formal specification of Hyperlambda
 
 Hyperlambda contains 8 possible tokens in total, however since single line comments and multi line comments are
-interchangeable, we simplify the specification by combining these into one logical token type. Tokens possibly
+interchangeable, we simplify the specification by combining these into one logical token type - And the `null` token
+isn't really an actual token, but rather a placeholder implying _"absence of token"_. Possible logical tokens
 found in Hyperlambda hence becomes as follows.
 
 1. **IND** - Indent token consisting of _exactly_ 3 SP characters.
@@ -374,7 +375,7 @@ found in Hyperlambda hence becomes as follows.
 5. **TYP** - Type token declaring the type of value preceeding it. See possible types further up on page.
 6. **VAL** - Value token, being the value of the node.
 7. **CRLF** - CRLF character sequence, implying a CR, LF or CRLF. Except for inside string literals, Hyperlambda does not discriminate between and of these 3 possible combinations, and they all become interchangeable CRLF token types after parsing.
-8. **NULL** - Null token, implying not existing, empty, non-existing
+8. **NUL** - Null token, implying empty or non-existing token.
 
 Notice, a **VAL** and a **NAM** token can be wrapped inside of quotes (') or double quotes ("), like a C# string type.
 In addition to wrapping it inside a multiline C# type of string (@""). This allows you to declare **VAL** and **NAM** tokens
@@ -388,12 +389,12 @@ an assignable variable starting at 0, optionally incremented by one for each ite
 implies  _"zero to x repetitions"_ and `(x..x+1)` implies _"x to x+1 number of repetitions"_. The `=` character assigns the
 numbers of repetitions in its RHS value to the variable `x`. The default number of repetitions if none are expliicitly given is 1.
 
-0. **Set x to 0**
-1. **CRLF(0..n)**
-2. **x=IND(0..x)**
-3. **\[COM->CRLF(1..n)\](0..n)**
-4. **\[NAM->\[NULL | \[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\]\]\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]**
-5. **GOTO 1 while not EOF**
+1. **Set x to 0**
+2. **CRLF(0..n)**
+3. **x=IND(0..x)**
+4. **\[COM->CRLF(1..n)\](0..n)**
+5. **\[NAM->\[NUL | \[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\]\]\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]**
+6. **GOTO 4 while not EOF**
 
 ## Usage
 
