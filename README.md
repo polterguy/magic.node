@@ -392,7 +392,7 @@ numbers of repetitions in its RHS value to the variable `x`. The default number 
 1. **CRLF(0..n)**
 2. **x=IND(0..x)**
 3. **\[COM->CRLF(1..n)\](0..n)**
-4. **\[NAM->\[NULL | \[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\]\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]**
+4. **\[NAM->\[NULL | \[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\]\]\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]**
 5. **GOTO 1 while not EOF**
 
 ## Usage
