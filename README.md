@@ -28,39 +28,6 @@ You can optionally supply a type between a node's name and its value, which you 
 the `:int:` parts between one of our **[foo]** nodes' name and value. If you don't explicitly declare a type
 then `string` will be assumed.
 
-## Formal specification of Hyperlambda
-
-Hyperlambda contains 7 possible tokens in total. These are as follows.
-
-1. **IND** - Indent token consisting of 3 SP characters `   `.
-2. **COM** - Comment token. Either C style (`/**/`) or C++ (`//`) style comments.
-3. **NAM** - Name token declaring the name of some node.
-4. **SEP** - Separator token separating the name of a node from its type, and/or value.
-5. **TYP** - Type token declaring the type of value preceeding it.
-6. **VAL** - Value token, being the value of the node.
-7. **CRLF** - CRLF character sequence, implying carriage return + line feed. Notice, the Hyperlambda parser will mostly treat all sequences of CR, LF, CR/LF indiscriminately as a `CRLF` sequence.
-
-Notice, a **VAL** and a **NAM** token can be wrapped inside of quotes (') or double quotes ("), like a C# string type.
-In addition to wrapping it inside a multiline C# type of string (@""). This allows you to declare **VAL** and **NAM** tokens
-with CR/LF sequences as a part of their value.
-
-The formal specification of Hyperlambda is derived from combining the above 7 tokens into the following.
-
-1. **\[COM(0..1)+\[CRLF(1..n)\]\](0..n)**
-2. **\[NAM(0..1)->\[SEP(0..1)->VAL(0..1)\]|\[SEP(0..1)->TYP(1..1)->VAL(0..1)\]\]**
-3. **\[CRLF(0..n)\]**
-4. **\[IND(0..1)\]**
-5. **GOTO 1**
-
-Or to translate into human readable text, it says as follows.
-
-1. A multiline comment or a single line comment followed by a CRLF sequence zero to n times.
-2. Any number of CRLF sequences.
-3. A name followed by either a separator and a value, or a separator, type, and value, zero to 1 times.
-4. Any number of CRLF sequences.
-5. Optionally 3 SP characters.
-6. Repeat from top.
-
 ## Parsing Hyperlambda from C#
 
 To traverse the nodes later in for instance C#, you could do something such as the following.
