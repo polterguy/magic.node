@@ -382,16 +382,16 @@ with CR/LF sequences as a part of their actual value.
 The formal specification of Hyperlambda is derived from combining the above 7 tokens into the following. Notice, in the
 following formal specification `->` means _"must be followed by if existing"_, `(0..n)` implies _"zero to any number of repetitions"_,
 `(0..1)` implies _"zero to 1 repetition"_, `(1..1)` implies _"exactly one must exist"_, `(1..n)` implies _"at least one must exist"_,
-and `|` implies _"logical or"_. The square brackets `[]` implies a logical grouping of some token type, and the `x` parts is
-an assignable variable starting at 0, optionally incremented by one for each iteration through the following loop. `(0..x)`
+and `|` implies _"logical or"_. The square brackets `[]` implies a logical grouping of some token type(s), and the `x` parts is
+an assignable variable starting at 0, optionally incremented by one for each iteration through the loop. `(0..x)`
 implies  _"zero to x repetitions"_ and `(x..x+1)` implies _"x to x+1 number of repetitions"_. The `=` character assigns the
-number of repetitions on its RHS value to the variable `x`.
+numbers of repetitions in its RHS value to the variable `x`.
 
 0. **Set x to 0**
 1. **\[CRLF\](0..n)**
 2. **\[\[x=IND(0..x)\]->COM(1..1)->\[CRLF(1..n)\]\](0..n)**
-3. **\[\[x=IND(0..x)\]->NAM(1..1)->\[\[SEP(1..1)->VAL(1..1)\]|\[SEP(1..1)->TYP(1..1)->VAL(1..1)\]\]\](0..1)->\[CRLF(0..n)\]**
-4. **x=\[IND(x..x+1)\]** - But _only_ executed if point 3 had at least a name.
+3. **\[\[x=IND(0..x)\]->NAM(1..1)->\[\[SEP(1..1)->VAL(0..1)\]|\[SEP(1..1)->TYP(1..1)->VAL(0..1)\]\]\](0..1)->\[CRLF(0..n)\]**
+4. **\[x=IND(x..x+1)\]** - But _only_ executed if point 3 had at least a name and ended with at least one CRLF.
 5. **GOTO 1**
 
 The above says basically; Any number of CRLF tokens, followed by any optional number of comments, separated by at least one
