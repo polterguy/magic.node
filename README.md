@@ -394,7 +394,7 @@ if none are explicitly given is 1.
 1. **CRLF\[0..n\]**
 2. **(COM->CRLF\[1..n\])\[0..n\]**
 3. **(NAM->(NUL | (SEP->VAL\[0..1\]) | (SEP->TYP->SEP->VAL\[0..1\])))\[0..1\]->CRLF\[0..n\]->(x=IND\[x..x+1\])**
-4. **GOTO 1 while not EOF**
+4. **GOTO 2 while not EOF**
 
 ## Usage
 
