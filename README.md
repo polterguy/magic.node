@@ -382,17 +382,18 @@ In addition to wrapping it inside a multiline C# type of string (@""). This allo
 with CR/LF sequences as a part of their actual value.
 
 The formal specification of Hyperlambda is derived from combining the above 7 tokens into the following. Notice, in the
-following formal specification `->` means _"must be followed by if existing"_, `(0..n)` implies _"zero to any number of repetitions"_,
-`(0..1)` implies _"zero to 1 repetition"_, `(1..1)` implies _"exactly one must exist"_, `(1..n)` implies _"at least one must exist"_,
-and `|` implies _"logical or"_. The square brackets `[]` implies a logical grouping of some token type(s), and the `x` parts is
-an assignable variable starting at 0, optionally incremented by one for each iteration through the loop. `(0..x)`
-implies  _"zero to x repetitions"_ and `(x..x+1)` implies _"x to x+1 number of repetitions"_. The `=` character assigns the
-numbers of repetitions in its RHS value to the variable `x`. The default number of repetitions if none are expliicitly given is 1.
+following formal specification `->` means _"must be followed by if existing"_, `[0..n]` implies _"zero to any number of repetitions"_,
+`[0..1]` implies _"zero to 1 repetition"_, `[1..n]` implies _"at least one must exist"_,
+and `|` implies _"logical or"_. The paranthesis `()` implies a logical grouping of some token type(s), and the `x=` parts is
+an assignable variable starting at 0, optionally incremented by one for each iteration through the loop. `[0..x]`
+implies  _"zero to x repetitions"_ where `x` is the value of x, and `[x..x+1]` implies _"x to x+1 number of repetitions"_.
+The `=` character assigns the numbers of repetitions in its RHS value to the variable `x`. The default number of repetitions
+if none are explicitly given is 1.
 
-1. **x = 0**
-2. **CRLF(0..n)**
-3. **\[COM->CRLF(1..n)\](0..n)**
-4. **\[NAM->\[NUL | \[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\]\]\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\](0..1)**
+1. **x=0**
+2. **CRLF\[0..n\]**
+3. **(COM->CRLF\[1..n\])\[0..n\]**
+4. **(NAM->(NUL | (SEP->VAL\[0..1\]) | (SEP->TYP->SEP->VAL\[0..1\])))\[0..1\]->CRLF\[0..n\]->(x=IND\[x..x+1\])\[0..1\]**
 5. **GOTO 3 while not EOF**
 
 ## Usage
