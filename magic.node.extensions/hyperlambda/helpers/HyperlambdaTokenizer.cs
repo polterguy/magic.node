@@ -32,28 +32,28 @@ namespace magic.node.extensions.hyperlambda.helpers
             while (!_reader.EndOfStream)
             {
                 // Reads CR/LF, SP, Name or Comment tokens from stream.
-                ReadStart();
+                ReadCRLFSPNameOrComment();
 
                 // Verifying we've still got more characters in stream.
                 if (_reader.EndOfStream)
                     break;
 
                 // A separator might occur after a node's name.
-                ReadSeparator();
+                EatSeparator();
 
                 // Verifying we've still got more characters in stream.
                 if (_reader.EndOfStream)
                     break;
 
                 // Reads the type, separator or value from stream
-                ReadEnd();
+                ReadTypeSeparatorOrValue();
  
                 // Verifying we've still got more characters in stream.
                 if (_reader.EndOfStream)
                     break;
 
                 // A CR/LF sequence might occur after the node's name or value.
-                ReadCRLF();
+                EatCRLF();
             }
         }
 
@@ -69,17 +69,27 @@ namespace magic.node.extensions.hyperlambda.helpers
 
         #region [ -- Private helper methods -- ]
 
+        #region [ -- Undetermined methods -- ]
+
         /*
-         * Reads CR/LF, SP, Name or Comment tokens from stream.
+         * These next methods don't entirely know which type of token we are dealing with next in our stream,
+         * and hence needs to read one or more characters before we know the type of token, for then to invoke
+         * the specialised method for handling that particular token, depending upon what characters are next
+         * in the stream.
          */
-        void ReadStart()
+
+        /*
+         * Reads CR/LF, SP, Name, or Comment tokens from stream.
+         */
+        void ReadCRLFSPNameOrComment()
         {
             /*
-             * Initially, and after a value's CR/LF sequence, we can only have SP tokens, comments or names.
+             * Initially, and after a value, comment or name CR/LF sequence, we can only have SP tokens,
+             * comments, or names.
              */
             while (true)
             {
-                // Skipping initial CR/LF sequences
+                // Skipping initial CR/LF sequences.
                 ParserHelper.EatCRLF(_reader);
 
                 // Verifying we've still got more characters in stream.
@@ -96,28 +106,154 @@ namespace magic.node.extensions.hyperlambda.helpers
                 // The next token, if any, purely logically must be a name token, or a comment token.
                 var isComment = ReadNameOrComment();
 
-                // Verifying we've still got more characters in stream.
+                // Verifying we've still got more characters in stream, and that we didn't encounter a comment.
                 if (_reader.EndOfStream || !isComment)
                     break;
             }
         }
 
         /*
+         * Reads the next name or comment in the stream, and returns true if token was a comment.
+         */
+        bool ReadNameOrComment()
+        {
+            // If the next character is a ':' character, this node has an empty name.
+            if ((char)_reader.Peek() == ':')
+            {
+                _tokens.Add(new Token(TokenType.Name, "")); // Empty name
+                return false;
+            }
+
+            // Reading the next TWO characters to figure out which type of token the next token in the stream actually is.
+            var current = (char)_reader.Read();
+            var next = (char)_reader.Peek();
+
+            // Checking type of token, which varies according to the two first characters in the stream.
+            if (current == '/' && next == '*')
+            {
+                // Multiline comment.
+                ReadMultiLineComment();
+                return true; // Is comment.
+            }
+            else if (current == '/' && next == '/')
+            {
+                // Single line comment.
+                ReadSingleLineComment();
+                return true; // Is comment.
+            }
+            else if (current == '@' && next == '"')
+            {
+                // Multiline string.
+                _reader.Read(); // Discarding '"' character.
+                _tokens.Add(new Token(TokenType.Name, ParserHelper.ReadMultiLineString(_reader)));
+            }
+            else if (current == '"' || current == '\'')
+            {
+                // Single line string.
+                _tokens.Add(new Token(TokenType.Name, ParserHelper.ReadQuotedString(_reader, current)));
+            }
+            else
+            {
+                // Normal node name, without quotes.
+                ReadName(current);
+            }
+
+            // Is NOT comment.
+            return false;
+        }
+
+        /*
          * Reads the type, separator or value from stream.
          */
-        void ReadEnd()
+        void ReadTypeSeparatorOrValue()
         {
             // A type or value might occur after a the separator following the node's name.
             if (ReadTypeOrValue() && !_reader.EndOfStream)
             {
                 // Above invocation returned type token, hence now reading value.
-                ReadSeparator();
+                EatSeparator();
                 if (!_reader.EndOfStream)
                     ReadTypeOrValue();
             }
         }
 
-        // Reads SP character and creates an SP token, if stream has SP characters at its current position.
+        /*
+         * Reads the next type or value declaration from the stream and
+         * returns true if we found a type declaration, false if not.
+         */
+        bool ReadTypeOrValue()
+        {
+            // Reading next character from stream.
+            var current = (char)_reader.Peek();
+
+            // Checking if we're done with current line.
+            if (current == '\r' || current == '\n')
+            {
+                if (_tokens.LastOrDefault()?.Type == TokenType.Separator)
+                    _tokens.Add(new Token(TokenType.Value, "")); // Empty string value (not null)
+                return false;
+            }
+            _reader.Read();
+            var next = (char)_reader.Peek();
+            if (current == '@' && next == '"')
+            {
+                // Multi line string.
+                ReadMultiLineString();
+                return false;
+            }
+            else if (current == '"' || current == '\'')
+            {
+                // Single line string.
+                ReadSingleLineString(current);
+                return false;
+            }
+            else
+            {
+                // Normal node name, without quotes.
+                ReadType(current, ref next);
+                return next == ':';
+            }
+        }
+
+        #endregion
+
+        /*
+         * Reads single line comment from stream.
+         */
+        void ReadSingleLineComment()
+        {
+            // Discarding '/' character.
+            _reader.Read();
+            var line = _reader.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(line))
+            {
+                _tokens.Add(new Token(TokenType.SingleLineComment, line));
+                _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
+            }
+        }
+
+        /*
+         * Reads multiline comment from stream.
+         */
+        void ReadMultiLineComment()
+        {
+            // Multi line comment.
+            var comment = ParserHelper.ReadMultiLineComment(_reader);
+            if (comment == null)
+            {
+                if (_reader.EndOfStream)
+                    throw new HyperlambdaException($"EOF encountered before end of multi line comment start after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
+            }
+            else
+            {
+                _tokens.Add(new Token(TokenType.MultiLineComment, comment));
+                _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
+            }
+        }
+
+        /*
+         * Reads SP character and creates an SP token, if stream has SP characters at its current position.
+         */
         void ReadSpaceToken()
         {
             /*
@@ -160,6 +296,18 @@ namespace magic.node.extensions.hyperlambda.helpers
             return false;
         }
 
+        /*
+         * Reads the next separator (':' character) from the stream.
+         */
+        void EatSeparator()
+        {
+            if ((char)_reader.Peek() == ':')
+            {
+                _reader.Read();
+                _tokens.Add(new Token(TokenType.Separator, ":"));
+            }
+        }
+
         void EatCRLF(StringBuilder builder, char next)
         {
             if (next == '\n' || next == '\r')
@@ -185,105 +333,6 @@ namespace magic.node.extensions.hyperlambda.helpers
             }
         }
 
-        // Reads the next name or comment in the stream.
-        bool ReadNameOrComment()
-        {
-            // If the next character is a ':' character, this node has an empty name.
-            if ((char)_reader.Peek() == ':')
-            {
-                _tokens.Add(new Token(TokenType.Name, "")); // Empty name
-                return false;
-            }
-
-            // Reading the next TWO characters to figure out which type of token the next token in the stream actually is.
-            var current = (char)_reader.Read();
-            var next = (char)_reader.Peek();
-
-            // Checking type of token, which varies according to the two first characters in the stream.
-            if (current == '/' && next == '*')
-            {
-                // Multiline comment.
-                ReadMultiLineComment();
-                return true;
-            }
-            else if (current == '/' && next == '/')
-            {
-                // Single line comment.
-                ReadSingleLineComment();
-                return true;
-            }
-            else if (current == '@' && next == '"')
-            {
-                // Multi line string.
-                _reader.Read(); // Discarding '"' character.
-                _tokens.Add(new Token(TokenType.Name, ParserHelper.ReadMultiLineString(_reader)));
-            }
-            else if (current == '"' || current == '\'')
-            {
-                // Single line string.
-                _tokens.Add(new Token(TokenType.Name, ParserHelper.ReadQuotedString(_reader, current)));
-            }
-            else
-            {
-                // Normal node name, without quotes.
-                ReadName(current);
-            }
-            return false;
-        }
-
-        /*
-         * Reads the next type or value declaration from the stream and
-         * returns true if we found a type declaration, false if not.
-         */
-        bool ReadTypeOrValue()
-        {
-            // Reading next character from stream.
-            var current = (char)_reader.Peek();
-
-            // Checking if we're done with current line.
-            if (current == '\r' || current == '\n')
-            {
-                if (_tokens.LastOrDefault()?.Type == TokenType.Separator)
-                    _tokens.Add(new Token(TokenType.Value, "")); // Empty string value (not null)
-                return false;
-            }
-            _reader.Read();
-            var next = (char)_reader.Peek();
-            if (current == '@' && next == '"')
-            {
-                // Multi line string.
-                ReadMultiLineString();
-                return false;
-            }
-            else if (current == '"' || current == '\'')
-            {
-                // Single line string.
-                ReadSingleLineString(current);
-                return false;
-            }
-            else
-            {
-                // Normal node name, without quotes.
-                ReadType(current, ref next);
-                return next == ':';
-            }
-        }
-
-        /*
-         * Reads single line comment from stream.
-         */
-        void ReadSingleLineComment()
-        {
-            // Discarding '/' character.
-            _reader.Read();
-            var line = _reader.ReadLine()?.Trim();
-            if (!string.IsNullOrEmpty(line))
-            {
-                _tokens.Add(new Token(TokenType.SingleLineComment, line));
-                _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
-            }
-        }
-
         /*
          * Reads name from stream.
          */
@@ -299,35 +348,6 @@ namespace magic.node.extensions.hyperlambda.helpers
                 builder.Append((char)_reader.Read());
             }
             _tokens.Add(new Token(TokenType.Name, builder.ToString()));
-        }
-
-        /*
-         * Reads multiline comment from stream.
-         */
-        void ReadMultiLineComment()
-        {
-            // Multi line comment.
-            var comment = ParserHelper.ReadMultiLineComment(_reader);
-            if (comment == null)
-            {
-                if (_reader.EndOfStream)
-                    throw new HyperlambdaException($"EOF encountered before end of multi line comment start after:\r\n {string.Join("", _tokens.Select(x => x.Value))}");
-            }
-            else
-            {
-                _tokens.Add(new Token(TokenType.MultiLineComment, comment));
-                _tokens.Add(new Token(TokenType.CRLF, "\r\n"));
-            }
-        }
-
-        // Reads the nedt separator (':' character) from the stream.
-        void ReadSeparator()
-        {
-            if ((char)_reader.Peek() == ':')
-            {
-                _reader.Read();
-                _tokens.Add(new Token(TokenType.Separator, ":"));
-            }
         }
 
         /*
@@ -384,7 +404,7 @@ namespace magic.node.extensions.hyperlambda.helpers
         /*
          * Reads the next CR/LF sequence from the stream.
          */
-        void ReadCRLF()
+        void EatCRLF()
         {
             while(true)
             {
