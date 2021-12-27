@@ -392,7 +392,7 @@ numbers of repetitions in its RHS value to the variable `x`. The default number 
 1. **CRLF(0..n)** - Any number of CRLF sequences.
 2. **x=IND(0..x)**
 3. **\[COM->CRLF(1..n)\](0..n)** - Any number of comments followed by CRLF.
-4. **\[\[NAM->\[\[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\] | NULL\](0..1)\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]** - Zero or one name, with optionally an associated type, and/or value, followed by a CRLF sequence
+4. **\[NAM->\[NULL | \[SEP->VAL(0..1)\] | \[SEP->TYP->SEP->VAL(0..1)\]\](0..1)->CRLF(0..n)->\[x=IND(x..x+1)\]** - Zero or one name, with optionally an associated type, and/or value, followed by a CRLF sequence
 5. **GOTO 1** - Repeat while not EOF
 
 ## Usage
