@@ -14,6 +14,10 @@ namespace magic.node.services
     {
         readonly IFileService _fileService;
 
+        /// <summary>
+        /// Creates an instance of your type.
+        /// </summary>
+        /// <param name="fileService">Needed to check if file exists or not.</param>
         public StreamService(IFileService fileService)
         {
             _fileService = fileService;
