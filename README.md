@@ -400,7 +400,7 @@ if none are explicitly given is 1.
 You can include the following NuGet packages into your project to access Magic Node directly.
 
 * `magic.node` - Core node parts.
-* `magic.node.extensions` - Contains support for expressions, the Hyperlambda serializer and de-serializer, in addition to the typing system.
+* `magic.node.extensions` - Contains support for expressions, the Hyperlambda serializer and de-serializer, in addition to the typing system, plus some helper interfaces used by other parts of Magic.
 
 However, all of these packages are indirectly included when you use Magic.
 
@@ -420,10 +420,16 @@ three interfaces, using your IoC container.
 * `magic.node.contracts.IFileService`
 * `magic.node.contracts.IFolderService`
 * `magic.node.contracts.IStreamService`
+* `magic.node.contracts.IRootResolver`
 
 If you want to do this, you would probably want to manually declare your own implementation for these classes,
 by tapping into _"magic.library"_ somehow, or not invoking its default method that binds towards the default
 implementation classes somehow.
+
+In addition the above file interfaces, the following interfaces are also declared in magic.node.extensions.
+
+* `magic.node.contracts.IMagicConfiguration` - Allows you to override (parts) of the internally used configuration object.
+* `magic.node.contracts.IServiceCreator` - Helper interface allowing you to avoid the service locator pattern, yet still dynamically create services on a per need basis from within your own C# code.
 
 ## Project website
 
