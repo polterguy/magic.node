@@ -1,14 +1,13 @@
 
 # Node support for Hyperlambda and Magic
 
-Magic Node is a simple name/value/children graph object, in addition to a _"Hyperlambda"_ parser, allowing you to
+magic.node is a simple name/value/children graph object, in addition to a _"Hyperlambda"_ parser, allowing you to
 create a textual string representations of graph objects easily transformed to its relational graph object syntax
 and vice versa. This allows you to easily declaratively create execution trees using a format similar to YAML, for 
-then to access every individual node, its value, name and children, from your C#, CLR code, or Hyperlambda.
+then to access each individual node, its value, name and children from your C#, CLR code, or Hyperlambda.
 For the record, Hyperlambda is _much_ easier to understand than YAML.
-
 Hyperlambda is perfect for creating a highly humanly readable relational configuration format, or smaller
-DSL engines, especially when combined with Magic Signals and Magic Lambda. Below is a small
+DSL engines, especially when combined with magic.signals and magic.lambda. Below is a small
 example of Hyperlambda to give you an idea of how it looks like.
 
 ```
@@ -23,10 +22,9 @@ foo
 some other node. In the example above, the **[child1]** and the **[child2]** nodes, have **[foo]** as their
 parent. A colon `:` separates the name and the value of the node - The name is to the left of the colon, and
 the value to the right.
-
 You can optionally supply a type between a node's name and its value, which you can see above where we add
 the `:int:` parts between one of our **[foo]** nodes' name and value. If you don't explicitly declare a type
-then `string` will be assumed.
+`string` will be assumed.
 
 ## Parsing Hyperlambda from C#
 
@@ -142,22 +140,18 @@ Hyperlambda also support strings the same way C# supports string, using any of t
 
 ```
 // Single quotes
-foo:'howdy world this is a string'
+.foo:'howdy world this is a string'
 
 // Double quotes
-foo:"Howdy world, another string"
+.foo:"Howdy world, another string"
 
 // Multiline strings
-foo:@"Notice how the new line doesn't end the string
+.foo:@"Notice how the new line doesn't end the string
     here!"
 ```
 
 Escape characters are supported for both single quote and double quote strings the same way they
-are supported in C#, allowing you to use e.g. `\r\n` etc. If you use a multi line string literal
-such as `@"qwerty"` then any CR/LF characters in it will become _"normalised"_ to CRLF. This is
-to avoid hard to track down bugs related to differences in operating systems' handling of
-CR/LF sequences. However, in single line string literals, CR and LF is preserved exactly as they
-are specified.
+are supported in C#, allowing you to use e.g. `\r\n` etc.
 
 ## Lambda expressions
 
@@ -211,24 +205,23 @@ Of course, the result of the above becomes _"thomas"_.
 Below is a list of all iterators that exists in magic. Substitute _"xxx"_ with a string,
 _"n"_ with a number, and _"x"_ with an expression.
 
-* `*` Retrieves all children of its previous result.
-* `#` Retrieves the value of its previous result as a node by reference.
-* `-` Retrieves its previous result set's _"younger sibling"_ (previous node).
-* `+` Retrieves its previous result set's _"elder sibling"_ (next node).
-* `.` Retrieves its previous reult set's parent node(s).
-* `..` Retrieves the root node.
-* `**` Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm.
-* `{x}` Extrapolated expression that will be evaluated assuming it yields one result, replacing itself with the value of whatever node it points to.
-* `=xxx` Retrieves the node with the _"xxx"_ value, converting to string if necessary.
-* `[n,n]` Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>.
-* `@xxx` Returns the first node _"before"_ in its hierarchy that matches the given _"xxx"_ in its name.
-* `n` (any number) Returns the n'th child of its previous result set.
+* `*` Retrieves all children of its previous result
+* `#` Retrieves the value of its previous result as a node by reference
+* `-` Retrieves its previous result set's _"younger sibling"_ (previous node)
+* `+` Retrieves its previous result set's _"elder sibling"_ (next node)
+* `.` Retrieves its previous reult set's parent node(s)
+* `..` Retrieves the root node
+* `**` Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm
+* `{x}` Extrapolated expression that will be evaluated assuming it yields one result, replacing itself with the value of whatever node it points to
+* `=xxx` Retrieves the node with the _"xxx"_ value, converting to string if necessary
+* `[n,n]` Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>
+* `@xxx` Returns the first node _"before"_ in its hierarchy that matches the given _"xxx"_ in its name
+* `n` (any number) Returns the n'th child of its previous result set
 
 Notice, you can escape iterators by using backslash "\\". This allows you to look for nodes who's names
 are for instance _"3"_, without using the n'th child iterator, which would defeat the purpose. In addition,
 you can quote iterators by using double quotes `"`, to allow for having iterators with values that are normally
 not legal within an iterator, such as `/`, etc. If you quote an iterator you have to quote the entire expression.
-
 Below is an example of a slightly more advanced expression.
 
 ```
@@ -236,8 +229,11 @@ Below is an example of a slightly more advanced expression.
    howdy:wo/rld
    jo:nothing
    howdy:earth
+
 .dyn:.foo
+
 for-each:x:@"./*/{@.dyn}/*/""=wo/rld"""
+
    set-value:x:@.dp/#
       :thomas was here
 ```
@@ -260,6 +256,7 @@ And in fact, there are thousands of lines of Hyperlambda code in Magic's middlew
 ```
 .arguments
    foo1:string
+
 get-value:x:@.arguments/*/foo1
 ```
 
@@ -273,10 +270,12 @@ the following example.
 
 ```
 .arg1:foo2
+
 .data
    foo1:john
    foo2:thomas
    foo3:peter
+
 get-value:x:@.data/*/{@.arg1}
 ```
 
@@ -316,11 +315,10 @@ var result = x.Evaluate(lambda);
 ```
 
 Notice how the iterator we created above, uses the `%3` parts of the expression, to parametrize
-itself. If you exchange 3 with 6, it will only return **[howdy1]** and **[howdy3]** instead,
-since it will look for values with 6 characters instead. The `Iterator` class can be found
+itself. If you exchange 3 with 5, it will only return **[howdy1]** and **[howdy3]** instead,
+since it will look for values with 5 characters instead. The `Iterator` class can be found
 in the `magic.node.extensions` namespace.
-
-You can using the above syntax also override the default implementation of iterators, although
+You can use the above syntax to override the default implementation of iterators, although
 I wouldn't recommend it, since it would create confusion for others using your modified version.
 
 **Notice** - To create an extension iterator is an exercise you will rarely if _ever_ need to do,
@@ -333,10 +331,8 @@ Magic allows you to easily parse Hyperlambda from C# if you need it, which can b
 ```csharp
 using magic.node.extensions.hyperlambda;
 
-...
 var hl = GetHyperlambdaAsString();
 var lambda = HyperlambdaParser.Parse(hl);
-...
 ```
 
 The `GetHyperlambdaAsString` above could for instance load Hyperlambda from a file, retrieve it
@@ -345,23 +341,24 @@ parts above will return your Hyperlambda as its `Node` equivalent. The `Parser` 
 overloaded constructor for taking a `Stream` instead of a `string`.
 
 **Notice** - The `Node` returned above will be a root node, wrapping all nodes found in your
-Hyperlambda as children nodes. This is necessary in order to avoid having a single _"document node"_
+Hyperlambda as children nodes. This is necessary in order to avoid enforcing a single _"document node"_
 the way XML does.
-
-Once you have a `Node` graph object, you can easily reverse the process by using the `HyperlambdaGenerator`
+Once you have a `Node` object, you can easily reverse the process by using the `HyperlambdaGenerator`
 class, and its `GetHyperlambda` method such as the following illustrates.
 
 ```csharp
 using magic.node.extensions.hyperlambda;
 
-...
 var hl1 = GetHyperlambdaAsString();
 var result = HyperlambdaParser.Parse(hl1);
 var hl2 = HyperlambdaGenerator.GetHyperlambda(result.Children);
-...
 ```
 
 ## Formal specification of Hyperlambda
+
+**Notice** - This part is mostly intended for developers wanting to implement their own Hyperlambda parser, and
+is strictly not needed to understand neither Magic nor Hyperlambda. Feel free to skip this section if it seems
+like Greek to you.
 
 Hyperlambda contains 8 possible tokens in total, however since single line comments and multi line comments are
 interchangeable, we simplify the specification by combining these into one logical token type - And the `null` token
@@ -397,10 +394,10 @@ if none are explicitly given is 1.
 
 ## Usage
 
-You can include the following NuGet packages into your project to access Magic Node directly.
+You can include the following NuGet packages into your project to use magic.node in your own projects.
 
-* `magic.node` - Core node parts.
-* `magic.node.extensions` - Contains support for expressions, the Hyperlambda serializer and de-serializer, in addition to the typing system, plus some helper interfaces used by other parts of Magic.
+* `magic.node` - Core node parts
+* `magic.node.extensions` - Contains support for expressions, the Hyperlambda serializer and de-serializer, in addition to the typing system, plus some helper interfaces used by other parts of Magic
 
 However, all of these packages are indirectly included when you use Magic.
 
@@ -425,11 +422,10 @@ three interfaces, using your IoC container.
 If you want to do this, you would probably want to manually declare your own implementation for these classes,
 by tapping into _"magic.library"_ somehow, or not invoking its default method that binds towards the default
 implementation classes somehow.
+In addition to the above file interfaces, the following interfaces are also declared in magic.node.extensions.
 
-In addition the above file interfaces, the following interfaces are also declared in magic.node.extensions.
-
-* `magic.node.contracts.IMagicConfiguration` - Allows you to override (parts) of the internally used configuration object.
-* `magic.node.contracts.IServiceCreator` - Helper interface allowing you to avoid the service locator pattern, yet still dynamically create services on a per need basis from within your own C# code.
+* `magic.node.contracts.IMagicConfiguration` - Allows you to override (parts) of the internally used configuration object
+* `magic.node.contracts.IServiceCreator` - Helper interface allowing you to avoid the service locator pattern, yet still dynamically create services on a per need basis from within your own C# code
 
 ## Project website
 
