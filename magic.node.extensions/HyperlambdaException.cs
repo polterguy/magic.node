@@ -14,6 +14,8 @@ namespace magic.node.extensions
     [Serializable]
     public class HyperlambdaException : Exception, ISerializable
     {
+        private readonly string _stackTrace;
+
         /// <summary>
         /// Creates a new instance of exception.
         /// </summary>
@@ -22,6 +24,7 @@ namespace magic.node.extensions
             IsPublic = false;
             Status = 500;
             FieldName = "";
+            _stackTrace = null;
         }
 
         /// <summary>
@@ -34,6 +37,7 @@ namespace magic.node.extensions
             IsPublic = false;
             Status = 500;
             FieldName = "";
+            _stackTrace = null;
         }
 
         /// <summary>
@@ -47,6 +51,7 @@ namespace magic.node.extensions
             IsPublic = false;
             Status = 500;
             FieldName = "";
+            _stackTrace = null;
         }
 
         /// <summary>
@@ -55,12 +60,15 @@ namespace magic.node.extensions
         /// <param name="message">Exception error text.</param>
         /// <param name="isPublic">Whether or not exception message should propagate to client in release builds.</param>
         /// <param name="status">Status code returned to client.</param>
-        public HyperlambdaException(string message, bool isPublic, int status)
-            : base(message)
+        public HyperlambdaException(
+            string message,
+            bool isPublic,
+            int status) : base(message)
         {
             IsPublic = isPublic;
             Status = status;
             FieldName = "";
+            _stackTrace = null;
         }
 
         /// <summary>
@@ -70,12 +78,37 @@ namespace magic.node.extensions
         /// <param name="isPublic">Whether or not exception message should propagate to client in release builds.</param>
         /// <param name="status">Status code returned to client.</param>
         /// <param name="fieldName">Field that triggered exception, if any.</param>
-        public HyperlambdaException(string message, bool isPublic, int status, string fieldName)
-            : base(message)
+        public HyperlambdaException(
+            string message,
+            bool isPublic,
+            int status,
+            string fieldName) : base(message)
         {
             IsPublic = isPublic;
             Status = status;
             FieldName = fieldName;
+            _stackTrace = null;
+        }
+
+        /// <summary>
+        /// Creates a new exception.
+        /// </summary>
+        /// <param name="message">Exception error text.</param>
+        /// <param name="isPublic">Whether or not exception message should propagate to client in release builds.</param>
+        /// <param name="status">Status code returned to client.</param>
+        /// <param name="fieldName">Field that triggered exception, if any.</param>
+        /// <param name="stackTrace">Hyperlambda stack trace.</param>
+        public HyperlambdaException(
+            string message,
+            bool isPublic,
+            int status,
+            string fieldName,
+            string stackTrace) : base(message)
+        {
+            IsPublic = isPublic;
+            Status = status;
+            FieldName = fieldName;
+            _stackTrace = stackTrace;
         }
 
         /// <summary>
@@ -86,12 +119,17 @@ namespace magic.node.extensions
         /// <param name="status">Status code returned to client.</param>
         /// <param name="fieldName">Field that triggered exception, if any.</param>
         /// <param name="innerException">Inner exception</param>
-        public HyperlambdaException(string message, bool isPublic, int status, string fieldName, Exception innerException)
-            : base(message, innerException)
+        public HyperlambdaException(
+            string message,
+            bool isPublic,
+            int status,
+            string fieldName,
+            Exception innerException) : base(message, innerException)
         {
             IsPublic = isPublic;
             Status = status;
             FieldName = fieldName;
+            _stackTrace = null;
         }
 
         /// <summary>
@@ -111,6 +149,9 @@ namespace magic.node.extensions
         /// </summary>
         /// <value>Field that triggered exception.</value>
         public string FieldName { get; set; }
+
+        /// <inheritdoc />
+        public override string StackTrace { get { return _stackTrace ?? base.StackTrace; } }
 
         #region [ -- Serialization implementation -- ]
 
