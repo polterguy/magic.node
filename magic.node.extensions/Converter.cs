@@ -114,6 +114,11 @@ namespace magic.node.extensions
                     .ToUniversalTime()
                     .ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
             }},
+            { "System.DateTimeOffset", (value) => {
+                return ("date", ((DateTimeOffset)value)
+                    .ToUniversalTime()
+                    .ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            }},
             { "System.TimeSpan", (value) => {
                 return ("time", ((TimeSpan)value).Ticks.ToString(CultureInfo.InvariantCulture));
             }},
