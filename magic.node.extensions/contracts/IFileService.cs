@@ -27,6 +27,26 @@ namespace magic.node.contracts
         Task<string> LoadAsync(string path);
 
         /// <summary>
+        /// Loads all files recursively, and returns filenames and content of said files.
+        /// </summary>
+        /// <param name="folder">Root folder of where to look for files.</param>
+        /// <param name="extension">Extension files must end with to be considered.</param>
+        /// <returns>Filename and content of files.</returns>
+        IEnumerable<(string Filename, string Content)> LoadRecursively(
+            string folder,
+            string extension);
+
+        /// <summary>
+        /// Loads all files recursively, and returns filenames and content of said files.
+        /// </summary>
+        /// <param name="folder">Root folder of where to look for files.</param>
+        /// <param name="extension">Extension files must end with to be considered.</param>
+        /// <returns>Filename and content of files.</returns>
+        Task<IEnumerable<(string Filename, string Content)>> LoadRecursivelyAsync(
+            string folder,
+            string extension);
+
+        /// <summary>
         /// Loads a binary file, and returns its content.
         /// </summary>
         /// <param name="path">Path of file to load.</param>

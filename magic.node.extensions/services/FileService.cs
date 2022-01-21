@@ -141,6 +141,28 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
+        public IEnumerable<(string Filename, string Content)> LoadRecursively(
+            string folder,
+            string extension)
+        {
+            return LoadRecursivelyAsync(folder, extension).GetAwaiter().GetResult();
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<(string Filename, string Content)>> LoadRecursivelyAsync(
+            string folder,
+            string extension)
+        {
+            var files = await ListFilesRecursivelyAsync(folder, extension);
+            var result = new List<(string Filename, string Content)>();
+            foreach (var idx in files)
+            {
+                result.Add((idx, await LoadAsync(idx)));
+            }
+            return result;
+        }
+
+        /// <inheritdoc/>
         public byte[] LoadBinary(string path)
         {
             return File.ReadAllBytes(path);
