@@ -94,6 +94,38 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
+        public List<string> ListFilesRecursively(string folder, string extension = null)
+        {
+            var tmpResult = string.IsNullOrEmpty(extension) ?
+                Directory
+                    .GetFiles(folder)
+                    .Select(x => x.Replace("\\", "/"))
+                    .ToList() :
+                Directory
+                    .GetFiles(folder)
+                    .Where(x => Path.GetExtension(x) == extension)
+                    .Select(x => x.Replace("\\", "/"))
+                    .ToList();
+            tmpResult.Sort();
+            var result = new List<string>();
+            foreach (var idx in tmpResult)
+            {
+                result.Add(idx);
+            }
+            foreach (var idx in Directory.GetDirectories(folder))
+            {
+                result.AddRange(ListFilesRecursively(idx, extension));
+            }
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public Task<List<string>> ListFilesRecursivelyAsync(string folder, string extension = null)
+        {
+            return Task.FromResult(ListFilesRecursively(folder, extension));
+        }
+
+        /// <inheritdoc/>
         public string Load(string path)
         {
             return File.ReadAllText(path, Encoding.UTF8);

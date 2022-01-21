@@ -107,5 +107,28 @@ namespace magic.node.services
         {
             return Task.FromResult(ListFolders(folder));
         }
+
+        /// <inheritdoc/>
+        public List<string> ListFoldersRecursively(string folder)
+        {
+            var tmpResult = Directory
+                .GetDirectories(folder)
+                .Select(x => x.Replace("\\", "/") + "/")
+                .ToList();
+            tmpResult.Sort();
+            var result = new List<string>();
+            foreach (var idx in tmpResult)
+            {
+                result.Add(idx);
+                result.AddRange(ListFoldersRecursively(idx));
+            }
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public Task<List<string>> ListFoldersRecursivelyAsync(string folder)
+        {
+            return Task.FromResult(ListFoldersRecursively(folder));
+        }
     }
 }
