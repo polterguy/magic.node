@@ -38,5 +38,19 @@ namespace magic.node.contracts
         /// <param name="folder">Folder to query for folders.</param>
         /// <returns>Absolute paths to list of folders the specified folder contains</returns>
         Task<List<string>> ListFoldersAsync(string folder);
+
+        /// <summary>
+        /// Lists all folders within the specified folder recursively.
+        /// </summary>
+        /// <param name="folder">Folder to query for folders.</param>
+        /// <returns>Absolute paths to list of folders the specified folder contains</returns>
+        List<string> ListFoldersRecursively(string folder);
+
+        /// <summary>
+        /// Lists all folders within the specified folder recursively.
+        /// </summary>
+        /// <param name="folder">Folder to query for folders.</param>
+        /// <returns>Absolute paths to list of folders the specified folder contains</returns>
+        Task<List<string>> ListFoldersRecursivelyAsync(string folder);
     }
 }

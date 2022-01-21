@@ -85,5 +85,21 @@ namespace magic.node.contracts
         /// <param name="extension">Optional extension files must have to be returned.</param>
         /// <returns>A list of absolute paths to all files found within specified folder.</returns>
         Task<List<string>> ListFilesAsync(string folder, string extension = null);
+
+        /// <summary>
+        /// Returns all files found in the specified folder recursively.
+        /// </summary>
+        /// <param name="folder">Folder to query for files.</param>
+        /// <param name="extension">Optional extension files must have to be returned.</param>
+        /// <returns>A list of absolute paths to all files found within specified folder.</returns>
+        List<string> ListFilesRecursively(string folder, string extension = null);
+
+        /// <summary>
+        /// Returns all files found in the specified folder recursively.
+        /// </summary>
+        /// <param name="folder">Folder to query for files.</param>
+        /// <param name="extension">Optional extension files must have to be returned.</param>
+        /// <returns>A list of absolute paths to all files found within specified folder.</returns>
+        Task<List<string>> ListFilesRecursivelyAsync(string folder, string extension = null);
     }
 }
