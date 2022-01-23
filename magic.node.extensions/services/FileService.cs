@@ -141,7 +141,7 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<(string Filename, string Content)> LoadRecursively(
+        public IEnumerable<(string Filename, byte[] Content)> LoadRecursively(
             string folder,
             string extension)
         {
@@ -149,15 +149,15 @@ namespace magic.node.services
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<(string Filename, string Content)>> LoadRecursivelyAsync(
+        public async Task<IEnumerable<(string Filename, byte[] Content)>> LoadRecursivelyAsync(
             string folder,
             string extension)
         {
             var files = await ListFilesRecursivelyAsync(folder, extension);
-            var result = new List<(string Filename, string Content)>();
+            var result = new List<(string Filename, byte[] Content)>();
             foreach (var idx in files)
             {
-                result.Add((idx, await LoadAsync(idx)));
+                result.Add((idx, await LoadBinaryAsync(idx)));
             }
             return result;
         }

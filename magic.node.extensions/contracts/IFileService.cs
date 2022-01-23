@@ -32,7 +32,7 @@ namespace magic.node.contracts
         /// <param name="folder">Root folder of where to look for files.</param>
         /// <param name="extension">Extension files must end with to be considered.</param>
         /// <returns>Filename and content of files.</returns>
-        IEnumerable<(string Filename, string Content)> LoadRecursively(
+        IEnumerable<(string Filename, byte[] Content)> LoadRecursively(
             string folder,
             string extension);
 
@@ -42,7 +42,7 @@ namespace magic.node.contracts
         /// <param name="folder">Root folder of where to look for files.</param>
         /// <param name="extension">Extension files must end with to be considered.</param>
         /// <returns>Filename and content of files.</returns>
-        Task<IEnumerable<(string Filename, string Content)>> LoadRecursivelyAsync(
+        Task<IEnumerable<(string Filename, byte[] Content)>> LoadRecursivelyAsync(
             string folder,
             string extension);
 
