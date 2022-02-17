@@ -87,6 +87,22 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void OnlyBackSlash()
+        {
+            // Creating some lambda object.
+            var result = HyperlambdaParser.Parse(@"foo:""\\""").Children.ToList();
+
+            // Asserts.
+            Assert.Single(result);
+            Assert.Equal("foo", result.First().Name);
+            Assert.Equal("\\", result.First().Value);
+            Assert.Empty(result.First().Children);
+
+            var hl = HyperlambdaGenerator.GetHyperlambda(result);
+            Assert.Equal(@"foo:""\\""" + "\r\n", hl);
+        }
+
+        [Fact]
         public void EscapedStringLiteral_01()
         {
             // Creating some lambda object.
