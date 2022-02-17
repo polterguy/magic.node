@@ -174,10 +174,11 @@ namespace magic.node.extensions.hyperlambda
                     stringValue.Contains("\r") ||
                     stringValue.Contains("\n") ||
                     stringValue.Contains("\"") ||
+                    stringValue.Contains("\\") ||
                     stringValue.Contains("'") ||
                     stringValue.StartsWith(" ") ||
                     stringValue.EndsWith(" "))
-                    stringValue = @"""" + stringValue.Replace(@"""", @"\""").Replace("\r", "\\r").Replace("\n", "\\n") + @"""";
+                    stringValue = @"""" + stringValue.Replace("\\", "\\\\").Replace(@"""", @"\""").Replace("\r", "\\r").Replace("\n", "\\n") + @"""";
 
                 // Appending actual value.
                 if (value.Item1 == "node" && value.Item2 == "")
