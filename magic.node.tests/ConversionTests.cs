@@ -276,6 +276,17 @@ namespace magic.node.tests
         }
 
         [Fact]
+        public void ConvertToStringFromDateTimeLocalTimezone_01()
+        {
+            Converter.AssumeUtc = false;
+            var date = new DateTime(2020, 12, 23, 23, 59, 11, DateTimeKind.Utc);
+            var result = Converter.ToString(date);
+            Converter.AssumeUtc = true;
+            Assert.Equal("date", result.Item1);
+            Assert.Equal(date.ToString("yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz"), result.Item2);
+        }
+
+        [Fact]
         public void ConvertToDateTimeFromString_01()
         {
             var result = Converter.ToObject("2020-12-23T23:59:11", "date");
@@ -337,6 +348,40 @@ namespace magic.node.tests
             Assert.Equal(59, date.Minute);
             Assert.Equal(11, date.Second);
             Assert.Equal(1, date.Millisecond);
+        }
+
+        [Fact]
+        public void ConvertToDateTimeFromString_05()
+        {
+            var result = Converter.ToObject("2020-12-23T23:59:11", "date");
+            Assert.Equal(typeof(DateTime), result.GetType());
+            var date = (DateTime)result;
+            Assert.Equal(DateTimeKind.Utc, date.Kind);
+            Assert.Equal(2020, date.Year);
+            Assert.Equal(12, date.Month);
+            Assert.Equal(23, date.Day);
+            Assert.Equal(23, date.Hour);
+            Assert.Equal(59, date.Minute);
+            Assert.Equal(11, date.Second);
+            Assert.Equal(0, date.Millisecond);
+        }
+
+        [Fact]
+        public void ConvertToDateTimeFromString_06()
+        {
+            Converter.AssumeUtc = false;
+            var result = Converter.ToObject("2020-12-23T23:59:11", "date");
+            Converter.AssumeUtc = true;
+            Assert.Equal(typeof(DateTime), result.GetType());
+            var date = (DateTime)result;
+            Assert.Equal(DateTimeKind.Unspecified, date.Kind);
+            Assert.Equal(2020, date.Year);
+            Assert.Equal(12, date.Month);
+            Assert.Equal(23, date.Day);
+            Assert.Equal(23, date.Hour);
+            Assert.Equal(59, date.Minute);
+            Assert.Equal(11, date.Second);
+            Assert.Equal(0, date.Millisecond);
         }
 
         [Fact]

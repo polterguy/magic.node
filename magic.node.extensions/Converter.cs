@@ -110,14 +110,16 @@ namespace magic.node.extensions
                 return ("float", ((float)value).ToString(CultureInfo.InvariantCulture));
             }},
             { "System.DateTime", (value) => {
-                return ("date", ((DateTime)value)
-                    .ToUniversalTime()
-                    .ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+                if (AssumeUtc)
+                    return ("date", ((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture));
+                else
+                    return ("date", ((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz", CultureInfo.InvariantCulture));
             }},
             { "System.DateTimeOffset", (value) => {
-                return ("date", ((DateTimeOffset)value)
-                    .ToUniversalTime()
-                    .ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+                if (AssumeUtc)
+                    return ("date", ((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture));
+                else
+                    return ("date", ((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz", CultureInfo.InvariantCulture));
             }},
             { "System.TimeSpan", (value) => {
                 return ("time", ((TimeSpan)value).Ticks.ToString(CultureInfo.InvariantCulture));
@@ -140,6 +142,16 @@ namespace magic.node.extensions
         };
 
         #endregion
+
+        /// <summary>
+        /// If true all conversions to date objects will assume date is UTC unless timezone is explicitly specified,
+        /// and all conversions to string from date will return UTC date. Defaults to true.
+        /// 
+        /// If false will not assume timezone for dates and use the system settings when parsing dates, and while
+        /// converting from dates to string use local timezone.
+        /// </summary>
+        /// <value>Whether or not Magic defaults all dates to UTC or not</value>
+        public static bool AssumeUtc { get; set; } = true;
 
         /// <summary>
         /// Returns all Hyperlambda types Magic supports.
@@ -207,36 +219,47 @@ namespace magic.node.extensions
             if (value is DateTime date)
                 return date;
             var str = value as string;
+            var defaultLocale = AssumeUtc ? DateTimeStyles.AssumeUniversal : DateTimeStyles.AssumeLocal;
             switch (str.Length)
             {
+                case 33:
+                    return DateTime.ParseExact(
+                        str,
+                        "yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz",
+                        CultureInfo.InvariantCulture);
+                case 29:
+                    return DateTime.ParseExact(
+                        str,
+                        "yyyy-MM-ddTHH:mm:ss \"GMT\"zzz",
+                        CultureInfo.InvariantCulture);
+                case 25:
+                    return DateTime.ParseExact(
+                        str,
+                        "yyyy-MM-ddTHH:mm:sszzz",
+                        CultureInfo.InvariantCulture);
                 case 24:
                     return DateTime.ParseExact(
                         str,
                         "yyyy-MM-ddTHH:mm:ss.fffZ",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal)
-                        .ToUniversalTime();
+                        CultureInfo.InvariantCulture);
                 case 19:
                     return DateTime.ParseExact(
                         str,
                         "yyyy-MM-ddTHH:mm:ss",
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal)
-                        .ToUniversalTime();
+                        defaultLocale);
                 case 16:
                     return DateTime.ParseExact(
                         str,
                         "yyyy-MM-ddTHH:mm",
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal)
-                        .ToUniversalTime();
+                        defaultLocale);
                 case 10:
                     return DateTime.ParseExact(
                         str,
                         "yyyy-MM-dd",
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal)
-                        .ToUniversalTime();
+                        defaultLocale);
                 default:
                     throw new HyperlambdaException($"'{str}' is not a valid date.");
             }

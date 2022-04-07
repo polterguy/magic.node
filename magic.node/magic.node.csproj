@@ -4,16 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>magic.node</PackageId>
-    <Authors>Thomas Hansen</Authors>
+    <Authors>Aista, Ltd</Authors>
     <Company>Aista, Ltd</Company>
-    <Copyright>Aista, Ltd, thomas@servergardens.com</Copyright>
+    <Copyright>Aista, Ltd, info@aista.com</Copyright>
     <Description>A generic graph object for your own needs to implement syntax trees and similar constructs. Provides you with a name/value/children type of graph object, where your value can be any object type you wish. The project encapsulates the C# implementation of Hyperlambda, implying its lambda node structure. To use package go to https://polterguy.github.io</Description>
-    <PackageProjectUrl>https://github.com/polterguy/magic.node</PackageProjectUrl>
+    <PackageProjectUrl>https://aista.com</PackageProjectUrl>
     <PackOnBuild>true</PackOnBuild>
-    <PackageVersion>13.0.0</PackageVersion>
+    <PackageVersion>13.1.0</PackageVersion>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/polterguy/magic.node.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/polterguy/magic.node</RepositoryUrl>
     <PackageTags>graph, dynamic, dsl, hyperlambda, scripting, tree</PackageTags>
     <PackageIcon>ico.png</PackageIcon>
     <IncludeSymbols>true</IncludeSymbols>

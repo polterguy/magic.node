@@ -12,24 +12,18 @@ namespace magic.node.extensions
     public static class DateTimeExtensions
     {
         /// <summary>
-        /// Ensures the date is converted into UTC unless date is UTC from before, and or unspecified kind,
-        /// at which point it assumes the date already is UTC.
+        /// Ensures the date is converted into UTC unless date is UTC from before. Notice, if the DateTimeKind
+        /// is "Unspecified" it assumes the date already is UTC and assigns UTC as its returned kind without
+        /// changing the actual date and time value.
         /// </summary>
         /// <param name="value">Date to ensure</param>
-        /// <returns>UTC kind of date</returns>
-        public static DateTime EnsureUtc(this DateTime value)
+        /// <param name="utcIsDefault">If true will specify UTC unless date already has time zone specified</param>
+        /// <returns>UTC date equivalent</returns>
+        public static DateTime EnsureTimezone(this DateTime value, bool utcIsDefault = false)
         {
-            switch (value.Kind)
-            {
-                case DateTimeKind.Utc:
-                    return value;
-
-                case DateTimeKind.Unspecified:
-                    return DateTime.SpecifyKind(value, DateTimeKind.Utc);
-
-                default:
-                    return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, DateTimeKind.Utc);
-            }
+            if (value.Kind == DateTimeKind.Unspecified)
+                return DateTime.SpecifyKind(value, utcIsDefault || Converter.AssumeUtc ? DateTimeKind.Utc : DateTimeKind.Local);
+            return value;
         }
     }
 }
