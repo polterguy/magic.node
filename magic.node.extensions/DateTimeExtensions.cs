@@ -30,5 +30,19 @@ namespace magic.node.extensions
             }
             return value;
         }
+
+        /// <summary>
+        /// Always converts DateTime to UTC
+        /// </summary>
+        /// <param name="value">Date to ensure</param>
+        /// <returns>DateTime possibly with attached timezone information</returns>
+        public static DateTime EnsureUTC(this DateTime value)
+        {
+            if (value.Kind == DateTimeKind.Unspecified)
+                return DateTime.SpecifyKind(value, DateTimeKind.Utc);
+            if (value.Kind == DateTimeKind.Local)
+                return value.ToUniversalTime();
+            return value;
+        }
     }
 }
