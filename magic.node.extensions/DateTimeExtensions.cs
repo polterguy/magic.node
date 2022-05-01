@@ -17,12 +17,17 @@ namespace magic.node.extensions
         /// changing the actual date and time value.
         /// </summary>
         /// <param name="value">Date to ensure</param>
-        /// <param name="utcIsDefault">If true will specify UTC unless date already has time zone specified</param>
-        /// <returns>UTC date equivalent</returns>
-        public static DateTime EnsureTimezone(this DateTime value, bool utcIsDefault = false)
+        /// <param name="assignToDefault">If true will assign the default timezone to dates without an explicit timezone part</param>
+        /// <returns>DateTime possibly with attached timezone information</returns>
+        public static DateTime EnsureTimezone(this DateTime value, bool assignToDefault = false)
         {
-            if (value.Kind == DateTimeKind.Unspecified)
-                return DateTime.SpecifyKind(value, utcIsDefault || Converter.AssumeUtc ? DateTimeKind.Utc : DateTimeKind.Local);
+            if (assignToDefault && value.Kind == DateTimeKind.Unspecified && Converter.DefaultTimeZone != "none")
+            {
+                if (Converter.DefaultTimeZone == "utc")
+                    return DateTime.SpecifyKind(value, DateTimeKind.Utc);
+                if (Converter.DefaultTimeZone == "local")
+                    return DateTime.SpecifyKind(value, DateTimeKind.Local);
+            }
             return value;
         }
     }

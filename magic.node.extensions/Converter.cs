@@ -110,16 +110,20 @@ namespace magic.node.extensions
                 return ("float", ((float)value).ToString(CultureInfo.InvariantCulture));
             }},
             { "System.DateTime", (value) => {
-                if (AssumeUtc)
+                if (DefaultTimeZone == "utc")
                     return ("date", ((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture));
-                else
+                else if (DefaultTimeZone == "local")
                     return ("date", ((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz", CultureInfo.InvariantCulture));
+                else
+                    return ("date", ((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture));
             }},
             { "System.DateTimeOffset", (value) => {
-                if (AssumeUtc)
+                if (DefaultTimeZone == "utc")
                     return ("date", ((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture));
-                else
+                else if (DefaultTimeZone == "local")
                     return ("date", ((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz", CultureInfo.InvariantCulture));
+                else
+                    return ("date", ((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture));
             }},
             { "System.TimeSpan", (value) => {
                 return ("time", ((TimeSpan)value).Ticks.ToString(CultureInfo.InvariantCulture));
@@ -151,7 +155,7 @@ namespace magic.node.extensions
         /// converting from dates to string use local timezone.
         /// </summary>
         /// <value>Whether or not Magic defaults all dates to UTC or not</value>
-        public static bool AssumeUtc { get; set; } = true;
+        public static string DefaultTimeZone { get; set; } = "none";
 
         /// <summary>
         /// Returns all Hyperlambda types Magic supports.
@@ -219,7 +223,9 @@ namespace magic.node.extensions
             if (value is DateTime date)
                 return date;
             var str = value as string;
-            var defaultLocale = AssumeUtc ? DateTimeStyles.AssumeUniversal : DateTimeStyles.AssumeLocal;
+            var defaultLocale = DefaultTimeZone == "utc" ?
+                DateTimeStyles.AssumeUniversal :
+                DefaultTimeZone == "local" ? DateTimeStyles.AssumeLocal : DateTimeStyles.None;
             switch (str.Length)
             {
                 case 33:
@@ -261,7 +267,7 @@ namespace magic.node.extensions
                         CultureInfo.InvariantCulture,
                         defaultLocale);
                 default:
-                    throw new HyperlambdaException($"'{str}' is not a valid date.");
+                    return Convert.ToDateTime(str);
             }
         }
 
