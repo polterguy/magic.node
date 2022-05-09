@@ -110,20 +110,28 @@ namespace magic.node.extensions
                 return ("float", ((float)value).ToString(CultureInfo.InvariantCulture));
             }},
             { "System.DateTime", (value) => {
-                if (DefaultTimeZone == "utc")
-                    return ("date", ((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture));
-                else if (DefaultTimeZone == "local")
-                    return ("date", ((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz", CultureInfo.InvariantCulture));
+                var dateValue = (DateTime)value;
+                if (dateValue.Kind == DateTimeKind.Utc)
+                    return ("date", (dateValue.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture)));
+                else if (dateValue.Kind == DateTimeKind.Local)
+                    return ("date", (dateValue.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz", CultureInfo.InvariantCulture)));
                 else
-                    return ("date", ((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture));
+                {
+                    if (DefaultTimeZone == "utc")
+                        return ("date", (dateValue.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture)));
+                    if (DefaultTimeZone == "local")
+                        return ("date", (dateValue.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz", CultureInfo.InvariantCulture)));
+                    return ("date", (dateValue.ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture)));
+                }
             }},
             { "System.DateTimeOffset", (value) => {
-                if (DefaultTimeZone == "utc")
-                    return ("date", ((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture));
+                var dateValue = (DateTime)value;
+                if (dateValue.Kind == DateTimeKind.Utc)
+                    return ("date", (dateValue.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture)));
                 else if (DefaultTimeZone == "local")
-                    return ("date", ((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz", CultureInfo.InvariantCulture));
+                    return ("date", (dateValue.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz", CultureInfo.InvariantCulture)));
                 else
-                    return ("date", ((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture));
+                    return ("date", (dateValue.ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture)));
             }},
             { "System.TimeSpan", (value) => {
                 return ("time", ((TimeSpan)value).Ticks.ToString(CultureInfo.InvariantCulture));
@@ -223,52 +231,16 @@ namespace magic.node.extensions
             if (value is DateTime date)
                 return date;
             var str = value as string;
-            var defaultLocale = DefaultTimeZone == "utc" ?
-                DateTimeStyles.AssumeUniversal :
-                DefaultTimeZone == "local" ? DateTimeStyles.AssumeLocal : DateTimeStyles.None;
-            switch (str.Length)
+            if (str.EndsWith("Z"))
+                return DateTime.Parse(str, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+            if (!str.Contains("+"))
             {
-                case 33:
-                    return DateTime.ParseExact(
-                        str,
-                        "yyyy-MM-ddTHH:mm:ss.fff \"GMT\"zzz",
-                        CultureInfo.InvariantCulture);
-                case 29:
-                    return DateTime.ParseExact(
-                        str,
-                        "yyyy-MM-ddTHH:mm:ss \"GMT\"zzz",
-                        CultureInfo.InvariantCulture);
-                case 25:
-                    return DateTime.ParseExact(
-                        str,
-                        "yyyy-MM-ddTHH:mm:sszzz",
-                        CultureInfo.InvariantCulture);
-                case 24:
-                    return DateTime.ParseExact(
-                        str,
-                        "yyyy-MM-ddTHH:mm:ss.fffZ",
-                        CultureInfo.InvariantCulture);
-                case 19:
-                    return DateTime.ParseExact(
-                        str,
-                        "yyyy-MM-ddTHH:mm:ss",
-                        CultureInfo.InvariantCulture,
-                        defaultLocale);
-                case 16:
-                    return DateTime.ParseExact(
-                        str,
-                        "yyyy-MM-ddTHH:mm",
-                        CultureInfo.InvariantCulture,
-                        defaultLocale);
-                case 10:
-                    return DateTime.ParseExact(
-                        str,
-                        "yyyy-MM-dd",
-                        CultureInfo.InvariantCulture,
-                        defaultLocale);
-                default:
-                    return Convert.ToDateTime(str);
+                if (DefaultTimeZone == "utc")
+                    return DateTime.Parse(str, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+                if (DefaultTimeZone == "local")
+                    return DateTime.Parse(str, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal);
             }
+            return DateTime.Parse(str, CultureInfo.InvariantCulture);
         }
 
         #endregion
