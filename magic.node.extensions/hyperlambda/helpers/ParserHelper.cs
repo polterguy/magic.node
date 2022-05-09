@@ -64,10 +64,6 @@ namespace magic.node.extensions.hyperlambda.internals
                         builder.Append(GetEscapeCharacter(reader, endCharacter));
                         break;
 
-                    case '\n':
-                    case '\r':
-                        throw new HyperlambdaException("Syntax error, string literal unexpected CR/LF");
-
                     default:
                         builder.Append((char)c);
                         break;

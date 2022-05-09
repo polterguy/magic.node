@@ -165,27 +165,91 @@ namespace magic.node.extensions.hyperlambda
                     builder
                         .Append(value.Item1)
                         .Append(":"); // Persisting type declaration into StringBuilder
-
-                // Figuring out if we need to escape value somehow, or wrap it into double quotes (""/@"").
-                var stringValue = value.Item2;
-                if (stringValue.Contains("\r\n"))
-                    stringValue = @"@""" + stringValue.Replace(@"""", @"""""") + @"""";
-                else if (stringValue.Contains(":") || 
-                    stringValue.Contains("\r") ||
-                    stringValue.Contains("\n") ||
-                    stringValue.Contains("\"") ||
-                    stringValue.Contains("\\") ||
-                    stringValue.Contains("'") ||
-                    stringValue.StartsWith(" ") ||
-                    stringValue.EndsWith(" "))
-                    stringValue = @"""" + stringValue.Replace("\\", "\\\\").Replace(@"""", @"\""").Replace("\r", "\\r").Replace("\n", "\\n") + @"""";
-
-                // Appending actual value.
                 if (value.Item1 == "node" && value.Item2 == "")
                     builder.Append(@"""""");
                 else
-                    builder.Append(stringValue);
+                    builder.Append(CreateStringLiteral(value.Item2));
             }
+        }
+
+        /*
+         * Creates a string literal from the specified content and returns to caller.
+         */
+        static string CreateStringLiteral(string content)
+        {
+            var builder = new StringBuilder(content.Length + 10);
+            if (content.Contains("\r\n"))
+            {
+                builder.Append("@\"");
+                foreach (var idx in content)
+                {
+                    switch (idx)
+                    {
+                        case '"':
+                            builder.Append("\"\"");
+                            break;
+
+                        default:
+                            builder.Append(idx);
+                            break;
+                    }
+                }
+                builder.Append("\"");
+            }
+            else
+            {
+                var hasControlChar = content.StartsWith(" ") || content.EndsWith(" ");
+                foreach (var idx in content)
+                {
+                    switch (idx)
+                    {
+                        case '\n':
+                            hasControlChar = true;
+                            builder.Append("\\n");
+                            break;
+
+                        case '\r':
+                            hasControlChar = true;
+                            builder.Append("\\r");
+                            break;
+
+                        case '\t':
+                            hasControlChar = true;
+                            builder.Append("\\t");
+                            break;
+
+                        case '\\':
+                            hasControlChar = true;
+                            builder.Append("\\\\");
+                            break;
+
+                        case ':':
+                            hasControlChar = true;
+                            builder.Append(":");
+                            break;
+
+                        case '"':
+                            hasControlChar = true;
+                            builder.Append("\\\"");
+                            break;
+
+                        case '\'':
+                            hasControlChar = true;
+                            builder.Append("'");
+                            break;
+
+                        default:
+                            builder.Append(idx);
+                            break;
+                    }
+                }
+                if (hasControlChar)
+                {
+                    builder.Insert(0, "\"");
+                    builder.Append("\"");
+                }
+            }
+            return builder.ToString();
         }
 
         #endregion
