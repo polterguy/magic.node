@@ -705,16 +705,6 @@ foo:@""howdy world
         }
 
         [Fact]
-        public void ReadSingleLineContainingCR_Throws()
-        {
-            // Creating some lambda object.
-            Assert.Throws<HyperlambdaException>(() => HyperlambdaParser.Parse(@"
-foo:""howdy world
-howdy""
-"));
-        }
-
-        [Fact]
         public void ReadMultiLineContainingDoubleQuotes()
         {
             // Creating some lambda object.
