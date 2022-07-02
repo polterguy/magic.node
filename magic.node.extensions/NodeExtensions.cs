@@ -53,7 +53,11 @@ namespace magic.node.extensions
             if (typeof(T) == typeof(string) && node.Value is Guid guidValue)
                 return (T)(object)guidValue.ToString();
             if (typeof(T) == typeof(bool) && node.Value?.GetType() != typeof(bool))
+            {
+                if (node.Value?.GetType() == typeof(string) && ((string)node.Value) == "false")
+                    return (T)(object)false;
                 return (T)(object)(node.Value != null);
+            }
 
             // Converting, the simple version.
             return (T)Convert.ChangeType(node.Value, typeof(T), CultureInfo.InvariantCulture);
