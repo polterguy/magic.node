@@ -54,13 +54,36 @@ namespace magic.node.extensions
                 return (T)(object)guidValue.ToString();
             if (typeof(T) == typeof(bool) && node.Value?.GetType() != typeof(bool))
             {
-                if (node.Value?.GetType() == typeof(string) && ((string)node.Value) == "false")
-                    return (T)(object)false;
+                if (node.Value != null)
+                {
+                    if (node.Value.GetType() == typeof(string) && ((string)node.Value) == "false")
+                        return (T)(object)false;
+                    if (IsNumber(node.Value) && Convert.ToDouble(node.Value) == 0D)
+                        return (T)(object)false;
+                }
                 return (T)(object)(node.Value != null);
             }
 
             // Converting, the simple version.
             return (T)Convert.ChangeType(node.Value, typeof(T), CultureInfo.InvariantCulture);
+        }
+
+        /*
+         * Returns true if the object is a number.
+         */
+        static bool IsNumber(object value)
+        {
+            return value is sbyte
+                || value is byte
+                || value is short
+                || value is ushort
+                || value is int
+                || value is uint
+                || value is long
+                || value is ulong
+                || value is float
+                || value is double
+                || value is decimal;
         }
 
         /// <summary>
