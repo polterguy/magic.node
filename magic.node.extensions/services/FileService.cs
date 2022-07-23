@@ -114,10 +114,8 @@ namespace magic.node.services
             }
             foreach (var idx in Directory.GetDirectories(folder))
             {
-                if (!idx.Replace("\\", "/").EndsWith("/node_modules/"))
-                {
+                if (!idx.Replace("\\", "/").EndsWith("/node_modules"))
                     result.AddRange(ListFilesRecursively(idx, extension));
-                }
             }
             return result;
         }
