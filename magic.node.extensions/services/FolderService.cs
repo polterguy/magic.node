@@ -119,11 +119,8 @@ namespace magic.node.services
             var result = new List<string>();
             foreach (var idx in tmpResult)
             {
-                if (!idx.EndsWith("/node_modules/"))
-                {
-                    result.Add(idx);
-                    result.AddRange(ListFoldersRecursively(idx));
-                }
+                result.Add(idx);
+                result.AddRange(ListFoldersRecursively(idx));
             }
             return result;
         }
