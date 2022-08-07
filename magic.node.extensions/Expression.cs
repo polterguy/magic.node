@@ -135,6 +135,7 @@ namespace magic.node.extensions
                     {
                         // Extrapolated expression allowing for nesting expressions.
                         yield return new Iterator("=" + ParseExtrapolatedExpression(reader, expression));
+                        builder.Clear();
 
                         // Making sure we don't return remnants in builder further down
                         if (reader.EndOfStream)
