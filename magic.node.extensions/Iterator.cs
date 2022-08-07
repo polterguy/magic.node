@@ -66,6 +66,8 @@ namespace magic.node.extensions
              */
             {'=', (value) => {
                 var name = value.Substring(1);
+                if (name.StartsWith("{") && name.EndsWith("}"))
+                    return (identity, input) => ExtrapolatedExpressionIterator(identity, input, value, true);
                 return (identity, input) => ValueEqualsIterator(
                     input,
                     name);
@@ -293,12 +295,18 @@ namespace magic.node.extensions
         static IEnumerable<Node> ExtrapolatedExpressionIterator(
             Node identity,
             IEnumerable<Node> input,
-            string expression)
+            string expression,
+            bool value = false)
         {
-            var x = new Expression(expression.Substring(1, expression.Length -2));
+            var x = new Expression(expression.Substring(value ? 2 : 1, expression.Length - (value ? 3 : 2)));
             var result = x.Evaluate(identity);
             if (result.Count() > 1)
                throw new HyperlambdaException($"Extrapolated expression '{expression}' yields multiple results");
+            if (value)
+            {
+                var strValue = result.FirstOrDefault()?.GetEx<string>();
+                return input.Where(y => y.GetEx<string>() == strValue);
+            }
             var name = result.FirstOrDefault()?.GetEx<string>();
             return input.Where(y => y.Name == name);
         }
