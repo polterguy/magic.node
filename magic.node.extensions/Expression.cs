@@ -131,6 +131,18 @@ namespace magic.node.extensions
                         if ('/' == (char)reader.Peek())
                             reader.Read(); // Discarding end of iterator character to prepare for next iterator's value.
                     }
+                    else if (idx == '{' && builder.Length == 1 && builder.ToString() == "=")
+                    {
+                        // Extrapolated expression allowing for nesting expressions.
+                        yield return new Iterator("=" + ParseExtrapolatedExpression(reader, expression));
+
+                        // Making sure we don't return remnants in builder further down
+                        if (reader.EndOfStream)
+                            yield break;
+
+                        if ('/' == (char)reader.Peek())
+                            reader.Read(); // Discarding end of iterator character to prepare for next iterator's value.
+                    }
                     else
                     {
                         builder.Append(idx);

@@ -280,7 +280,19 @@ get-value:x:@.data/*/{@.arg1}
 ```
 
 The above expression will first evaluate the `{@.arg1}` parts, which results in _"foo2"_, then evaluate the
-outer expression, which now will look like this `@.data/*/foo2`.
+outer expression, which now will look like this `@.data/*/foo2`. You can also extrapolate expressions on
+values, such as illustrated below.
+
+```
+.arg1:thomas
+
+.data
+   foo1:john
+   foo2:thomas
+   foo3:peter
+
+get-name:x:@.data/*/={@.arg1}
+```
 
 ### Extending lambda expressions/iterators
 
