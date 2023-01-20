@@ -439,7 +439,7 @@ In addition to the above file interfaces, the following interfaces are also decl
 * `magic.node.contracts.IMagicConfiguration` - Allows you to override (parts) of the internally used configuration object
 * `magic.node.contracts.IServiceCreator` - Helper interface allowing you to avoid the service locator pattern, yet still dynamically create services on a per need basis from within your own C# code
 
-## Project website
+## Project website for magic.node
 
 The source code for this repository can be found at [github.com/polterguy/magic.node](https://github.com/polterguy/magic.node), and you can provide feedback, provide bug reports, etc at the same place.
 
