@@ -30,7 +30,7 @@ the `:int:` parts between one of our **[foo]** nodes' name and value. If you don
 
 To traverse the nodes later in for instance C#, you could do something such as the following.
 
-```csharp
+```
 var root = var result = HyperlambdaParser.Parse(hyperlambda);
 
 foreach (var idxChild in root.Children)
@@ -45,7 +45,7 @@ foreach (var idxChild in root.Children)
 this is the node that's returned to you after parsing. All nodes you declare in your Hyperlambda will be
 returned to you as children of this root node.
 
-## Supported types
+## Hyperlambda types
 
 Although the node structure itself can hold any value type you need inside of its `Value` property,
 Hyperlambda only supports serialising the following types by default.
@@ -81,14 +81,14 @@ of declaring a couple of types associated with a node's value can be found below
 .foo4:bar
 ```
 
-### Extending the type system
+### Extending the Hyperlambda type system
 
 The type system is extendible, and you can easily create support for serializing your own types, by using
 the `Converter.AddConverter` method, that can be found in the `magic.node.extensions` namespace.
 Below is an example of how to extend the typing system, to allow for serializing and de-serializing instances
 of a `Foo` class into Hyperlambda.
 
-```csharp
+```
 /*
  * Class you want to serialize into Hyperlambda.
  */
@@ -130,11 +130,11 @@ Later you can retrieve your `Foo` instances in your slots, using something
 resembling the following, and all parsing and conversion will be automatically
 taken care of.
 
-```csharp
+```
 var foo = node.Get<Foo>();
 ```
 
-## String literals
+## String literals in Hyperlambda
 
 Hyperlambda also support strings the same way C# supports string, using any of the following string representations.
 
@@ -170,7 +170,7 @@ nodes somehow. This allows you to modify the lambda graph object, as it is curre
 and hence allows you to modify _"anything"_ from _"anywhere"_. This resembles XPath expressions
 from XML.
 
-### Iterators
+### Iterators in lambda expressions
 
 An expression is constructed from one or more _"iterator"_. This makes an expression
 become _"dynamically chained Linq statements"_, where each iterator reacts upon
@@ -307,7 +307,7 @@ methods.
 Below is a C# example, that creates a dynamic iterator, that will only return nodes having a value,
 that once converted into a string, has _exactly_ `n` characters, not less and not more.
 
-```csharp
+```
 Iterator.AddDynamicIterator('%', (iteratorValue) => {
     var no = int.Parse(iteratorValue.Substring(1));
     return (identity, input) => {
@@ -340,7 +340,7 @@ but is included here for reference purposes.
 
 Magic allows you to easily parse Hyperlambda from C# if you need it, which can be done as follows.
 
-```csharp
+```
 using magic.node.extensions.hyperlambda;
 
 var hl = GetHyperlambdaAsString();
@@ -358,7 +358,7 @@ the way XML does.
 Once you have a `Node` object, you can easily reverse the process by using the `HyperlambdaGenerator`
 class, and its `GetHyperlambda` method such as the following illustrates.
 
-```csharp
+```
 using magic.node.extensions.hyperlambda;
 
 var hl1 = GetHyperlambdaAsString();
@@ -403,15 +403,6 @@ if none are explicitly given is 1.
 1. **(COM->CRLF\[1..n\])\[0..n\]**
 2. **(NAM->(NUL \| (SEP->VAL\[0..1\]) \| (SEP->TYP->SEP->VAL\[0..1\])))\[0..1\]->CRLF\[0..n\]->(x=IND\[x..x+1\])**
 3. **GOTO 1 while not EOF**
-
-## Usage
-
-You can include the following NuGet packages into your project to use magic.node in your own projects.
-
-* `magic.node` - Core node parts
-* `magic.node.extensions` - Contains support for expressions, the Hyperlambda serializer and de-serializer, in addition to the typing system, plus some helper interfaces used by other parts of Magic
-
-However, all of these packages are indirectly included when you use Magic.
 
 ## Documenting nodes, arguments to slots, etc
 
