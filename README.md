@@ -1,5 +1,5 @@
 
-# Node support for Hyperlambda and Magic
+# magic.node
 
 magic.node is a simple name/value/children graph object, in addition to a _"Hyperlambda"_ parser, allowing you to
 create a textual string representations of graph objects easily transformed to its relational graph object syntax
