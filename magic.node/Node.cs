@@ -263,6 +263,25 @@ namespace magic.node
             Parent = null;
         }
 
+        /// <summary>
+        /// Sorts the node given the specified functor.
+        /// </summary>
+        /// <param name="functor">Comparison functor</param>
+        public void Sort(Comparison<Node> functor)
+        {
+            _children.Sort(functor);
+        }
+
+        /// <summary>
+        /// Removes all nodes except the first max number of nodes.
+        /// </summary>
+        /// <param name="max">Maximum number of nodes to keep</param>
+        public void Max(int max)
+        {
+            if (_children.Count > max)
+                _children.RemoveRange(max, _children.Count - max);
+        }
+
         #region [ -- Interface implementation -- ]
 
         object ICloneable.Clone()
