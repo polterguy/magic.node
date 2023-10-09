@@ -103,6 +103,24 @@ namespace magic.node.extensions
                 var name = value.Substring(1);
                 return (identity, input) => AncestorNameIterator(input, name);
             }},
+
+            /*
+             * Ancestor iterator looking upwards in hierarchy for first direct ancestor node
+             * matching the specified name.
+             */
+            {'^', (value) => {
+                var name = value.Substring(1);
+                return (identity, input) => AncestorNameIterator(input, name, false);
+            }},
+
+            /*
+             * Ancestor iterator looking upwards in hierarchy for first direct ancestor node
+             * matching the specified name.
+             */
+            {'!', (value) => {
+                var name = value.Substring(1);
+                return (identity, input) => AllDescendants(input, name);
+            }},
         };
 
         /*
@@ -260,6 +278,24 @@ namespace magic.node.extensions
         }
 
         /*
+         * Helper method to return all descendants recursively for the '!' iterator.
+         */
+        static IEnumerable<Node> AllDescendants(IEnumerable<Node> input, string exceptName)
+        {
+            foreach (var idx in input)
+            {
+                if (idx.Name != exceptName)
+                {
+                    yield return idx;
+                    foreach (var idxInner in AllDescendants(idx.Children, exceptName))
+                    {
+                        yield return idxInner;
+                    }
+                }
+            }
+        }
+
+        /*
          * Name equality iterator, requiring a statically declared name, returning
          * results of all nodes from previous result set, matching name specified.
          */
@@ -318,22 +354,39 @@ namespace magic.node.extensions
          */
         static IEnumerable<Node> AncestorNameIterator(
             IEnumerable<Node> input,
-            string name)
+            string name,
+            bool siblings = true)
         {
-            var cur = input.FirstOrDefault()?.Previous ?? input.FirstOrDefault()?.Parent;
-            while (cur != null && cur.Name != name)
+            if (siblings)
             {
-                var previous = cur.Previous;
-                if (previous == null)
-                    cur = cur.Parent;
-                else
-                    cur = previous;
+                var cur = input.FirstOrDefault()?.Previous ?? input.FirstOrDefault()?.Parent;
+                while (cur != null && cur.Name != name)
+                {
+                    var previous = cur.Previous;
+                    if (previous == null)
+                        cur = cur.Parent;
+                    else
+                        cur = previous;
+                }
+
+                if (cur == null)
+                    return new Node[] { };
+
+                return new Node[] { cur };
             }
+            else
+            {
+                var cur = input.FirstOrDefault()?.Parent;
+                while (cur != null && cur.Name != name)
+                {
+                    cur = cur.Parent;
+                }
 
-            if (cur == null)
-                return new Node[] { };
+                if (cur == null)
+                    return new Node[] { };
 
-            return new Node[] { cur };
+                return new Node[] { cur };
+            }
         }
 
         #endregion

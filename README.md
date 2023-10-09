@@ -209,9 +209,11 @@ _"n"_ with a number, and _"x"_ with an expression.
 * `#` Retrieves the value of its previous result as a node by reference
 * `-` Retrieves its previous result set's _"younger sibling"_ (previous node)
 * `+` Retrieves its previous result set's _"elder sibling"_ (next node)
-* `.` Retrieves its previous reult set's parent node(s)
+* `.` Retrieves its previous result set's parent node(s)
+* `^xxx` Retrieves the first ancestor node with the specified _"xxx"_ name. Similar to `@` iterator but does not traverse siblings, only direct ancestors up in hierarchy
 * `..` Retrieves the root node
 * `**` Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm
+* `!xxx` Traverses all descendants except those matching specified _"xxx"_ name and returns
 * `{x}` Extrapolated expression that will be evaluated assuming it yields one result, replacing itself with the value of whatever node it points to
 * `=xxx` Retrieves the node with the _"xxx"_ value, converting to string if necessary
 * `[n,n]` Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>
