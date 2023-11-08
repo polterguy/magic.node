@@ -33,6 +33,7 @@ namespace magic.node.extensions
             {"float", (value) => Convert.ToSingle(value, CultureInfo.InvariantCulture)},
             {"char", (value) => Convert.ToChar(value, CultureInfo.InvariantCulture)},
             {"byte", (value) => Convert.ToByte(value, CultureInfo.InvariantCulture)},
+            {"sbyte", (value) => Convert.ToSByte(value, CultureInfo.InvariantCulture)},
             {"string", (value) => {
                 return 
                     (value as string) ??
@@ -144,6 +145,9 @@ namespace magic.node.extensions
             }},
             { "System.Byte", (value) => {
                 return ("byte", ((byte)value).ToString(CultureInfo.InvariantCulture));
+            }},
+            { "System.SByte", (value) => {
+                return ("sbyte", ((sbyte)value).ToString(CultureInfo.InvariantCulture));
             }},
             { "magic.node.extensions.Expression", (value) => {
                 return ("x", ((Expression)value).Value);
