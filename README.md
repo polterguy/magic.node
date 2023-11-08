@@ -67,6 +67,7 @@ Hyperlambda only supports serialising the following types by default.
 * `guid` = System.Guid
 * `char` = System.Char
 * `byte` = System.Byte
+* `sbyte` = System.SByte
 * `x` = magic.node.extensions.Expression
 * `node` = magic.node.Node
 
