@@ -214,6 +214,7 @@ _"n"_ with a number, and _"x"_ with an expression.
 * `^xxx` Retrieves the first ancestor node with the specified _"xxx"_ name. Similar to `@` iterator but does not traverse siblings, only direct ancestors up in hierarchy
 * `..` Retrieves the root node
 * `**` Retrieves its previous result set's descendant, with a _"breadth first"_ algorithm
+* `--` Retrieves all ancestors and older siblings upwards in object
 * `!xxx` Traverses all descendants except those matching specified _"xxx"_ name and returns
 * `{x}` Extrapolated expression that will be evaluated assuming it yields one result, replacing itself with the value of whatever node it points to
 * `=xxx` Retrieves the node with the _"xxx"_ value, converting to string if necessary

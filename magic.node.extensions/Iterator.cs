@@ -29,6 +29,7 @@ namespace magic.node.extensions
             {"+", (identity, input) => input.Select(x => x.Next ?? x.Parent.Children.First())},
             {".", (identity, input) => input.Select(x => x.Parent).Distinct()},
             {"**", (identity, input) => AllDescendants(input)},
+            {"--", (identity, input) => AllAncestors(input)},
             {"..", (identity, input) => {
 
                 /*
@@ -273,6 +274,26 @@ namespace magic.node.extensions
                 foreach (var idxInner in AllDescendants(idx.Children))
                 {
                     yield return idxInner;
+                }
+            }
+        }
+
+        /*
+         * Helper method to return all descendants recursively for the '--' iterator.
+         */
+        static IEnumerable<Node> AllAncestors(IEnumerable<Node> input)
+        {
+            foreach (var idx in input)
+            {
+                var cur = idx;
+                while (cur != null)
+                {
+                    while (cur.Previous != null)
+                    {
+                        cur = cur.Previous;
+                        yield return cur;
+                    }
+                    cur = cur.Parent;
                 }
             }
         }
