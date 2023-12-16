@@ -70,6 +70,25 @@ namespace magic.node.extensions
             return result;
         }
 
+        /// <summary>
+        /// Forward evaluates all expressions found in nodes' descendants.
+        /// </summary>
+        /// <param name="nodes">Nodes who's descendants we should forward evaluate.</param>
+        public static void Unwrap(IEnumerable<Node> nodes)
+        {
+            foreach (var idx in nodes)
+            {
+                if (idx.Value is Expression)
+                {
+                    var exp = idx.Evaluate();
+                    if (exp.Count() > 1)
+                        throw new HyperlambdaException("Multiple sources found for unwrap invocation");
+
+                    idx.Value = exp.FirstOrDefault()?.Value;
+                }
+            }
+        }
+
         #region [ -- Overrides -- ]
 
         /// <inheritdoc />
