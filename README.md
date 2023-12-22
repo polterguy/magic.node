@@ -221,6 +221,7 @@ _"n"_ with a number, and _"x"_ with an expression.
 * `[n,n]` Retrieves a subset of its previous result set, implying _"from, to"_ meaning \[n1,n2\>
 * `@xxx` Returns the first node _"before"_ in its hierarchy that matches the given _"xxx"_ in its name
 * `n` (any number) Returns the n'th child of its previous result set
+* `[x|y]` Pipe separated list of names returning all nodes having a name of either _"x"_ or _"y"_
 
 Notice, you can escape iterators by using backslash "\\". This allows you to look for nodes who's names
 are for instance _"3"_, without using the n'th child iterator, which would defeat the purpose. In addition,

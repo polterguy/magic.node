@@ -76,15 +76,26 @@ namespace magic.node.extensions
 
             /*
              * Subscript iterator, returning from [n1..n2] from its previous result set.
+             * Alternatively you can supply a pipe separated list of names, such as e.g. [foo|bar].
              */
             {'[', (value) => {
-                var ints = value.Substring(1, value.Length - 2).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                var start = int.Parse(ints[0]);
-                var count = int.Parse(ints[1]);
-                return (identity, input) => SubscriptIterator(
-                    input,
-                    start,
-                    count);
+                if (value.Contains('|'))
+                {
+                    var names = value.Substring(1, value.Length - 2).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    return (identity, input) => SubscriptIterator(
+                        input,
+                        names);
+                }
+                else
+                {
+                    var ints = value.Substring(1, value.Length - 2).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    var start = int.Parse(ints[0]);
+                    var count = int.Parse(ints[1]);
+                    return (identity, input) => SubscriptIterator(
+                        input,
+                        start,
+                        count);
+                }
             }},
 
             /*
@@ -344,6 +355,20 @@ namespace magic.node.extensions
             int count)
         {
             return input.Skip(start).Take(count);
+        }
+
+        /*
+         * Subscript iterator overload, taking a list of names.
+         */
+        static IEnumerable<Node> SubscriptIterator(
+            IEnumerable<Node> input,
+            string[] names)
+        {
+            foreach (var idx in input)
+            {
+                if (names.Contains(idx.Name))
+                    yield return idx;
+            }
         }
 
         /*
