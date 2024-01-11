@@ -85,6 +85,7 @@ namespace magic.node.extensions
                     {
                         var res = idx.Evaluate();
                         idx.AddRange(res.Select(x => x.Clone()));
+                        idx.Value = null;
                     }
                     else
                     {
