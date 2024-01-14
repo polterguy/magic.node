@@ -366,6 +366,10 @@ var hl2 = HyperlambdaGenerator.GetHyperlambda(result.Children);
 When referencing nodes in the documentation for Magic, it is common to reference them like __[this]__, where
 _"this"_ would be the name of some node - Implying in __bold__ characters, wrapped by square [brackets].
 
+## Magic's GitHub project page
+
+Magic is 100% Open Source and you can find the primary project GitHub page [here](https://github.com/polterguy/magic).
+
 ## Project website for magic.node
 
 The source code for this repository can be found at [github.com/polterguy/magic.node](https://github.com/polterguy/magic.node), and you can provide feedback, provide bug reports, etc at the same place.
