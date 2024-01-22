@@ -81,24 +81,31 @@ namespace magic.node.extensions
             {
                 if (idx.Value is Expression ex)
                 {
-                    if (applyLists && ex._iterators.Last().Value == "*")
+                    if (applyLists && idx.Name == "node_reference")
                     {
-                        var res = idx.Evaluate();
-                        idx.AddRange(res.Select(x => x.Clone()));
-                        idx.Value = null;
+                        idx.Value = idx.Evaluate()?.SingleOrDefault();
                     }
                     else
                     {
-                        var res = idx.Evaluate();
-                        if (res.Count() > 1)
+                        if (applyLists && ex._iterators.Last().Value == "*")
                         {
-                            if (applyLists)
-                                idx.AddRange(res.Select(x => x.Clone()));
-                            else
-                                throw new HyperlambdaException("Multiple sources found for unwrap invocation");
+                            var res = idx.Evaluate();
+                            idx.AddRange(res.Select(x => x.Clone()));
+                            idx.Value = null;
                         }
+                        else
+                        {
+                            var res = idx.Evaluate();
+                            if (res.Count() > 1)
+                            {
+                                if (applyLists)
+                                    idx.AddRange(res.Select(x => x.Clone()));
+                                else
+                                    throw new HyperlambdaException("Multiple sources found for unwrap invocation");
+                            }
 
-                        idx.Value = res.FirstOrDefault()?.Value;
+                            idx.Value = res.FirstOrDefault()?.Value;
+                        }
                     }
                 }
             }
